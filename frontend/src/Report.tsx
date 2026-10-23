@@ -30,13 +30,13 @@ export default function Report({ scan }: { scan: Scan }) {
       <p>One public source snapshot; private repositories and history are unsupported.</p></div>}
     <h3>Checks and coverage</h3>
     <p>{scan.coverage.completed_count ?? 0}/{scan.coverage.required_count ?? 2} required checks completed.</p>
-    <ul>{scan.tools?.map(item => <li key={item.name}>{item.name}: {item.status}{item.reason ? ` (${item.reason})` : ''}
+    <ul className="tool-states">{scan.tools?.map(item => <li className="tool-state" data-state={item.status} key={item.name}>{item.name}: {item.status}{item.reason ? ` (${item.reason})` : ''}
       {item.version && <> · v{item.version}</>}
       {item.started_at && <> · started {new Date(item.started_at).toLocaleTimeString()}</>}
       {item.finished_at && <> · finished {new Date(item.finished_at).toLocaleTimeString()}</>}
     </li>)}</ul>
     <p className="muted">Static checks produce candidates for review. They do not prove the application is secure.</p>
-    {scan.warnings?.map((warning, index) => <p key={index}>{warning}</p>)}
+    {scan.warnings?.length > 0 && <details className="coverage-notes" open={scan.status === 'partial' || scan.status === 'failed'}><summary>Review limits and notes · {scan.warnings.length}</summary>{scan.warnings.map((warning, index) => <p key={index}>{warning}</p>)}</details>}
     {scan.error && <p role="alert">{scan.error.message}</p>}
     {['complete', 'partial', 'failed'].includes(scan.status) && <>
       <h3>Findings · {findings.length}</h3>
@@ -49,7 +49,7 @@ export default function Report({ scan }: { scan: Scan }) {
       {findings.length === 0 ? <p>{scan.status === 'complete' ? 'No findings detected within completed checks.' : 'No findings available. Review incomplete checks before drawing conclusions.'}</p>
         : visible.length === 0 ? <p role="status">No findings match these filters. The report still contains {findings.length} findings.</p>
           : <div className="investigation"><ul aria-label="Findings">{visible.map(item => <li key={item.id}><button type="button" aria-pressed={active?.id === item.id} onClick={() => setSelected(item.id)}>
-            <strong>{item.severity} · {item.title}</strong><span>{item.location.kind === 'source' ? `${item.location.path}:${item.location.line_start ?? 'unknown'}` : item.location.url_redacted}</span>
+            <span className="severity-badge" data-severity={item.severity}>{item.severity}</span><strong>{item.title}</strong><span>{item.location.kind === 'source' ? `${item.location.path}:${item.location.line_start ?? 'unknown'}` : item.location.url_redacted}</span>
           </button></li>)}</ul>
             {active && <article aria-label="Selected finding"><h4>{active.title}</h4><p>{active.scanner} · {active.rule_id} · {active.severity}</p>
               <p>Confidence: {active.confidence}. {active.confidence_reason}</p>
@@ -60,7 +60,7 @@ export default function Report({ scan }: { scan: Scan }) {
             </article>}</div>}
     </>}
     {scan.repair && <section aria-label="Repair prompt"><h3>Consolidated repair prompt</h3>
-      <p>Deterministic guidance · no AI required.</p><button type="button" onClick={copyPrompt}>Copy repair prompt</button><p role="status">{copy}</p>
+      <p>Deterministic guidance · no AI required.</p><button className="primary-button" type="button" onClick={copyPrompt}>Copy repair prompt</button><p role="status">{copy}</p>
       <label>Sanitized repair prompt<textarea readOnly value={scan.repair.prompt_redacted} aria-label="Sanitized repair prompt" /></label>
       {scan.repair.human_actions?.length > 0 && <><h4>Separate human actions</h4><ul>{scan.repair.human_actions.map(action => <li key={action}>{action}</li>)}</ul></>}
     </section>}

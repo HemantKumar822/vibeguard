@@ -134,34 +134,38 @@ export default function SourceIntake() {
       setError(failure instanceof Error ? failure.message : 'Connection interrupted. Submission status is unknown.')
     } finally { setPending(false) }
   }
-  return <section className="panel" aria-labelledby="source-title">
-    <h2 id="source-title">Submit authorized source</h2>
-    <p>JS/TS and relevant web configuration. Public GitHub snapshots supported. Website intake is unavailable.</p>
-    <p className="muted">25 MiB total · 5,000 files · 2 MiB per file · depth 20 · 240 UTF-8 bytes per path</p>
-    <form onSubmit={submit}>
-      <label>Submission mode<select value={mode} disabled={pending} onChange={event => { changed(); setMode(event.target.value as 'codebase' | 'repository') }}><option value="codebase">Codebase</option><option value="repository">Repository</option></select></label>
+  return <section className="workspace" aria-labelledby="source-title">
+    <ol className="workflow-track" aria-label="Review workflow"><li data-current={!scan}><span className="step-number">01</span><div><strong>Choose your source</strong><small>Authorized code only</small></div></li><li data-current={!!scan && ['queued', 'running'].includes(scan.status)}><span className="step-number">02</span><div><strong>Inspect the evidence</strong><small>Real checks, visible coverage</small></div></li><li data-current={!!scan?.repair}><span className="step-number">03</span><div><strong>Plan your repair</strong><small>Clear next steps</small></div></li></ol>
+    <div className="panel intake-panel">
+    <div className="section-heading"><div><p className="eyebrow">NEW REVIEW</p><h2 id="source-title">Start with your source.</h2><p className="muted">JS/TS and relevant web configuration. Public GitHub snapshots supported. Website intake is unavailable.</p></div><span className="scope-tag">SOURCE ANALYSIS</span></div>
+    <form onSubmit={submit} className="intake-form">
+      <div className="source-controls"><label>Submission mode<select value={mode} disabled={pending} onChange={event => { changed(); setMode(event.target.value as 'codebase' | 'repository') }}><option value="codebase">Codebase</option><option value="repository">Repository</option></select></label><span className="mode-description">{mode === 'codebase' ? 'Keep your original file structure.' : 'Review one exact repository snapshot.'}</span></div>
+      <p className="limit-strip">25 MiB total · 5,000 files · 2 MiB per file<br />Path depth 20 · 240 UTF-8 bytes per path</p>
+      <div className="submission-layout"><div className="source-fields">
       {mode === 'repository' ? <>
+        <div className="repository-heading"><span className="source-symbol" aria-hidden="true">⌥</span><h3>Connect a public repository</h3><p>Choose a branch, tag or commit. We’ll record exactly what was reviewed.</p></div>
         <label>Public GitHub repository URL<input type="url" required value={repository} placeholder="https://github.com/owner/repository" disabled={pending} onChange={event => { changed(); setRepository(event.target.value) }} /></label>
         <label>Branch, tag, or commit (optional)<input value={ref} maxLength={256} disabled={pending} onChange={event => { changed(); setRef(event.target.value) }} /></label>
-        <p>Public repositories only. One resolved commit; no private credentials, history, submodules, LFS downloads, hooks or builds.</p>
+      <p className="field-help">Public repositories only. One resolved commit; no private credentials, history, submodules, LFS downloads, hooks or builds.</p>
       </> : <>
-      <label>Choose directory<input type="file" multiple {...{ webkitdirectory: '' }} onChange={event => select(event.currentTarget, true)} disabled={pending} /></label>
-      <p>If directory selection is unavailable, choose mapped files and provide their original relative paths.</p>
-      <label>Choose mapped files<input type="file" multiple onChange={event => select(event.currentTarget, false)} disabled={pending} /></label>
+      <div className="directory-picker"><span className="source-symbol" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 7V5a1 1 0 0 1 1-1h5l2 3h9a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" /><path d="M3 9h18M12 12v5m-2-2 2 2 2-2" /></svg></span><h3>A source tree, ready for a closer look.</h3><p>Select your project folder. We’ll preserve its paths<br className="desktop-break" /> and make the accepted review scope explicit.</p><label>Choose directory<input type="file" multiple {...{ webkitdirectory: '' }} onChange={event => select(event.currentTarget, true)} disabled={pending} /></label><span className="field-help">Your app is never installed, built or executed.</span></div>
+      <div className="mapped-picker"><label>Choose mapped files<input type="file" multiple onChange={event => select(event.currentTarget, false)} disabled={pending} /></label><p className="field-help">If directory selection is unavailable, choose mapped files and provide their original relative paths.</p></div>
       {mapped && <label>Relative paths, one per selected file<textarea value={paths} onChange={event => { if (event.target.value !== paths) changed(); setPaths(event.target.value) }} disabled={pending} /></label>}
-      {files.length > 0 && <ol>{files.map((file, index) => <li key={index}>{mapped ? file.name : file.webkitRelativePath} · {file.size} bytes</li>)}</ol>}
+      {files.length > 0 && <details className="selected-files"><summary>{files.length} files selected · {(files.reduce((total, file) => total + file.size, 0) / 1024).toFixed(1)} KiB</summary><ol>{files.map((file, index) => <li key={index}>{mapped ? file.name : file.webkitRelativePath} · {file.size} bytes</li>)}</ol></details>}
       </>}
-      <label><input type="checkbox" checked={permission} onChange={event => { changed(); setPermission(event.target.checked) }} disabled={pending} required />I have permission to review this source.</label>
-      <label><input type="checkbox" checked={sharing} onChange={event => { changed(); setSharing(event.target.checked) }} disabled={pending} />Allow external AI sharing for this submission (AI is currently unavailable).</label>
-      <button type="submit" disabled={pending || !permission || (mode === 'codebase' ? files.length === 0 : !repository)}>{pending ? 'Submitting…' : mode === 'repository' ? 'Review repository' : 'Submit source tree'}</button>
+      </div><aside className="submission-context" aria-label="Review scope"><span className="context-icon" aria-hidden="true">{'{ }'}</span><h3>Know what you’re reviewing.</h3><p>Selected checks for credentials, unsafe input, insecure configuration and access-check candidates.</p><div className="scope-facts"><div><span>Maximum source size</span><strong>25 MiB</strong></div><div><span>Files per review</span><strong>5,000</strong></div><div><span>Maximum file size</span><strong>2 MiB</strong></div></div><p className="field-help">Path depth 20 · 240 UTF-8 bytes per path</p><div className="privacy-note"><strong>Evidence without exposed values</strong><p>Reports omit source literals. Exposed credentials still need revocation or rotation.</p></div></aside></div>
+      <div className="consent-area"><label className="checkbox-row"><input type="checkbox" checked={permission} onChange={event => { changed(); setPermission(event.target.checked) }} disabled={pending} required /><span>I have permission to review this source.<small>Only submit code you own or are authorized to assess.</small></span></label>
+      <label className="checkbox-row secondary-consent"><input type="checkbox" checked={sharing} onChange={event => { changed(); setSharing(event.target.checked) }} disabled={pending} /><span>Allow external AI sharing for this submission (AI is currently unavailable).<small>Repair guidance works without AI. Sharing is off by default.</small></span></label></div>
+      <div className="submit-row"><p>{pending ? 'Preparing your submission. Keep this page open.' : 'Select your source and confirm permission to begin.'}</p><button className="primary-button" type="submit" disabled={pending || !permission || (mode === 'codebase' ? files.length === 0 : !repository)}>{pending ? 'Submitting…' : mode === 'repository' ? 'Review repository' : 'Submit source tree'}</button></div>
     </form>
-    <details><summary>Reconnect to an existing scan</summary><p>Use the same browser session and Scan ID after refresh. Reconnecting does not submit new work. Lost cookies cannot be recovered.</p>
+    <details className="reconnect-panel"><summary>Reconnect to an existing scan</summary><p>Use the same browser session and Scan ID after refresh. Reconnecting does not submit new work. Lost cookies cannot be recovered.</p>
       <label>Scan ID<input value={reconnectId} maxLength={32} onChange={event => setReconnectId(event.target.value)} /></label><button type="button" onClick={() => reconnect()}>Reconnect</button></details>
-    {error && <p role="alert">{error}</p>}
-    {scan && <div><h3 role="status">Accepted · {scan.status}</h3>
+    {error && <p role="alert" className="error-banner">{error}</p>}
+    </div>
+    {scan && <div className="panel results-panel"><div className="results-heading"><div><p className="eyebrow">YOUR REVIEW</p><h3 role="status">Accepted · {scan.status}</h3></div><span className="scope-tag">{scan.mode === 'repository' ? 'REPOSITORY' : 'CODEBASE'}</span></div>
       <Report scan={scan} key={scan.scan_id} />
-      <button type="button" onClick={() => confirmation.current?.showModal()}>Delete scan</button>
-      <p>Scan ID: <code>{scan.scan_id}</code></p></div>}
+      <div className="report-footer"><p>Scan ID: <code>{scan.scan_id}</code></p><button className="danger-button" type="button" onClick={() => confirmation.current?.showModal()}>Delete scan</button></div></div>}
+    {!scan && !deletion && <div className="report-placeholder"><span className="placeholder-mark" aria-hidden="true">[ / ]</span><div><h3>Your evidence will appear here.</h3><p>Submit authorized source to inspect real findings and copy a repair prompt.</p></div><span className="scope-tag">AWAITING SOURCE</span></div>}
     {deletion && <p role="status">Cleanup: {deletion.status}{deletion.status === 'failed' ? ' · Cleanup is incomplete; the coordinator will retry.' : ''}</p>}
     <dialog ref={confirmation}><h3>Delete this scan and source?</h3><p>Access is revoked immediately. Cleanup status remains visible.</p><button autoFocus onClick={() => confirmation.current?.close()}>Cancel</button><button onClick={remove}>Delete scan</button></dialog>
   </section>
