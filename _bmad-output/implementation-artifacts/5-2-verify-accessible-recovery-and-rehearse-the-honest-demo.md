@@ -1,10 +1,10 @@
 ---
 story_id: '5.2'
 epic: 5
-status: ready-for-dev
+status: review
 prepared: true
-approval: pending-user-review
-assignee: unassigned
+approval: implementation-approved-manual-acceptance-pending
+assignee: Codex
 owner_role: "Frontend / QA / demo operations"
 priority: P0
 depends_on: ["5.1"]
@@ -82,6 +82,6 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Implementation record
 
-Not started. Record PR, actual commands/results, sanitized evidence and remaining limitations here during implementation.
+Implemented in the approved Epic 5 batch. See [verification](epic-5-verification.md), [measured acceptance](epic-5-acceptance.md) and [operator guide](../../docs/DEMO_RUNBOOK.md). Automated checks and controlled real-worker loops are recorded. Full acceptance, manual checks and teammate review remain pending; unchecked acceptance/definition-of-done items are intentional. The user requested merge with manual browser testing retained for them.
 
 [Parent epic](../github-issues/epics/epic-05-demonstrate-the-complete-workflow-with-repeatable-evidence.md) · [All stories](README.md)

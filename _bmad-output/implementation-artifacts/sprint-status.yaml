@@ -69,9 +69,9 @@ development_status:
   4-2-execute-real-rescans-and-classify-comparable-findings: review
   4-3-inspect-paired-rescan-evidence-and-recovery: review
   epic-4-retrospective: optional
-  epic-5: backlog
-  5-1-run-the-labeled-acceptance-and-adversarial-corpus: ready-for-dev
-  5-2-verify-accessible-recovery-and-rehearse-the-honest-demo: ready-for-dev
+  epic-5: in-progress
+  5-1-run-the-labeled-acceptance-and-adversarial-corpus: review
+  5-2-verify-accessible-recovery-and-rehearse-the-honest-demo: review
   epic-5-retrospective: optional
 
 action_items: []

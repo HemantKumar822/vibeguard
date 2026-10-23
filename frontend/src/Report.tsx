@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { components } from './generated/api'
 
 type Scan = components['schemas']['Scan']
@@ -11,6 +11,13 @@ export default function Report({ scan }: { scan: Scan }) {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<string | null>(null)
   const [copy, setCopy] = useState('')
+  const detail = useRef<HTMLElement>(null)
+  const findingButtons = useRef(new Map<string, HTMLButtonElement>())
+  function openFinding(id: string) {
+    setSelected(id)
+    // Detail is already mounted; move focus only for a deliberate selection.
+    detail.current?.focus()
+  }
   const findings = scan.findings ?? []
   const visible = findings.filter(item => (severity === 'all' || item.severity === severity)
     && (category === 'all' || item.category === category) && (tool === 'all' || item.scanner === tool)
@@ -48,11 +55,11 @@ export default function Report({ scan }: { scan: Scan }) {
         <label>Search location or rule<input type="search" value={query} onChange={event => setQuery(event.target.value)} /></label>
       </div>
       {findings.length === 0 ? <p>{scan.status === 'complete' ? 'No findings detected within completed checks.' : 'No findings available. Review incomplete checks before drawing conclusions.'}</p>
-        : visible.length === 0 ? <p role="status">No findings match these filters. The report still contains {findings.length} findings.</p>
-          : <div className="investigation"><ul aria-label="Findings">{visible.map(item => <li key={item.id}><button type="button" aria-pressed={active?.id === item.id} onClick={() => setSelected(item.id)}>
+        : visible.length === 0 ? <div><p role="status">No findings match these filters. The report still contains {findings.length} findings.</p><button type="button" onClick={() => { setSeverity('all'); setCategory('all'); setTool('all'); setQuery('') }}>Clear filters</button></div>
+          : <div className="investigation"><ul aria-label="Findings">{visible.map(item => <li key={item.id}><button ref={element => { if (element) findingButtons.current.set(item.id, element); else findingButtons.current.delete(item.id) }} type="button" aria-pressed={active?.id === item.id} onClick={() => openFinding(item.id)}>
             <span className="severity-badge" data-severity={item.severity}>{item.severity}</span><strong>{item.title}</strong><span>{item.location.kind === 'source' ? `${item.location.path}:${item.location.line_start ?? 'unknown'}` : `${item.location.url_redacted}${item.location.line_start ? ` · line ${item.location.line_start}` : ''}`}</span>
           </button></li>)}</ul>
-            {active && <article aria-label="Selected finding"><h4>{active.title}</h4><p>{active.scanner} · {active.rule_id} · {active.severity}</p>
+            {active && <article ref={detail} tabIndex={-1} aria-label="Selected finding"><button type="button" onClick={() => findingButtons.current.get(active.id)?.focus()}>Back to findings</button><h4>{active.title}</h4><p>{active.scanner} · {active.rule_id} · {active.severity}</p>
               <p>Confidence: {active.confidence}. {active.confidence_reason}</p>
               <p>{active.location.kind === 'source' ? `${active.location.path}:${active.location.line_start ?? 'unknown'}` : `${active.location.url_redacted} · ${active.location.part}${active.location.line_start ? ` · line ${active.location.line_start}` : ''}`}</p>
               <pre>{active.evidence_redacted ?? 'No source excerpt is available.'}</pre><h4>Impact and context</h4><p>{active.explanation}</p>
