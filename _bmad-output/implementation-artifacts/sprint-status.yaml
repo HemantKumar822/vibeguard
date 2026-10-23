@@ -58,11 +58,11 @@ development_status:
   2-1-retrieve-a-bounded-public-repository-snapshot: done
   2-2-review-repository-findings-with-commit-attribution: done
   epic-2-retrospective: optional
-  epic-3: in-progress
-  3-1-enforce-authorized-website-networking-and-budgets: review
-  3-2-produce-located-zap-baseline-findings: review
-  3-3-detect-secrets-in-bounded-visible-assets: review
-  3-4-investigate-website-findings-in-the-shared-workspace: review
+  epic-3: done
+  3-1-enforce-authorized-website-networking-and-budgets: done
+  3-2-produce-located-zap-baseline-findings: done
+  3-3-detect-secrets-in-bounded-visible-assets: done
+  3-4-investigate-website-findings-in-the-shared-workspace: done
   epic-3-retrospective: optional
   epic-4: backlog
   4-1-add-opt-in-bounded-ai-explanations-with-fallback: ready-for-dev

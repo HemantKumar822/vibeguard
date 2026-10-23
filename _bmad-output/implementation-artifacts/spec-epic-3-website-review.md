@@ -2,7 +2,7 @@
 title: Epic 3 bounded website review
 type: feature
 created: '2026-10-24'
-status: in-review
+status: done
 route: dispatch
 baseline_commit: 9dcf3143fd2605e4a09a5007714529f8d0b55c2f
 context: []

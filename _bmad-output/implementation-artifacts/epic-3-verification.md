@@ -37,3 +37,6 @@ Readiness **true**; both ZAP and asset secret stages **complete**; **6 observed 
 The common UI includes Website admission, readiness recovery, observed identity, actual web/asset locations, tool states, inspected URLs, omissions, filtering and deterministic repair/rotation guidance. Source/repository regressions remain covered.
 
 Stories are implemented and in **review**; this local batch does not close remote issues/milestones. Broader review and rendered keyboard/mobile/zoom acceptance remain the previously agreed Story 5.2 (#21) follow-up. AI and genuine rescan comparison remain future work. **Five implementation stories remain in Epics 4–5.**
+
+## User acceptance — 2026-10-24
+User authorized merging PR #25 and completing Epic 3. Recorded verification above remains the implementation evidence; no tests were rerun for this tracking-only update. Broader independent review and rendered accessibility verification remain tracked in Story 5.2 (#21).
