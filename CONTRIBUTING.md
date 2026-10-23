@@ -1,6 +1,6 @@
 # Contributing
 
-Start from the [story board](_bmad-output/github-issues/README.md). Every story has a readable handoff with scope, requirements, dependencies, acceptance criteria and verification. The application is not implemented yet; Story 1.1 establishes its actual commands.
+Start from the [story board](_bmad-output/github-issues/README.md). Every story has a readable handoff with scope, requirements, dependencies, acceptance criteria and verification. The [development guide](docs/DEVELOPMENT.md) contains the bootstrap's actual setup/build/test commands; scanning is not implemented yet.
 
 ## Pick and claim work
 

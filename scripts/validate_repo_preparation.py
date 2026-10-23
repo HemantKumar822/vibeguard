@@ -70,7 +70,7 @@ def main() -> int:
         dep_match=re.search(r'^depends_on: (.+)$',body,re.M)
         ensure(dep_match and json.loads(dep_match[1])==incoming[sid],f'{sid}: handoff dependency drift')
         ensure(story['requirements'] in body,f'{sid}: requirement references changed')
-        ensure(len(re.findall(r'^- \[ \] \*\*AC-\d+\*\*',body,re.M))==len(story['acceptance_criteria']),f'{sid}: acceptance count drift')
+        ensure(len(re.findall(r'^- \[[ x]\] \*\*AC-\d+\*\*',body,re.M))==len(story['acceptance_criteria']),f'{sid}: acceptance count drift')
         for ac in story['acceptance_criteria']:
             ensure(ac[2:] in body,f'{sid}: canonical acceptance altered')
         total_acceptance+=len(story['acceptance_criteria'])

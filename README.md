@@ -4,7 +4,9 @@ Evidence-backed security review for AI-built websites: **submit → inspect → 
 
 Built for the CY-02 hackathon challenge. The application will accept a full codebase, a repository, or an authorized deployed website URL; explain candidate security findings; produce one repair prompt for the developer's coding tool; and compare a real repeat scan.
 
-**Current status:** product, UX, architecture and backlog are documented. Application implementation has not started. No scanner accuracy, runtime, containment or deployment result is claimed. The team repository is [HemantKumar822/vibeguard](https://github.com/HemantKumar822/vibeguard) (private). Published issue links are recorded in the [publication record](_bmad-output/github-issues/publication.json).
+**Current status:** Story 1.1 introduces a React/TypeScript foundation, live FastAPI health endpoint and shared generated contracts. Scanning, submission and comparison are not implemented yet. Scanner readiness is a separate measured gate; no accuracy or containment result is claimed. The team repository is [HemantKumar822/vibeguard](https://github.com/HemantKumar822/vibeguard) (private). Published issue links are recorded in the [publication record](_bmad-output/github-issues/publication.json).
+
+**Run locally:** follow [development setup](docs/DEVELOPMENT.md) for installation, two-terminal startup, type generation and verification.
 
 ## What we are building
 
@@ -23,7 +25,7 @@ Use the [team delivery guide](docs/TEAM_DELIVERY.md) for the five milestones, th
 1. Read the [team story board](_bmad-output/github-issues/README.md) and coordinate a story with the team.
 2. Read that story's description, dependencies, acceptance criteria and verification plan. Every story has its own file in [_bmad-output/implementation-artifacts/](_bmad-output/implementation-artifacts/README.md).
 3. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [project rules](docs/PROJECT_RULES.md). Claim one story before changing shared files.
-4. Start implementation with **Story 1.1**. It introduces real setup/build/test commands and locked dependencies; guessed application commands are deliberately not published here.
+4. Use [Story 1.1's development setup](docs/DEVELOPMENT.md) for actual setup/build/test commands and locked dependencies. Keep real scanning disabled until the scanner and containment gates pass.
 
 For the current documentation-only workspace, Python 3.10+ and Git can run the actual preparation checks:
 

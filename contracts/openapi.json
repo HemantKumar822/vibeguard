@@ -1,0 +1,1121 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "VibeGuard API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_v1_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Health": {
+        "additionalProperties": false,
+        "properties": {
+          "status": {
+            "const": "ok",
+            "title": "Status",
+            "type": "string"
+          },
+          "contract_version": {
+            "const": "v1",
+            "title": "Contract Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "contract_version"
+        ],
+        "title": "Health",
+        "type": "object"
+      },
+      "CodebaseMetadata": {
+        "additionalProperties": false,
+        "properties": {
+          "authorization_confirmed": {
+            "const": true,
+            "title": "Authorization Confirmed",
+            "type": "boolean"
+          },
+          "allow_external_ai": {
+            "title": "Allow External Ai",
+            "type": "boolean"
+          },
+          "mode": {
+            "const": "codebase",
+            "title": "Mode",
+            "type": "string"
+          },
+          "files": {
+            "items": {
+              "$ref": "#/components/schemas/FileMapping"
+            },
+            "title": "Files",
+            "type": "array"
+          }
+        },
+        "required": [
+          "authorization_confirmed",
+          "allow_external_ai",
+          "mode",
+          "files"
+        ],
+        "title": "CodebaseMetadata",
+        "type": "object"
+      },
+      "Comparison": {
+        "additionalProperties": false,
+        "properties": {
+          "baseline_id": {
+            "title": "Baseline Id",
+            "type": "string"
+          },
+          "new_id": {
+            "title": "New Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "comparable",
+              "partial"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "baseline_input": {
+            "$ref": "#/components/schemas/InputIdentity"
+          },
+          "new_input": {
+            "$ref": "#/components/schemas/InputIdentity"
+          },
+          "baseline_coverage": {
+            "$ref": "#/components/schemas/Coverage"
+          },
+          "new_coverage": {
+            "$ref": "#/components/schemas/Coverage"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ComparisonItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "human_actions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Human Actions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "baseline_id",
+          "new_id",
+          "status",
+          "baseline_input",
+          "new_input",
+          "baseline_coverage",
+          "new_coverage",
+          "items",
+          "human_actions"
+        ],
+        "title": "Comparison",
+        "type": "object"
+      },
+      "ComparisonItem": {
+        "additionalProperties": false,
+        "properties": {
+          "baseline_finding_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Finding Id"
+          },
+          "new_finding_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "New Finding Id"
+          },
+          "status": {
+            "enum": [
+              "still_detected",
+              "not_detected",
+              "newly_detected",
+              "unverified"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "reason_code": {
+            "title": "Reason Code",
+            "type": "string"
+          },
+          "baseline_evidence_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Evidence Ref"
+          },
+          "new_evidence_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "New Evidence Ref"
+          }
+        },
+        "required": [
+          "baseline_finding_id",
+          "new_finding_id",
+          "status",
+          "reason_code",
+          "baseline_evidence_ref",
+          "new_evidence_ref"
+        ],
+        "title": "ComparisonItem",
+        "type": "object"
+      },
+      "Coverage": {
+        "additionalProperties": false,
+        "properties": {
+          "required_count": {
+            "minimum": 0,
+            "title": "Required Count",
+            "type": "integer"
+          },
+          "completed_count": {
+            "minimum": 0,
+            "title": "Completed Count",
+            "type": "integer"
+          },
+          "inspected": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Inspected",
+            "type": "array"
+          },
+          "exclusions": {
+            "items": {
+              "$ref": "#/components/schemas/Exclusion"
+            },
+            "title": "Exclusions",
+            "type": "array"
+          },
+          "rules_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rules Fingerprint"
+          },
+          "revision_or_observation": {
+            "title": "Revision Or Observation",
+            "type": "string"
+          },
+          "scope_complete": {
+            "title": "Scope Complete",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "required_count",
+          "completed_count",
+          "inspected",
+          "exclusions",
+          "rules_fingerprint",
+          "revision_or_observation",
+          "scope_complete"
+        ],
+        "title": "Coverage",
+        "type": "object"
+      },
+      "Deletion": {
+        "additionalProperties": false,
+        "properties": {
+          "operation_id": {
+            "title": "Operation Id",
+            "type": "string"
+          },
+          "scan_id": {
+            "title": "Scan Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "pending",
+              "complete",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SafeError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "operation_id",
+          "scan_id",
+          "status",
+          "error"
+        ],
+        "title": "Deletion",
+        "type": "object"
+      },
+      "ErrorResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/SafeError"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ErrorResponse",
+        "type": "object"
+      },
+      "Exclusion": {
+        "additionalProperties": false,
+        "properties": {
+          "resource_key": {
+            "title": "Resource Key",
+            "type": "string"
+          },
+          "reason": {
+            "title": "Reason",
+            "type": "string"
+          }
+        },
+        "required": [
+          "resource_key",
+          "reason"
+        ],
+        "title": "Exclusion",
+        "type": "object"
+      },
+      "FileMapping": {
+        "additionalProperties": false,
+        "properties": {
+          "part_id": {
+            "title": "Part Id",
+            "type": "string"
+          },
+          "relative_path": {
+            "title": "Relative Path",
+            "type": "string"
+          }
+        },
+        "required": [
+          "part_id",
+          "relative_path"
+        ],
+        "title": "FileMapping",
+        "type": "object"
+      },
+      "Finding": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "scanner": {
+            "enum": [
+              "gitleaks",
+              "semgrep",
+              "zap",
+              "asset_secrets"
+            ],
+            "title": "Scanner",
+            "type": "string"
+          },
+          "rule_id": {
+            "title": "Rule Id",
+            "type": "string"
+          },
+          "category": {
+            "enum": [
+              "credential",
+              "unsafe_input",
+              "insecure_configuration",
+              "access_check",
+              "other"
+            ],
+            "title": "Category",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low",
+              "info"
+            ],
+            "title": "Severity",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "high",
+              "medium",
+              "needs_review"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "confidence_reason": {
+            "title": "Confidence Reason",
+            "type": "string"
+          },
+          "location": {
+            "discriminator": {
+              "mapping": {
+                "source": "#/components/schemas/SourceLocation",
+                "web": "#/components/schemas/WebLocation"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SourceLocation"
+              },
+              {
+                "$ref": "#/components/schemas/WebLocation"
+              }
+            ],
+            "title": "Location"
+          },
+          "evidence_redacted": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence Redacted"
+          },
+          "explanation": {
+            "title": "Explanation",
+            "type": "string"
+          },
+          "fix_guidance": {
+            "title": "Fix Guidance",
+            "type": "string"
+          },
+          "verification_steps": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Verification Steps",
+            "type": "array"
+          },
+          "human_actions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Human Actions",
+            "type": "array"
+          },
+          "match_context": {
+            "title": "Match Context",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "scanner",
+          "rule_id",
+          "category",
+          "title",
+          "severity",
+          "confidence",
+          "confidence_reason",
+          "location",
+          "evidence_redacted",
+          "explanation",
+          "fix_guidance",
+          "verification_steps",
+          "human_actions",
+          "match_context"
+        ],
+        "title": "Finding",
+        "type": "object"
+      },
+      "InputIdentity": {
+        "additionalProperties": false,
+        "properties": {
+          "display_name": {
+            "title": "Display Name",
+            "type": "string"
+          },
+          "revision": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Revision"
+          },
+          "repository": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Repository"
+          },
+          "target_redacted": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Target Redacted"
+          },
+          "observation_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observation Id"
+          }
+        },
+        "required": [
+          "display_name",
+          "revision",
+          "repository",
+          "target_redacted",
+          "observation_id"
+        ],
+        "title": "InputIdentity",
+        "type": "object"
+      },
+      "Intake": {
+        "description": "JSON admission shape; real URL/content validation belongs to intake adapters.",
+        "discriminator": {
+          "mapping": {
+            "repository": "#/components/schemas/RepositoryIntake",
+            "website": "#/components/schemas/WebsiteIntake"
+          },
+          "propertyName": "mode"
+        },
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/RepositoryIntake"
+          },
+          {
+            "$ref": "#/components/schemas/WebsiteIntake"
+          }
+        ],
+        "title": "Intake"
+      },
+      "Repair": {
+        "additionalProperties": false,
+        "properties": {
+          "mode": {
+            "enum": [
+              "ai_assisted",
+              "template"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "complete",
+              "fallback"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "prompt_redacted": {
+            "title": "Prompt Redacted",
+            "type": "string"
+          },
+          "model_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Model Reason"
+          },
+          "human_actions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Human Actions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "mode",
+          "status",
+          "prompt_redacted",
+          "model_reason",
+          "human_actions"
+        ],
+        "title": "Repair",
+        "type": "object"
+      },
+      "RepositoryIntake": {
+        "additionalProperties": false,
+        "properties": {
+          "authorization_confirmed": {
+            "const": true,
+            "title": "Authorization Confirmed",
+            "type": "boolean"
+          },
+          "allow_external_ai": {
+            "title": "Allow External Ai",
+            "type": "boolean"
+          },
+          "mode": {
+            "const": "repository",
+            "title": "Mode",
+            "type": "string"
+          },
+          "repository_url": {
+            "title": "Repository Url",
+            "type": "string"
+          },
+          "ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Ref"
+          }
+        },
+        "required": [
+          "authorization_confirmed",
+          "allow_external_ai",
+          "mode",
+          "repository_url"
+        ],
+        "title": "RepositoryIntake",
+        "type": "object"
+      },
+      "SafeError": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "details": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "Details",
+            "type": "object"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "request_id",
+          "details"
+        ],
+        "title": "SafeError",
+        "type": "object"
+      },
+      "Scan": {
+        "additionalProperties": false,
+        "properties": {
+          "contract_version": {
+            "const": "v1",
+            "title": "Contract Version",
+            "type": "string"
+          },
+          "scan_id": {
+            "title": "Scan Id",
+            "type": "string"
+          },
+          "baseline_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Id"
+          },
+          "mode": {
+            "enum": [
+              "codebase",
+              "repository",
+              "website"
+            ],
+            "title": "Mode",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "queued",
+              "running",
+              "complete",
+              "partial",
+              "failed"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "policy_id": {
+            "title": "Policy Id",
+            "type": "string"
+          },
+          "policy_fingerprint": {
+            "title": "Policy Fingerprint",
+            "type": "string"
+          },
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "input": {
+            "$ref": "#/components/schemas/InputIdentity"
+          },
+          "tools": {
+            "items": {
+              "$ref": "#/components/schemas/Tool"
+            },
+            "title": "Tools",
+            "type": "array"
+          },
+          "coverage": {
+            "$ref": "#/components/schemas/Coverage"
+          },
+          "findings": {
+            "items": {
+              "$ref": "#/components/schemas/Finding"
+            },
+            "title": "Findings",
+            "type": "array"
+          },
+          "repair": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Repair"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "warnings": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Warnings",
+            "type": "array"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SafeError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "contract_version",
+          "scan_id",
+          "baseline_id",
+          "mode",
+          "status",
+          "policy_id",
+          "policy_fingerprint",
+          "created_at",
+          "started_at",
+          "finished_at",
+          "input",
+          "tools",
+          "coverage",
+          "findings",
+          "repair",
+          "warnings",
+          "error"
+        ],
+        "title": "Scan",
+        "type": "object"
+      },
+      "SourceLocation": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "source",
+            "title": "Kind",
+            "type": "string"
+          },
+          "path": {
+            "title": "Path",
+            "type": "string"
+          },
+          "line_start": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line Start"
+          },
+          "line_end": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line End"
+          }
+        },
+        "required": [
+          "kind",
+          "path",
+          "line_start",
+          "line_end"
+        ],
+        "title": "SourceLocation",
+        "type": "object"
+      },
+      "Tool": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "enum": [
+              "gitleaks",
+              "semgrep",
+              "zap",
+              "asset_secrets"
+            ],
+            "title": "Name",
+            "type": "string"
+          },
+          "applicable": {
+            "title": "Applicable",
+            "type": "boolean"
+          },
+          "required": {
+            "title": "Required",
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "queued",
+              "running",
+              "complete",
+              "failed",
+              "timed_out",
+              "skipped"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Version"
+          },
+          "rules_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rules Fingerprint"
+          },
+          "started_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "coverage": {
+            "$ref": "#/components/schemas/Coverage"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SafeError"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "name",
+          "applicable",
+          "required",
+          "status",
+          "reason",
+          "version",
+          "rules_fingerprint",
+          "started_at",
+          "finished_at",
+          "coverage",
+          "error"
+        ],
+        "title": "Tool",
+        "type": "object"
+      },
+      "WebLocation": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "const": "web",
+            "title": "Kind",
+            "type": "string"
+          },
+          "url_redacted": {
+            "title": "Url Redacted",
+            "type": "string"
+          },
+          "resource_key": {
+            "title": "Resource Key",
+            "type": "string"
+          },
+          "part": {
+            "enum": [
+              "header",
+              "response",
+              "asset",
+              "url"
+            ],
+            "title": "Part",
+            "type": "string"
+          },
+          "parameter_redacted": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parameter Redacted"
+          },
+          "line_start": {
+            "anyOf": [
+              {
+                "minimum": 1,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Line Start"
+          }
+        },
+        "required": [
+          "kind",
+          "url_redacted",
+          "resource_key",
+          "part",
+          "parameter_redacted",
+          "line_start"
+        ],
+        "title": "WebLocation",
+        "type": "object"
+      },
+      "WebsiteIntake": {
+        "additionalProperties": false,
+        "properties": {
+          "authorization_confirmed": {
+            "const": true,
+            "title": "Authorization Confirmed",
+            "type": "boolean"
+          },
+          "allow_external_ai": {
+            "title": "Allow External Ai",
+            "type": "boolean"
+          },
+          "mode": {
+            "const": "website",
+            "title": "Mode",
+            "type": "string"
+          },
+          "target_url": {
+            "title": "Target Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "authorization_confirmed",
+          "allow_external_ai",
+          "mode",
+          "target_url"
+        ],
+        "title": "WebsiteIntake",
+        "type": "object"
+      }
+    }
+  }
+}

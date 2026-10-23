@@ -1,0 +1,34 @@
+{
+  "checked_at": "2026-10-23T18:19:08.717805+00:00",
+  "ready": false,
+  "status": "blocked",
+  "reason_code": "scanner_probe_failed",
+  "containment_verified": false,
+  "scanners": [
+    {
+      "name": "gitleaks",
+      "requested_image": "ghcr.io/gitleaks/gitleaks:v8.30.1",
+      "expected_version": "8.30.1",
+      "digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+      "observed_version": "8.30.1",
+      "status": "verified"
+    },
+    {
+      "name": "semgrep",
+      "requested_image": "semgrep/semgrep:1.182.1",
+      "expected_version": "1.182.1",
+      "digest": null,
+      "observed_version": null,
+      "status": "timed_out"
+    },
+    {
+      "name": "zap",
+      "requested_image": "ghcr.io/zaproxy/zaproxy:2.17.0",
+      "expected_version": "2.17.0",
+      "digest": null,
+      "observed_version": null,
+      "status": "timed_out"
+    }
+  ],
+  "engine_version": "29.9.2"
+}

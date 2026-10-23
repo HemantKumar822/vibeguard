@@ -5,3 +5,5 @@
 These files are prepared implementation handoffs. Their acceptance comes from [epics.md](../planning-artifacts/epics.md); no implementation is complete. `ready-for-dev` means prepared, while dependencies guide integration and completion. Story 1.1 is the recommended foundation; all GitHub issues remain open for coordinated parallel work.
 
 Use [sprint-status.yaml](sprint-status.yaml) for current implementation state. Fill a story’s implementation record during the build; do not regenerate over an active story.
+
+Story 1.1 now has a bootstrap in review on its feature branch. It is not merged; scanner feasibility remains blocked pending image downloads. Read its implementation record and the sprint tracker for current evidence.
