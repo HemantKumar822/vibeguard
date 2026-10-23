@@ -1,0 +1,68 @@
+[
+  {
+    "pack": "newer",
+    "original": "C:\\Users\\hk998\\Downloads\\README.md",
+    "snapshot": "sources/newer-pack/README.md",
+    "sha256": "831D2E077CCFF84B05C160BDE556EDFDA4E6E874FB263FE4FDB9A7362BB1F83D"
+  },
+  {
+    "pack": "newer",
+    "original": "C:\\Users\\hk998\\Downloads\\01_RESEARCH_AND_SCOPE.md",
+    "snapshot": "sources/newer-pack/01_RESEARCH_AND_SCOPE.md",
+    "sha256": "3EFF9A7D31817A760DCB656EE905D501CFAD4777C7E1B5EF29B44AD0981A77C4"
+  },
+  {
+    "pack": "newer",
+    "original": "C:\\Users\\hk998\\Downloads\\02_PRODUCT_AND_ARCHITECTURE.md",
+    "snapshot": "sources/newer-pack/02_PRODUCT_AND_ARCHITECTURE.md",
+    "sha256": "9B34254983561981C046B164D8EAE6F2723164B78517FC3B726F9787795DE98B"
+  },
+  {
+    "pack": "newer",
+    "original": "C:\\Users\\hk998\\Downloads\\03_VALIDATION_AND_SAFETY.md",
+    "snapshot": "sources/newer-pack/03_VALIDATION_AND_SAFETY.md",
+    "sha256": "9161F00A21E38D0AD62B5FCFD92B1F914343E528D0202B9F90FF93F79B7E08F7"
+  },
+  {
+    "pack": "newer",
+    "original": "C:\\Users\\hk998\\Downloads\\04_FRONTEND_UX.md",
+    "snapshot": "sources/newer-pack/04_FRONTEND_UX.md",
+    "sha256": "FBAF257F2005D44684F20682999A05896E3A55177BF5FFE15C706D30422E4192"
+  },
+  {
+    "pack": "older",
+    "original": "C:\\Users\\hk998\\Downloads\\Documents\\security_reviewer_reference_docs\\README.md",
+    "snapshot": "sources/older-pack/README.md",
+    "sha256": "9B7020FAC9C85691C4CA878D962E188D9DD5C2CD061F47A60ED3D2647D5B0598"
+  },
+  {
+    "pack": "older",
+    "original": "C:\\Users\\hk998\\Downloads\\Documents\\security_reviewer_reference_docs\\01_RESEARCH_AND_SCOPE.md",
+    "snapshot": "sources/older-pack/01_RESEARCH_AND_SCOPE.md",
+    "sha256": "B425C35FB9FC6AC2E0C2594EE10E93ACB11104DADC7C46B36DCED1EE879CB1D7"
+  },
+  {
+    "pack": "older",
+    "original": "C:\\Users\\hk998\\Downloads\\Documents\\security_reviewer_reference_docs\\02_PRODUCT_AND_ARCHITECTURE.md",
+    "snapshot": "sources/older-pack/02_PRODUCT_AND_ARCHITECTURE.md",
+    "sha256": "C3080FEB883834F60AAA3CCE1389E4A19F2BD3A0D4F1FA380AF4B70E5BA04F26"
+  },
+  {
+    "pack": "older",
+    "original": "C:\\Users\\hk998\\Downloads\\Documents\\security_reviewer_reference_docs\\03_VALIDATION_AND_THREATS.md",
+    "snapshot": "sources/older-pack/03_VALIDATION_AND_THREATS.md",
+    "sha256": "8A67EEF3A2FA146102042F02866FF1A08D5C5994F4AC80EF8C5667FD7BBE7683"
+  },
+  {
+    "pack": "older",
+    "original": "C:\\Users\\hk998\\Downloads\\Documents\\security_reviewer_reference_docs\\04_UX_AND_DESIGN_REQUIREMENTS.md",
+    "snapshot": "sources/older-pack/04_UX_AND_DESIGN_REQUIREMENTS.md",
+    "sha256": "8C69BF957A634324EE4FC9D3C9EC20C2EAF8EF8FE8A34D3D47557EA1E8C3EE67"
+  },
+  {
+    "pack": "older",
+    "original": "C:\\Users\\hk998\\Downloads\\Documents\\security_reviewer_reference_docs\\05_BMAD_HANDOFF.md",
+    "snapshot": "sources/older-pack/05_BMAD_HANDOFF.md",
+    "sha256": "8AF147F9AE02BA91772C9193678F2A8972E7B41145602C12E690DE92CFD20C8E"
+  }
+]

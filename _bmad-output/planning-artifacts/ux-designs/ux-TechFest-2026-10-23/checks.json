@@ -1,0 +1,32 @@
+{
+  "date": "2026-10-23",
+  "result": "PASS",
+  "token_references": 46,
+  "unresolved_tokens": [],
+  "matching_component_contracts": 10,
+  "journeys": 3,
+  "source_and_local_links": "PASS",
+  "local_markdown_links": 2,
+  "design_section_order": "PASS",
+  "contrast_ratios": {
+    "text/canvas": 18.06,
+    "text/surface": 16.89,
+    "text/raised": 15.42,
+    "muted/canvas": 9.66,
+    "muted/surface": 9.03,
+    "muted/raised": 8.25,
+    "critical/canvas": 10.55,
+    "critical/surface": 9.87,
+    "critical/raised": 9.01,
+    "warning/canvas": 13.22,
+    "warning/surface": 12.36,
+    "warning/raised": 11.29,
+    "success/canvas": 12.84,
+    "success/surface": 12.01,
+    "success/raised": 10.96,
+    "info/canvas": 13.45,
+    "info/surface": 12.57,
+    "info/raised": 11.48
+  },
+  "limitations": "Static document/token checks only; no rendered UI, browser behavior or assistive-technology tests."
+}

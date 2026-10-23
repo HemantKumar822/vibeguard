@@ -1,0 +1,97 @@
+# Local AI tooling and installed BMAD source. Share generated plans instead.
+/.agent/
+/.agents/
+/agents/
+/skills/
+/_bmad/
+/.claude/
+/.codex/
+/.cursor/
+/.opencode/
+/.pi/
+/.roo/
+/.windsurf/
+/.github/agents/
+/.github/instructions/
+/.github/prompts/
+/.github/copilot-instructions.md
+AGENTS.md
+AGENT.md
+CLAUDE.md
+GEMINI.md
+.cursorrules
+.cursorignore
+.clinerules
+.mcp.json
+mcp.json
+
+# Environment files and credentials. Examples contain placeholders only.
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+credentials.json
+service-account*.json
+/.aws/
+/.azure/
+/.gcloud/
+
+# JavaScript / Python dependencies and generated builds. Keep lockfiles.
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+dist/
+build/
+.next/
+.vite/
+coverage/
+htmlcov/
+.coverage
+*.tsbuildinfo
+
+# Runtime scan data must live outside the checkout; these are extra guards.
+/runtime/
+/scan-data/
+/scanner-output/
+/uploads/
+/reports/
+/tmp/
+/temp/
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.db-wal
+*.db-shm
+*.log
+playwright-report/
+test-results/
+
+# Local authoring caches, not the generated planning/story documents.
+/_bmad-output/**/.working/
+/_bmad-output/**/.runtime-cache/
+
+# Editor / operating-system artifacts.
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+
+# _bmad-output/ is deliberately NOT ignored. Plans, stories, source references,
+# issue drafts, validation reports and sprint tracking are shared with the team.
