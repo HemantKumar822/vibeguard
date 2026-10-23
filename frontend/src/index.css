@@ -29,3 +29,22 @@ button { padding: .7rem 1rem; font: inherit; cursor: pointer; }
 button:disabled { cursor: default; opacity: .6; }
 :focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
 .panel li { overflow-wrap: anywhere; }
+input:not([type=checkbox]), textarea { font: inherit; color: #f5f5f7; background: #1d1d22; border: 1px solid #b5b5be; border-radius: 8px; padding: 12px; min-height: 44px; max-width: 100%; }
+input[type=checkbox] { width: 22px; height: 22px; vertical-align: middle; margin: 11px; }
+button { border: 1px solid #b5b5be; border-radius: 8px; color: #f5f5f7; background: #24242c; }
+button:hover:not(:disabled), button[aria-pressed=true] { border-color: #b6d9ff; background: #303f50; }
+.filters { display: flex; flex-wrap: wrap; gap: 16px; align-items: end; }
+.filters label { flex: 1 1 170px; margin-top: 0; }
+.filters input, .filters select { display: block; width: 100%; }
+.report { margin: 24px 0; border-top: 1px solid #45454f; padding-top: 16px; }
+.investigation { display: grid; grid-template-columns: minmax(180px, 1fr) minmax(0, 2fr); gap: 24px; }
+.investigation > ul { list-style: none; margin: 0; padding: 0; }
+.investigation li button { width: 100%; text-align: left; margin-bottom: 8px; overflow-wrap: anywhere; }
+.investigation li button span { display: block; font-size: 14px; color: #b5b5be; }
+.investigation article { min-width: 0; }
+.report p, code { overflow-wrap: anywhere; }
+.report textarea { min-height: 260px; font: 14px/1.6 ui-monospace, Consolas, monospace; }
+details { margin: 24px 0; } summary { cursor: pointer; min-height: 44px; padding: 8px; }
+dialog { color: #f5f5f7; background: #141417; border: 1px solid #b5b5be; border-radius: 12px; max-width: min(560px, 90vw); }
+dialog::backdrop { background: #000a; }
+@media (max-width: 767px) { .investigation { grid-template-columns: minmax(0, 1fr); } }

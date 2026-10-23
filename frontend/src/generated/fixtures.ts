@@ -15,6 +15,7 @@ const ai_fallback = {
   "started_at": "2026-10-23T12:00:00Z",
   "finished_at": "2026-10-23T12:00:00Z",
   "input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-revision",
     "repository": null,
@@ -23,6 +24,7 @@ const ai_fallback = {
   },
   "tools": [
     {
+      "image_digest": null,
       "name": "gitleaks",
       "applicable": true,
       "required": true,
@@ -46,6 +48,7 @@ const ai_fallback = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "semgrep",
       "applicable": true,
       "required": true,
@@ -69,6 +72,7 @@ const ai_fallback = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "zap",
       "applicable": false,
       "required": false,
@@ -90,6 +94,7 @@ const ai_fallback = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "asset_secrets",
       "applicable": false,
       "required": false,
@@ -140,6 +145,7 @@ const comparison_unverified = {
   "new_id": "development-repeat-partial",
   "status": "partial",
   "baseline_input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-revision",
     "repository": null,
@@ -147,6 +153,7 @@ const comparison_unverified = {
     "observation_id": null
   },
   "new_input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-revision",
     "repository": null,
@@ -194,6 +201,7 @@ const comparison = {
   "new_id": "development-repeat",
   "status": "comparable",
   "baseline_input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-revision",
     "repository": null,
@@ -201,6 +209,7 @@ const comparison = {
     "observation_id": null
   },
   "new_input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-corrected-revision",
     "repository": null,
@@ -268,6 +277,7 @@ const source_baseline = {
   "started_at": "2026-10-23T12:00:00Z",
   "finished_at": "2026-10-23T12:00:00Z",
   "input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-revision",
     "repository": null,
@@ -276,6 +286,7 @@ const source_baseline = {
   },
   "tools": [
     {
+      "image_digest": null,
       "name": "gitleaks",
       "applicable": true,
       "required": true,
@@ -299,6 +310,7 @@ const source_baseline = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "semgrep",
       "applicable": true,
       "required": true,
@@ -322,6 +334,7 @@ const source_baseline = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "zap",
       "applicable": false,
       "required": false,
@@ -343,6 +356,7 @@ const source_baseline = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "asset_secrets",
       "applicable": false,
       "required": false,
@@ -431,6 +445,7 @@ const source_clean = {
   "started_at": "2026-10-23T12:00:00Z",
   "finished_at": "2026-10-23T12:00:00Z",
   "input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-revision",
     "repository": null,
@@ -439,6 +454,7 @@ const source_clean = {
   },
   "tools": [
     {
+      "image_digest": null,
       "name": "gitleaks",
       "applicable": true,
       "required": true,
@@ -462,6 +478,7 @@ const source_clean = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "semgrep",
       "applicable": true,
       "required": true,
@@ -485,6 +502,7 @@ const source_clean = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "zap",
       "applicable": false,
       "required": false,
@@ -506,6 +524,7 @@ const source_clean = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "asset_secrets",
       "applicable": false,
       "required": false,
@@ -565,6 +584,7 @@ const source_corrected = {
   "started_at": "2026-10-23T12:00:00Z",
   "finished_at": "2026-10-23T12:00:00Z",
   "input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-corrected-revision",
     "repository": null,
@@ -573,6 +593,7 @@ const source_corrected = {
   },
   "tools": [
     {
+      "image_digest": null,
       "name": "gitleaks",
       "applicable": true,
       "required": true,
@@ -596,6 +617,7 @@ const source_corrected = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "semgrep",
       "applicable": true,
       "required": true,
@@ -619,6 +641,7 @@ const source_corrected = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "zap",
       "applicable": false,
       "required": false,
@@ -640,6 +663,7 @@ const source_corrected = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "asset_secrets",
       "applicable": false,
       "required": false,
@@ -699,6 +723,7 @@ const source_partial = {
   "started_at": "2026-10-23T12:00:00Z",
   "finished_at": "2026-10-23T12:00:00Z",
   "input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-revision",
     "repository": null,
@@ -707,6 +732,7 @@ const source_partial = {
   },
   "tools": [
     {
+      "image_digest": null,
       "name": "gitleaks",
       "applicable": true,
       "required": true,
@@ -730,6 +756,7 @@ const source_partial = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "semgrep",
       "applicable": true,
       "required": true,
@@ -758,6 +785,7 @@ const source_partial = {
       }
     },
     {
+      "image_digest": null,
       "name": "zap",
       "applicable": false,
       "required": false,
@@ -779,6 +807,7 @@ const source_partial = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "asset_secrets",
       "applicable": false,
       "required": false,
@@ -838,6 +867,7 @@ const source_running = {
   "started_at": "2026-10-23T12:00:00Z",
   "finished_at": null,
   "input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": "development-revision",
     "repository": null,
@@ -846,6 +876,7 @@ const source_running = {
   },
   "tools": [
     {
+      "image_digest": null,
       "name": "gitleaks",
       "applicable": true,
       "required": true,
@@ -869,6 +900,7 @@ const source_running = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "semgrep",
       "applicable": true,
       "required": true,
@@ -892,6 +924,7 @@ const source_running = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "zap",
       "applicable": false,
       "required": false,
@@ -913,6 +946,7 @@ const source_running = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "asset_secrets",
       "applicable": false,
       "required": false,
@@ -966,6 +1000,7 @@ const website = {
   "started_at": "2026-10-23T12:00:00Z",
   "finished_at": "2026-10-23T12:00:00Z",
   "input": {
+    "requested_ref": null,
     "display_name": "Development fixture only",
     "revision": null,
     "repository": null,
@@ -974,6 +1009,7 @@ const website = {
   },
   "tools": [
     {
+      "image_digest": null,
       "name": "gitleaks",
       "applicable": false,
       "required": false,
@@ -995,6 +1031,7 @@ const website = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "semgrep",
       "applicable": false,
       "required": false,
@@ -1016,6 +1053,7 @@ const website = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "zap",
       "applicable": true,
       "required": true,
@@ -1039,6 +1077,7 @@ const website = {
       "error": null
     },
     {
+      "image_digest": null,
       "name": "asset_secrets",
       "applicable": true,
       "required": true,

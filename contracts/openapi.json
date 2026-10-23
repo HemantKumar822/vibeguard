@@ -354,6 +354,11 @@
         "requestBody": {
           "required": true,
           "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepositoryIntake"
+              }
+            },
             "multipart/form-data": {
               "schema": {
                 "type": "object",
@@ -1069,6 +1074,18 @@
       "InputIdentity": {
         "additionalProperties": false,
         "properties": {
+          "requested_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Requested Ref"
+          },
           "display_name": {
             "title": "Display Name",
             "type": "string"
@@ -1437,6 +1454,18 @@
       "Tool": {
         "additionalProperties": false,
         "properties": {
+          "image_digest": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Image Digest"
+          },
           "name": {
             "enum": [
               "gitleaks",

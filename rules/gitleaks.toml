@@ -1,0 +1,22 @@
+title = "VibeGuard mandatory credential checks v1"
+
+[[rules]]
+id = "vg-private-key"
+description = "Private signing key material"
+regex = '''-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----'''
+
+[[rules]]
+id = "vg-aws-access-key"
+description = "AWS access key candidate"
+regex = '''\b(?:AKIA|ASIA)[A-Z0-9]{16}\b'''
+
+[[rules]]
+id = "vg-github-token"
+description = "GitHub private token candidate"
+regex = '''\bgh[pousr]_[A-Za-z0-9]{36,255}\b'''
+
+[[rules]]
+id = "vg-secret-assignment"
+description = "Private credential assignment candidate"
+regex = '''(?i)(?:api[_-]?secret|client[_-]?secret|password|private[_-]?token|secret[_-]?key)\s*[:=]\s*["']([A-Za-z0-9_./+!@#$%^&*=-]{16,})["']'''
+secretGroup = 1

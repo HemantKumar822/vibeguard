@@ -24,6 +24,15 @@ class Lifecycle:
     def __init__(self, store):
         self.store = store
 
+    def existing(self, owner, key, digest):
+        with self.store.connect() as db:
+            row=db.execute('SELECT digest,payload,tombstone,finished FROM scans WHERE owner=? AND idem=? AND created>?',(owner,key,time.time()-86400)).fetchone()
+        if row:
+            if row[0]!=digest: raise IntakeError(409,'idempotency_conflict')
+            if row[2] or (row[3] is not None and row[3]<=time.time()-86400): raise IntakeError(404,'not_found')
+            return Scan.model_validate_json(row[1])
+        return None
+
     def expire_queue(self):
         now = time.time()
         with self.store.connect() as db:
@@ -99,3 +108,26 @@ class Lifecycle:
             scan = fail(Scan.model_validate_json(row[0]), 'trusted_adapters_unavailable')
             db.execute("UPDATE scans SET state='failed',finished=?,payload=? WHERE id=? AND tombstone=0", (time.time(),scan.model_dump_json(),scan_id))
             return True
+
+    def active(self, scan_id, token):
+        with self.store.connect() as db:
+            return bool(db.execute("SELECT 1 FROM scans,coordinator WHERE scans.id=? AND scans.state='running' AND scans.tombstone=0 AND scans.claimed>? AND coordinator.token=? AND coordinator.heartbeat>?",(scan_id,time.time()-300,token,time.time()-15)).fetchone())
+
+    def publish(self, scan, token):
+        scan=Scan.model_validate(scan.model_dump())
+        if scan.status not in TERMINAL: raise ValueError('terminal_report_required')
+        if len(scan.model_dump_json().encode())>5*1024*1024: raise ValueError('report_limit')
+        with self.store.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            if not db.execute('SELECT 1 FROM coordinator WHERE token=? AND heartbeat>?',(token,time.time()-15)).fetchone(): return False
+            result=db.execute("UPDATE scans SET state=?,finished=?,payload=? WHERE id=? AND state='running' AND tombstone=0 AND claimed>?",(scan.status,time.time(),scan.model_dump_json(),scan.scan_id,time.time()-300))
+            return result.rowcount==1
+
+    def progress(self, scan, token):
+        scan=Scan.model_validate(scan.model_dump())
+        if scan.status!='running': raise ValueError('running_progress_required')
+        with self.store.connect() as db:
+            db.execute('BEGIN IMMEDIATE')
+            if not db.execute('SELECT 1 FROM coordinator WHERE token=? AND heartbeat>?',(token,time.time()-15)).fetchone(): return False
+            result=db.execute("UPDATE scans SET payload=? WHERE id=? AND state='running' AND tombstone=0 AND claimed>?",(scan.model_dump_json(),scan.scan_id,time.time()-300))
+            return result.rowcount==1

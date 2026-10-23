@@ -1,7 +1,7 @@
 ---
 story_id: '2.2'
 epic: 2
-status: ready-for-dev
+status: review
 prepared: true
 approval: pending-user-review
 assignee: unassigned
@@ -86,6 +86,6 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Implementation record
 
-Not started. Record PR, actual commands/results, sanitized evidence and remaining limitations here during implementation.
+Implemented in the source/repository batch on 2026-10-24. See [batch evidence](source-repository-batch-verification.md) for actual checks, live commit attribution and pending review. No GitHub issue or epic was closed. Rendered UI/accessibility acceptance remains pending for UI stories.
 
 [Parent epic](../github-issues/epics/epic-02-review-a-repository-revision-without-manual-upload.md) · [All stories](README.md)

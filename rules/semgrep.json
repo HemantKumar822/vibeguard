@@ -1,0 +1,7 @@
+{
+  "rules": [
+    {"id":"vg-unsafe-eval","languages":["javascript","typescript"],"severity":"WARNING","message":"Dynamic evaluation candidate","pattern":"eval($INPUT)"},
+    {"id":"vg-tls-disabled","languages":["javascript","typescript"],"severity":"WARNING","message":"TLS verification disabled","pattern":"{..., rejectUnauthorized: false, ...}"},
+    {"id":"vg-access-candidate","languages":["javascript","typescript"],"severity":"INFO","message":"Review local authorization for this route","pattern-either":[{"pattern":"$APP.get($PATH, ($REQ, $RES) => { ... })"},{"pattern":"$APP.post($PATH, ($REQ, $RES) => { ... })"},{"pattern":"$APP.delete($PATH, ($REQ, $RES) => { ... })"}]}
+  ]
+}

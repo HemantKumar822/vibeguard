@@ -229,6 +229,11 @@ export interface components {
         };
         /** InputIdentity */
         InputIdentity: {
+            /**
+             * Requested Ref
+             * @default null
+             */
+            requested_ref: string | null;
             /** Display Name */
             display_name: string;
             /** Revision */
@@ -345,6 +350,11 @@ export interface components {
         };
         /** Tool */
         Tool: {
+            /**
+             * Image Digest
+             * @default null
+             */
+            image_digest: string | null;
             /**
              * Name
              * @enum {string}
@@ -736,6 +746,7 @@ export interface operations {
         };
         requestBody: {
             content: {
+                "application/json": components["schemas"]["RepositoryIntake"];
                 "multipart/form-data": {
                     /** @description JSON CodebaseMetadata; additional named binary parts map each part_id exactly once. */
                     metadata: string;

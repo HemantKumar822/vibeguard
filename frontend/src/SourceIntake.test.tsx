@@ -6,11 +6,65 @@ let host: HTMLDivElement
 let root: Root
 beforeEach(() => { vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', true); host = document.createElement('div'); document.body.append(host); root = createRoot(host) })
 afterEach(async () => { await act(async () => root.unmount()); host.remove(); vi.useRealTimers(); vi.unstubAllGlobals() })
+
+async function repositoryForm() {
+  const mode = host.querySelector<HTMLSelectElement>('select')!
+  await act(async () => { mode.value = 'repository'; mode.dispatchEvent(new Event('change', { bubbles: true })) })
+  const url = host.querySelector<HTMLInputElement>('input[type=url]')!
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(url, 'https://github.com/team/project')
+    url.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await act(async () => host.querySelector<HTMLInputElement>('input[type=checkbox]')!.click())
+  return mode
+}
+
+test('repository submission preserves report across mode changes and reconnects without resubmitting', async () => {
+  const report = { scan_id: 'a'.repeat(32), status: 'complete', mode: 'repository',
+    input: { repository: 'https://github.com/team/project', requested_ref: 'main', revision: 'b'.repeat(40) },
+    accepted_files: ['src/app.ts'], findings: [], tools: [], warnings: [],
+    coverage: { exclusions: [], inspected: ['src/app.ts'], completed_count: 2, required_count: 2 },
+    repair: { prompt_redacted: 'Review completed checks.', human_actions: [] } }
+  const fetch = vi.fn().mockImplementation(async (url: string) => ({ ok: true, json: async () => url.endsWith('/session') ? { csrf_token: 'csrf' } : report }))
+  vi.stubGlobal('fetch', fetch)
+  await act(async () => root.render(<SourceIntake />))
+  const mode = await repositoryForm()
+  await act(async () => host.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })))
+  expect(JSON.parse(fetch.mock.calls[1][1].body)).toMatchObject({ mode: 'repository', ref: null, allow_external_ai: false })
+  expect(host.textContent).toContain('Resolved commit: ' + 'b'.repeat(40))
+  await act(async () => { mode.value = 'codebase'; mode.dispatchEvent(new Event('change', { bubbles: true })) })
+  expect(host.textContent).toContain('Resolved commit: ' + 'b'.repeat(40))
+  expect(fetch).toHaveBeenCalledTimes(2)
+  await act(async () => root.unmount())
+  root = createRoot(host)
+  await act(async () => root.render(<SourceIntake />))
+  const id = host.querySelector<HTMLInputElement>('input[maxlength="32"]')!
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(id, report.scan_id)
+    id.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await act(async () => Array.from(host.querySelectorAll('button')).find(button => button.textContent === 'Reconnect')!.click())
+  expect(host.textContent).toContain('Resolved commit: ' + 'b'.repeat(40))
+  expect(fetch.mock.calls.filter(call => call[0] === '/api/v1/scans')).toHaveLength(1)
+  expect(fetch.mock.calls.at(-1)![0]).toBe('/api/v1/scans/' + report.scan_id)
+})
+
+test('repository rejection leaves the input editable with a safe reason', async () => {
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValueOnce({ ok: true, json: async () => ({ csrf_token: 'csrf' }) })
+    .mockResolvedValueOnce({ ok: false, json: async () => ({ error: { code: 'repository_retrieval_failed' } }) }))
+  await act(async () => root.render(<SourceIntake />))
+  await repositoryForm()
+  await act(async () => host.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })))
+  const input = host.querySelector<HTMLInputElement>('input[type=url]')!
+  expect(input.value).toBe('https://github.com/team/project')
+  expect(input.disabled).toBe(false)
+  expect(host.querySelector('[role=alert]')?.textContent).toContain('repository_retrieval_failed')
+})
 test('requires permission and leaves sharing off', async () => {
   await act(async () => root.render(<SourceIntake />))
   expect(host.querySelector('button')?.disabled).toBe(true)
   expect(Array.from(host.querySelectorAll<HTMLInputElement>('input[type=checkbox]')).every(input => !input.checked)).toBe(true)
-  expect(host.textContent).toContain('Repository and website intake are unavailable')
+  expect(host.textContent).toContain('Public GitHub snapshots supported. Website intake is unavailable')
 })
 test('explains lost directory paths and offers explicit mapping', async () => {
   await act(async () => root.render(<SourceIntake />))
