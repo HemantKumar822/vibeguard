@@ -1,6 +1,6 @@
 # Development setup
 
-Story 1.1 provides the application foundation and shared data shapes. It does not implement intake, sessions, scanning, persistence or comparison algorithms.
+Stories 1.1–1.2 provide the application foundation, shared contracts, sessions and bounded source intake. Scanning and comparison algorithms are unavailable.
 
 ## Install from a clean checkout
 
@@ -25,9 +25,9 @@ uv run uvicorn backend.api.main:app --host 127.0.0.1 --port 8000
 npm --prefix frontend run dev
 ```
 
-Open `http://127.0.0.1:5173`. Vite proxies `/api` to loopback port 8000, keeping browser requests same-origin. The actual health endpoint is `GET /api/v1/health`. Its response proves API availability only. Health is the only implemented application endpoint; the session requirement will apply to future user-data endpoints. Do not expose the development server or API to the public network.
+Open `http://127.0.0.1:5173`. Vite proxies `/api` to loopback port 8000, keeping browser requests same-origin. The actual health endpoint is `GET /api/v1/health`. Its response proves API availability only. Session, capabilities, source admission and owned-read routes are implemented; see the runtime configuration below. Do not expose the development server or API to the public network.
 
-The page clearly states scanning is unavailable. A development-only selector shows synthetic contract fixtures. Its dynamic import is eliminated in production; the built application contains no fixture payloads. Production serving/session integration belongs to subsequent stories.
+The page clearly states scanner orchestration is unavailable. Development fixtures are synthetic contract examples. Its dynamic import is eliminated in production; the built application contains no fixture payloads. Production serving/session integration belongs to subsequent stories.
 
 ## Shared contract workflow
 
@@ -36,7 +36,7 @@ The page clearly states scanning is unavailable. A development-only selector sho
 3. Run `uv run python scripts/export_contracts.py`, then `npm --prefix frontend run generate:types`.
 4. Run all checks below and commit models, OpenAPI, generated TypeScript and fixtures together.
 
-`contracts/openapi.json` exports the live health route and shared component schemas. Unimplemented feature routes are deliberately absent. `Intake` describes repository/website JSON; `CodebaseMetadata` describes multipart metadata. These shapes do not perform network, multipart or scanner enforcement. Their owning stories add actual boundary validation and APIs. Typed fixture declarations are generated from the same JSON examples and checked against generated TypeScript.
+`contracts/openapi.json` exports the live routes and shared component schemas. Future orchestration routes remain absent. `Intake` describes repository/website JSON; `CodebaseMetadata` describes multipart metadata. The bounded source adapter enforces multipart intake; scanner/network enforcement belongs to later stories. Typed fixture declarations are generated from the same JSON examples and checked against generated TypeScript.
 
 ## Verification
 
@@ -52,7 +52,7 @@ npm --prefix frontend run lint
 uv run python scripts/validate_repo_preparation.py
 ```
 
-The Python suite checks live HTTP health, absent scan routes, all ten fixture states, invalid input/location/status cases, truthful completion and checked-in schema parity. Frontend compilation checks fixture payloads against generated types. No scanner acceptance or containment is established by these tests.
+The Python suite checks live HTTP health, authorized intake routes, all ten fixture states, invalid input/location/status cases, truthful completion and checked-in schema parity. Frontend compilation checks fixture payloads against generated types. No scanner acceptance or containment is established by these tests.
 
 ## Scanner feasibility gate
 
@@ -64,7 +64,7 @@ uv run python scripts/scanner_readiness.py --output contracts/scanner-readiness.
 
 Exit 1 means tools are unavailable or unverified. Do not relabel it as passing. With a working engine, the command inspects cached pinned images first, pulls exact candidate tags only for missing images, resolves immutable image digests, executes version checks by digest with restricted flags, and records observed versions. It never scans submitted content. Version probes do not establish the future workers' filesystem/network safety. Use verified digests, not candidate tags, when implementing real workers. If a pinned image is unavailable, record and validate a deliberate replacement rather than silently floating.
 
-Keep real source, reports and SQLite files outside the checkout and OneDrive, as required by the architecture. `.env.example` lists reserved future settings; the health-only bootstrap does not yet load them. Never put real credentials in examples.
+Keep real source, reports and SQLite files outside the checkout and OneDrive, as required by the architecture. `.env.example` lists reserved future settings; the runtime settings above are required for intake. Never put real credentials in examples.
 
 ## Compatible bootstrap versions
 
@@ -77,3 +77,23 @@ On Windows, stop Vite before running `npm ci`; otherwise a loaded native module 
 Verified on 2026-10-24: Linux Docker engine 29.9.2 executes Gitleaks 8.30.1, Semgrep 1.182.1 and ZAP 2.17.0 by the digests recorded in `contracts/scanner-readiness.json`. Probes remain non-root, network-disabled and read-only, with a 256 MiB temporary filesystem. HOME and Java user.home point into that scratch; the probe hostname resolves only to loopback. Semgrep version-check and metrics activity are disabled. Startup resource errors prevent a passing probe even if version text appears. These probes do not establish application scanner containment.
 
 Pre-merge review added strict TypeScript null checking, generated-file drift checks, a production fixture-exclusion gate built into `npm run build`, and in-memory frontend health tests. Health requests have a 10-second deadline. Synthetic comparison examples link actual baseline/corrected/partial Scan fixtures. Probe containers are uniquely named and forcibly removed in a finally block, including timeout/error paths.
+
+## Story 1.2 authorized source intake
+
+Configure private runtime storage **outside this checkout and OneDrive** before starting the API. The API rejects relative paths, checkout paths, OneDrive paths, symlinks/junctions, and HTTP origins without an explicit loopback development profile. Windows creates an owner-only inheritable ACL; POSIX uses owner-only directory permissions. SQLite stores sessions, submission choices, idempotency identity and queued scans. Source bodies use private opaque part IDs plus a validated relative-path manifest.
+
+PowerShell example (choose your own external private directory):
+
+```powershell
+$env:VIBEGUARD_RUNTIME_DIR = Join-Path $env:LOCALAPPDATA 'VibeGuard\runtime'
+$env:VIBEGUARD_ORIGIN = 'http://127.0.0.1:5173'
+$env:VIBEGUARD_LOOPBACK_HTTP = '1'
+uv run uvicorn backend.api.main:app --host 127.0.0.1 --port 8000
+```
+
+The Origin must match the browser address exactly. HTTPS deployments omit the loopback exception. Without configured runtime storage, health remains available and data endpoints return a safe 503. Session creation requires the configured Origin; submissions additionally require the session cookie, CSRF token and Idempotency-Key. Cookie loss makes owned scans unavailable.
+
+Directory selection preserves browser-provided relative paths. If unavailable or paths are lost, select files and explicitly map one original relative path per file. Permission is mandatory and external sharing defaults off. Repository/website intake and external AI remain unavailable. No uploaded code, hooks, dependencies, build or scanner configuration is executed. Accepted scans remain queued, with `accepted_files` separate from empty inspected coverage; exclusions carry explicit reasons. No scanner has run, and there is no fabricated progress.
+
+Verified commands: backend pytest, contract export/generation and parity, frontend tests/build/lint. Tests exercise real 25 MiB/5,000-file/2 MiB/depth-20/240-byte boundaries plus one, chunked bodies, interrupted uploads, unsafe paths, ownership, CSRF and failed-upload cleanup. Tests require OS access to private temporary directories outside the checkout; a restricted sandbox may require permission for that test run. The multipart parser is locked to python-multipart 0.0.22. Orchestration, deletion and lifecycle recovery belong to story 1.3.
+

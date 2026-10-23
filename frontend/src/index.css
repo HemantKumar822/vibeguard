@@ -20,3 +20,12 @@ pre { background: #0b0b0d; padding: 16px; overflow: auto; max-height: 480px; fon
 @media (max-width: 480px) { main, .fixture-host { padding: 24px 16px; } .intro { padding: 40px 0 32px; } .panel { padding: 16px; } }
 @media (max-width: 767px) { h1 { font-size: 32px; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
+form { display: grid; gap: 1rem; }
+form label { display: block; line-height: 1.6; overflow-wrap: anywhere; }
+input[type=file], textarea { display: block; width: 100%; margin-top: .5rem; }
+textarea { min-height: 8rem; font: inherit; }
+button, input[type=file] { min-height: 44px; }
+button { padding: .7rem 1rem; font: inherit; cursor: pointer; }
+button:disabled { cursor: default; opacity: .6; }
+:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+.panel li { overflow-wrap: anywhere; }

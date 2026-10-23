@@ -14,7 +14,7 @@ FIXTURES = Path('fixtures/contracts')
 def test_health_is_real_but_scan_endpoints_are_not_implemented():
     client = TestClient(app)
     assert client.get('/api/v1/health').json() == {'status': 'ok', 'contract_version': 'v1'}
-    assert client.post('/api/v1/scans', json={}).status_code == 404
+    assert client.post('/api/v1/scans', json={}).status_code == 503
 
 
 def test_required_contract_fixtures_validate():
@@ -61,7 +61,7 @@ def test_intake_rejects_permission_missing_fields_and_unknown_fields(payload):
 def test_openapi_exports_shared_types_with_no_working_scan_route():
     schema = app.openapi()
     assert '/api/v1/health' in schema['paths']
-    assert '/api/v1/scans' not in schema['paths']
+    assert '/api/v1/scans' in schema['paths']
     assert {'Scan', 'Comparison', 'Deletion', 'Intake'} <= schema['components']['schemas'].keys()
 
 
@@ -79,3 +79,11 @@ def test_failed_deletion_requires_an_explicit_error():
     fixture['error'] = None
     with pytest.raises(ValidationError):
         Deletion.model_validate(fixture)
+
+
+def test_implemented_openapi_errors_and_submission_headers():
+    schema = app.openapi()
+    submission = schema['paths']['/api/v1/scans']['post']
+    assert {parameter['name'] for parameter in submission['parameters'] if parameter['required']} == {'Origin','X-CSRF-Token','Idempotency-Key'}
+    for status in ['400','403','404','409','413','422','429','503']:
+        assert submission['responses'][status]['content']['application/json']['schema']['$ref'].endswith('/ErrorResponse')

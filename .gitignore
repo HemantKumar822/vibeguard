@@ -95,3 +95,4 @@ Desktop.ini
 
 # _bmad-output/ is deliberately NOT ignored. Plans, stories, source references,
 # issue drafts, validation reports and sprint tracking are shared with the team.
+/.uv-cache/

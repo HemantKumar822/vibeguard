@@ -2,6 +2,8 @@
 import type { components } from "./api";
 
 const ai_fallback = {
+  "accepted_files": [],
+  "allow_external_ai": false,
   "contract_version": "v1",
   "scan_id": "development-ai-fallback",
   "baseline_id": null,
@@ -253,6 +255,8 @@ const deletion_failed = {
   }
 } satisfies components["schemas"]["Deletion"];
 const source_baseline = {
+  "accepted_files": [],
+  "allow_external_ai": false,
   "contract_version": "v1",
   "scan_id": "development-baseline",
   "baseline_id": null,
@@ -414,6 +418,8 @@ const source_baseline = {
   "error": null
 } satisfies components["schemas"]["Scan"];
 const source_clean = {
+  "accepted_files": [],
+  "allow_external_ai": false,
   "contract_version": "v1",
   "scan_id": "development-codebase-complete",
   "baseline_id": null,
@@ -546,6 +552,8 @@ const source_clean = {
   "error": null
 } satisfies components["schemas"]["Scan"];
 const source_corrected = {
+  "accepted_files": [],
+  "allow_external_ai": false,
   "contract_version": "v1",
   "scan_id": "development-repeat",
   "baseline_id": "development-baseline",
@@ -678,6 +686,8 @@ const source_corrected = {
   "error": null
 } satisfies components["schemas"]["Scan"];
 const source_partial = {
+  "accepted_files": [],
+  "allow_external_ai": false,
   "contract_version": "v1",
   "scan_id": "development-repeat-partial",
   "baseline_id": "development-baseline",
@@ -815,6 +825,8 @@ const source_partial = {
   "error": null
 } satisfies components["schemas"]["Scan"];
 const source_running = {
+  "accepted_files": [],
+  "allow_external_ai": false,
   "contract_version": "v1",
   "scan_id": "development-codebase-running",
   "baseline_id": null,
@@ -941,6 +953,8 @@ const source_running = {
   "error": null
 } satisfies components["schemas"]["Scan"];
 const website = {
+  "accepted_files": [],
+  "allow_external_ai": false,
   "contract_version": "v1",
   "scan_id": "development-website-complete",
   "baseline_id": null,

@@ -21,7 +21,7 @@ def main(check=False):
     for path in sorted((ROOT/'fixtures/contracts').glob('*.json')):
         fixture = json.loads(path.read_text(encoding='utf-8'))
         model = models[fixture['kind']]
-        model.model_validate(fixture['data'])
+        fixture['data'] = model.model_validate(fixture['data']).model_dump(mode='json')
         name = path.stem.replace('-', '_')
         names.append(f'  {{name: {json.dumps(path.stem)}, kind: {json.dumps(fixture["kind"])}, data: {name}}}')
         lines.append(f'const {name} = {json.dumps(fixture["data"], indent=2)} satisfies components["schemas"]["{model.__name__}"];')
@@ -42,3 +42,4 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
     main(check=parser.parse_args().check)
+

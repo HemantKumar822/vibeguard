@@ -32,7 +32,7 @@ class ErrorResponse(Contract):
 
 class AuthorizedInput(Contract):
     authorization_confirmed: Literal[True]
-    allow_external_ai: bool = Field(strict=True)
+    allow_external_ai: bool = Field(default=False, strict=True)
 
     @field_validator('authorization_confirmed', mode='before')
     @classmethod
@@ -176,6 +176,8 @@ class Repair(Contract):
 
 
 class Scan(Contract):
+    accepted_files: list[str] = Field(default_factory=list)
+    allow_external_ai: bool = Field(default=False, strict=True)
     contract_version: Literal['v1']
     scan_id: str
     baseline_id: str | None
@@ -264,3 +266,20 @@ class Deletion(Contract):
 
 
 PUBLIC_MODELS = [Health, Intake, CodebaseMetadata, Scan, Comparison, Deletion, ErrorResponse]
+
+class SessionResponse(Contract):
+    csrf_token: str
+
+
+class Capabilities(Contract):
+    policy_id: str
+    policy_fingerprint: str
+    permitted_modes: list[Mode]
+    unavailable_modes: list[Mode]
+    limits: dict[str, int]
+    ai_available: bool
+
+
+PUBLIC_MODELS += [SessionResponse, Capabilities]
+
+

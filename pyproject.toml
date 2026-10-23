@@ -3,7 +3,11 @@ name = "vibeguard"
 version = "0.1.0"
 description = "Evidence-backed security review workspace"
 requires-python = ">=3.12,<3.13"
-dependencies = ["fastapi==0.161.0", "uvicorn==0.42.0"]
+dependencies = [
+    "fastapi==0.161.0",
+    "python-multipart==0.0.22",
+    "uvicorn==0.42.0",
+]
 
 [dependency-groups]
 dev = ["httpx>=0.28,<0.29", "pytest>=8,<10"]

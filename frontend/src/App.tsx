@@ -1,3 +1,4 @@
+import SourceIntake from './SourceIntake'
 import { useEffect, useState } from 'react'
 import type { components } from './generated/api'
 
@@ -26,13 +27,15 @@ export default function App() {
     <section className="intro" aria-labelledby="title">
       <p className="eyebrow">Project foundation</p>
       <h1 id="title">Evidence before<br />confidence.</h1>
-      <p className="lede">A workspace for reviewing AI-built websites.<br />The scanning workflow is not available yet.</p>
+      <p className="lede">A workspace for reviewing AI-built websites.<br />Submit an authorized source tree. Scanner orchestration is not available yet.</p>
     </section>
     {import.meta.env.DEV && <section className="panel" aria-label="Development health">
       <h2>Development connection</h2>
       <p role="status">{health === 'checking' ? 'Checking the API connection…' : health === 'ok' ? 'API connected · contract v1' : 'API unavailable. Start the backend and retry this page.'}</p>
       <p className="muted">This checks the application connection. No security scan has run.</p>
     </section>}
+    <SourceIntake />
     <footer>Inspect. Understand. Repair. Recheck.</footer>
   </main>
 }
+
