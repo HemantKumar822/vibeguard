@@ -10,7 +10,7 @@ The PRD, architecture/API/safety profile, UX experience and all 16 canonical sto
 
 1. **Remove unnecessary sequencing around the central demo.** Story 4.3 depends on optional AI Story 4.1, although deterministic guidance and comparison do not require AI. That dependency has been removed from the canonical backlog and derivatives. Story 4.2 can implement and exercise source comparison early, while retaining all three modes as its final acceptance; final integration need not prevent early testing.
 2. **Clarify the test matrix.** Story 5.1 says fixtures for all four categories and each input mode. Explicitly distinguish category coverage across the product from per-mode coverage: source/repository fixtures cover selected access-check and unsafe-input rules; website fixtures validate actual passive observations and visible-asset secrets. Do not turn that sentence into a promise that every category is detectable through passive URL scanning. Record unsupported cells and the reason, and preserve product-wide coverage of all four categories.
-3. **Bring feasibility and evidence forward.** Keep the final full-corpus gate in Epic 5, but build vulnerable/corrected/clean fixtures alongside each adapter, as Story 1.4 already requires. Prove container availability and the ZAP egress mechanism early (1.1 and 3.1); choose an authorized demo deployment compatible with the public-origin policy. Schedule a working source scan â†’ repair prompt â†’ corrected rescan as the first end-to-end rehearsal. Team capacity and remaining hours are unknown, so 24-hour delivery is not established by this plan.
+3. **Bring feasibility and evidence forward.** Keep the final full-corpus gate in Epic 5, but build vulnerable/corrected/clean fixtures alongside each adapter, as Story 1.4 already requires. Prove container availability and the ZAP egress mechanism early (1.1 and 3.1); choose an authorized demo deployment compatible with the public-origin policy. Schedule a working source scan Ã¢â€ â€™ repair prompt Ã¢â€ â€™ corrected rescan as the first end-to-end rehearsal. Team capacity and remaining hours are unknown, so 24-hour delivery is not established by this plan.
 
 ## Scope to retain
 
@@ -18,4 +18,4 @@ Keep masking, actual tool states, authorization, enforced URL boundaries and hon
 
 ## Next
 
-The dependency, acceptance-clarity and early-feasibility refinements are synchronized across epics, backlog, handoffs and issue drafts. Complete the single remaining repository/GitHub setup stage and start Story 1.1. No Git initialization or remote publication was performed by this check.
+The dependency, acceptance-clarity and early-feasibility refinements are synchronized across epics, backlog, handoffs and issue drafts. Repository/GitHub setup has subsequently completed; start Story 1.1 next. This scope check itself was document-only; publication evidence is in the GitHub publication record.

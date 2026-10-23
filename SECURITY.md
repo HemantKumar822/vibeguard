@@ -4,7 +4,7 @@ This prototype reviews untrusted code and authorized websites. Its own input, wo
 
 ## Report privately
 
-Do not put live credentials, private source, sensitive URLs, exploit details against unrelated sites or raw scanner output into public issues/PRs. For the pre-publication team workspace, contact the team lead through the existing private team channel. Before a public launch, configure a real private reporting channel or GitHub private vulnerability reporting and update this file; no email address or response SLA is invented here.
+Do not put live credentials, private source, sensitive URLs, exploit details against unrelated sites or raw scanner output into public issues/PRs. For this private team repository, contact the maintainer HemantKumar822 through the existing private team channel. Before a public launch, configure a real private reporting channel or GitHub private vulnerability reporting and update this file; no email address or response SLA is invented here.
 
 Share a sanitized description, affected component/version, authorized reproduction steps and impact. Use fake credentials and team-controlled targets. The generic bug template is for nonsensitive defects only.
 

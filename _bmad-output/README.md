@@ -17,4 +17,4 @@ The repository [README](../README.md) links the brief, PRD, UX, architecture, AP
 
 This folder is deliberately shared with teammates. Local BMAD source, installed agents and skills are excluded separately; teammates can read and implement the stories without those installations. Runtime/private scan data and temporary authoring caches do not belong in this folder's published content.
 
-All stories are currently prepared, not implemented. `ready-for-dev` means the handoff exists; actual start eligibility also requires its dependencies to be done. Draft GitHub manifests/issue bodies are not published issues or a second live progress tracker.
+All stories are currently prepared, not implemented. `ready-for-dev` means the handoff exists; actual start eligibility also requires its dependencies to be done. Published GitHub issue identities are in [the publication record](github-issues/publication.json). Local issue-body files remain authoring sources; GitHub issues track team work.

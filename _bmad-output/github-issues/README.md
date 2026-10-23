@@ -2,6 +2,8 @@
 
 **5 epics · 16 prepared stories · implementation not started.**
 
+[Live GitHub issues](https://github.com/HemantKumar822/vibeguard/issues) · [Published issue IDs and relationships](publication.json). GitHub tracks ownership and implementation; the handoffs below retain full specifications.
+
 Each story explains the outcome, scope, requirements, dependencies, acceptance and verification. Only Story 1.1 is initially unblocked. `ready-for-dev` means its handoff exists; it does not mean its prerequisites are complete.
 
 ## Stories and dependencies

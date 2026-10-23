@@ -26,3 +26,7 @@ The user authorized publication after local preparation. Destination: **HemantKu
 6. Audit problem statement → PRD → UX/architecture → stories → published issues. Check statuses, links, owners, blockers, ignore policy and README reality. Track any unresolved publishing task rather than declaring setup done.
 
 See the [publication record](../_bmad-output/github-issues/publication.json) for actual issue identities and relationship results. [The draft package](../_bmad-output/github-issues/README.md) is reviewable without access to GitHub. Implementation begins with Story 1.1 after the team is ready; functional correctness is established during the build, not by repository creation.
+
+## Team workflow settings
+
+Squash merging and automatic deletion of merged branches are enabled; merge commits and rebase merging are disabled. Use feature branches and reviewed pull requests. CI and enforced branch protection are not installed or claimed; working build/test commands belong to Story 1.1. Collaborator invitations require each teammate to accept. No story owner is invented and no license is selected.

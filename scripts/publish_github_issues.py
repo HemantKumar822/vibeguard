@@ -87,7 +87,7 @@ def main():
                 body += '- Blocked by ' + record['issues'][dep]['url'] + '\n'
             for successor in item['blocks']:
                 body += '- Blocks ' + record['issues'][successor]['url'] + '\n'
-        assert not re.search(r'[A-Za-z]:[\\/]', body), 'Local path in published body'
+        assert not re.search(r'(?<![A-Za-z0-9])[A-Za-z]:[\\/]', body), 'Local path in published body'
         number = record['issues'][item['key']]['number']
         api(f'repos/{REPO}/issues/{number}', 'PATCH', {'body': body})
 

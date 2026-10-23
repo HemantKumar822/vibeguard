@@ -44,7 +44,7 @@ At initial tracker generation, only Story 1.1 had a handoff. During the subseque
 
 ## Next
 
-**Repository/GitHub setup and final consistency audit is the one remaining planning/setup stage.** Prepare repository instructions/templates/environment example, create the authorized GitHub repository, publish epics/stories with relationships, and verify plans and issues agree. Resolve actual GitHub destination/visibility rather than guessing. Then Amelia's `bmad-build` begins Story 1.1; implementation and functional/demo verification are outside the setup-stage count.
+**Repository/GitHub setup is complete.** The private VibeGuard repository contains shared plans and team guidance; five epics and 16 stories are published with native relationships. Three Write invitations were sent. See [publication identities](../github-issues/publication.json). Zero setup stages remain; Amelia's `bmad-build` starts Story 1.1 next. Implementation and functional/demo verification remain ahead.
 
 ## Final scope refinements applied
 

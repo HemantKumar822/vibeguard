@@ -1,33 +1,20 @@
-# Repository preparation report
+# Repository preparation and publication
 
-Date: 2026-10-23. **Local content prepared; project Git initialization, commit, remote creation, push and issue publication are explicitly deferred.**
+Local content preparation passed before the authorized publication to [HemantKumar822/vibeguard](https://github.com/HemantKumar822/vibeguard), a private team repository.
 
-## Prepared for the team
+## Shared package
 
-- 16 individual story handoffs with plain-language outcomes, requirement references, proposed owner roles, scoped tasks, exclusions, dependency and reverse-dependency links, canonical acceptance checklists, verification and definition of done.
-- Five epic issue drafts and 16 separate, clean story issue bodies, plus a linked board, label definitions and publication manifest. YAML handoff metadata is not included in the story issue body.
-- Root README, CONTRIBUTING, SECURITY, project rules, future publication checklist, environment example, Git attributes and issue/PR templates.
-- `.gitignore` excludes installed agents/skills/BMAD source, local credentials/config, dependencies, caches and runtime data while retaining shared `_bmad-output/` documents and application lockfiles.
-- Portable local preparation validator and a regeneration script for inactive story/draft documents. Regeneration refuses to overwrite a story marked in-progress/review/done; do not use it to discard implementation notes.
+- Five epics and 16 detailed story handoffs: outcome, requirements, tasks, exclusions, dependencies, 54 canonical acceptance criteria, verification and definition of done.
+- README, contributor/security guidance, project rules, environment example, Git attributes, issue and pull request templates.
+- `.gitignore` keeps installed agents, skills, BMAD runtime source, credentials and runtime data local. Generated `_bmad-output/` plans remain shared.
+- [Publication identities and relationship results](../github-issues/publication.json); local issue-body files are retained as authoring sources, not a separate live tracker.
 
-## Validation
+## Validation and operating state
 
-`python scripts/validate_repo_preparation.py --output _bmad-output/repository-preparation/checks.json` checks the prepared package. It was executed with the available managed Python interpreter and Git.
+Run `python scripts/validate_repo_preparation.py --output _bmad-output/repository-preparation/checks.json`. The [latest report](checks.json) records actual counts, local links, dependency checks, ignore-policy cases and an audit of already-tracked files. The disposable ignore test does not initialize the project or contact GitHub.
 
-The latest run verified 16 stories, 21 issue drafts, 54 canonical acceptance criteria, dependency/reverse links, 454 local Markdown links and 92 actual Git ignore-policy cases. The actual shareable-file preview contains 105 files and excludes local agent/tool installations. `checks.json` includes that relative-path preview. Only Story 1.1 is initially eligible. Canonical acceptance is retained verbatim, not weakened by the explanatory tasks.
+All 16 stories are prepared; only Story 1.1 is initially unblocked. No application implementation, scanner acceptance, isolation, accessibility or detection result is claimed. No CI check or enforced branch protection is claimed. Those checks require working code and actual execution evidence. No license has been selected.
 
-The ignore test uses a verified workspace-local ignored scratch Git directory, then removes it. It does not initialize this project. Since the project has no Git index, already-tracked-file auditing is not applicable yet; the same validator performs that check after initialization. Ignore rules alone do not untrack files.
+The regeneration script refuses to overwrite active stories or a published issue manifest. Update canonical planning, local handoffs and published issues deliberately when requirements change.
 
-No application build, scanner containment, network enforcement, accessibility or detection acceptance result is claimed. No CI workflow/check or remote branch protection is claimed as installed or passing. Actual commands/checks will be introduced with the scaffold and publication setup.
-
-## Tracking update
-
-All 16 story files now exist and are `ready-for-dev`, consistent with BMAD's prepared-file floor. This is not permission to start dependent work: the board and handoffs explicitly show blockers. Sprint tracking has no in-progress or done stories. Proposed owner roles are not actual assignments.
-
-## GitHub CLI and next step
-
-The GitHub CLI is installed. A read-only request could not connect to `api.github.com` in the current environment, so account authentication could not be independently confirmed here; no credentials were changed and this does not establish an invalid saved login.
-
-**One setup stage remains: actual GitHub publication and final remote consistency audit, only when requested.** Confirm owner/name/visibility/license and actual team identities then use the prepared package. Convert local file links to real repository URLs and stable story IDs to returned issue links before publishing. No issue numbers, repository URLs or assignments have been fabricated.
-
-[Team story board](../github-issues/README.md) · [Publication checklist](../../docs/REPOSITORY_SETUP.md) · [Project README](../../README.md)
+[Team board](../github-issues/README.md) · [Setup record](../../docs/REPOSITORY_SETUP.md)
