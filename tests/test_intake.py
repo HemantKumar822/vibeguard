@@ -43,6 +43,17 @@ def test_unsafe_paths_cleanup(runtime, paths):
     assert upload(client, headers, paths).status_code == 422
     assert not list(store.staging.iterdir())
 
+
+@pytest.mark.parametrize('token',['github_pat_'+'SyntheticCredential'*3,'sk-proj-'+'SyntheticCredential'*3,'sk_live_'+'SyntheticCredential'*3])
+def test_secret_like_filenames_are_not_reflected_or_persisted(runtime,token):
+    client,headers,store=runtime
+    result=upload(client,headers,[token+'.ts'])
+    assert result.status_code==422
+    assert token not in result.text
+    assert not list(store.staging.iterdir())
+    with store.connect() as db:
+        assert db.execute('SELECT COUNT(*) FROM scans').fetchone()[0]==0
+
 @pytest.mark.parametrize('changes,status', [({'authorization_confirmed':False},403), ({'authorization_confirmed':1},403), ({'allow_external_ai':1},422), ({'files':[]},400)])
 def test_metadata_permission_mapping(runtime, changes, status):
     client, headers, store = runtime

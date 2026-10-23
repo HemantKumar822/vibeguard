@@ -60,6 +60,31 @@ test('repository rejection leaves the input editable with a safe reason', async 
   expect(input.disabled).toBe(false)
   expect(host.querySelector('[role=alert]')?.textContent).toContain('repository_retrieval_failed')
 })
+
+test('an old polling 404 cannot clear a newly accepted report', async () => {
+  vi.useFakeTimers()
+  let resolveOld!: (value: { status: number }) => void
+  const oldResponse = new Promise(resolve => { resolveOld = resolve })
+  let submissions = 0
+  const oldId = 'a'.repeat(32), newId = 'b'.repeat(32)
+  const report = { status: 'queued', input: {}, accepted_files: [], findings: [], tools: [], warnings: [], coverage: { exclusions: [] } }
+  const fetch = vi.fn().mockImplementation(async (url: string) => {
+    if (url.endsWith('/session')) return { ok: true, json: async () => ({ csrf_token: 'csrf' }) }
+    if (url === `/api/v1/scans/${oldId}`) return oldResponse
+    submissions++
+    return { ok: true, json: async () => ({ ...report, scan_id: submissions === 1 ? oldId : newId }) }
+  })
+  vi.stubGlobal('fetch', fetch)
+  await act(async () => root.render(<SourceIntake />))
+  await repositoryForm()
+  const submit = () => host.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+  await act(async () => { submit() })
+  await act(async () => vi.advanceTimersByTimeAsync(1000))
+  await act(async () => { submit() })
+  await act(async () => { resolveOld({ status: 404 }); await oldResponse })
+  expect(host.textContent).toContain('Scan ID: ' + newId)
+  expect(host.textContent).not.toContain('Scan is unavailable or expired')
+})
 test('requires permission and leaves sharing off', async () => {
   await act(async () => root.render(<SourceIntake />))
   expect(host.querySelector('button')?.disabled).toBe(true)

@@ -41,7 +41,7 @@ def safe_paths(metadata):
             or any(p in {'', '.', '..'} or p.endswith((' ', '.')) or RESERVED.fullmatch(p) for p in parts)
             or any(ord(c) < 32 or ord(c) == 127 or c in '\\:<>"|?*' for c in value)
             or unicodedata.normalize('NFKC', value) != value
-            or re.search(r'(?:AKIA[A-Z0-9]{16}|gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,})', value)):
+            or re.search(r'(?:(?:AKIA|ASIA)[A-Z0-9]{16}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-(?:[A-Za-z0-9_-]{20,})|sk_live_[A-Za-z0-9]{20,})', value)):
             raise IntakeError(422, 'unsafe_path', 'files')
         key = value.casefold()
         if not PART.fullmatch(item.part_id) or RESERVED.fullmatch(item.part_id) or item.part_id in ids or key in paths:

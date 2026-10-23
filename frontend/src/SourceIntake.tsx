@@ -48,6 +48,7 @@ export default function SourceIntake() {
       polling = true
       try {
         const response = await fetch(`/api/v1/scans/${scanId}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15_000)]) })
+        if (controller.signal.aborted) return
         if (response.status === 404) { clearInterval(timer); setScan(null); setError('Scan is unavailable or expired.'); return }
         if (!response.ok) throw new Error('Scan status is temporarily unavailable.')
         const updated: Scan = await response.json()
@@ -66,6 +67,7 @@ export default function SourceIntake() {
       polling = true
       try {
         const response = await fetch(`/api/v1/deletions/${deletionId}`, { signal: AbortSignal.any([controller.signal, AbortSignal.timeout(15_000)]) })
+        if (controller.signal.aborted) return
         if (response.status === 404) { clearInterval(timer); setDeletion(null); setError('Deletion operation is unavailable.'); return }
         if (response.ok) {
           const updated: components['schemas']['Deletion'] = await response.json()
@@ -79,10 +81,12 @@ export default function SourceIntake() {
   async function remove() {
     confirmation.current?.close()
     if (!scan) return
+    const deletingId = scan.scan_id
     try {
       const response = await fetch(`/api/v1/scans/${scan.scan_id}`, { method: 'DELETE', headers: { 'X-CSRF-Token': csrf.current }, signal: AbortSignal.timeout(15_000) })
       if (!response.ok) throw new Error('Deletion could not be requested. Reconnect the session and retry.')
-      setDeletion(await response.json()); setScan(null)
+      setDeletion(await response.json())
+      setScan(current => current?.scan_id === deletingId ? null : current)
     } catch (failure) { setError(failure instanceof Error ? failure.message : 'Connection interrupted.') }
   }
   const retryKey = useRef<string | null>(null)
