@@ -2,8 +2,9 @@
 title: 'Story 1.3: private bounded job lifecycle'
 type: feature
 created: '2026-10-24'
-status: ready-for-dev
+status: done
 route: dispatch
+baseline_commit: 77523d31ac499a31f7629c7e3ac8403492996b12
 story_key: 1-3-run-isolated-jobs-with-owned-status-and-deletion
 review_loop_iteration: 0
 context:
@@ -51,13 +52,13 @@ Never run submitted code or use uploaded rules/config/suppressions. Do not intro
 ## Tasks & Acceptance
 
 **Execution:**
-- [ ] `backend/core/lifecycle.py`, `backend/adapters/storage.py` — atomic admission/claim, canonical payload idempotency, guarded transitions, safe terminalization and explicit queue/global deadlines.
-- [ ] `workers/launcher.py` — construct fixed digest-based launches with bounded scratch/output, kill daemon-side jobs on timeout and cleanup; never shell-interpolate user fields.
-- [ ] `workers/coordinator.py` — separate CLI loop, single coordinator lease/heartbeat, recovery and shutdown; sanitize all returned status; source adapters unavailable until 1.4.
-- [ ] `backend/core/cleanup.py` — tombstone-first deletion, actual cleanup result/deadline/retry, late-result fences, session/report expiry and startup/minute sweep; persist unresolved cleanup and block admission.
-- [ ] `backend/api/main.py`, `frontend/src/SourceIntake.tsx` — owned polling/delete routes, headers and truthful tool/deletion states; stop polling on unmount/404 and keep tokens in memory.
-- [ ] `tests/test_lifecycle.py`, `tests/test_cleanup.py`, `tests/test_worker_isolation.py` — contention, expiry, idempotency, crash, cleanup failure and late-write tests; real Docker checks for read-only mounts, unavailable network/socket, quotas and non-root identity.
-- [ ] `contracts/openapi.json`, `frontend/src/generated/`, `docs/DEVELOPMENT.md`, story/sprint records — regenerate shared artifacts and document separate API/coordinator commands and operational limitations.
+- [x] `backend/core/lifecycle.py`, `backend/adapters/storage.py` — atomic admission/claim, canonical payload idempotency, guarded transitions, safe terminalization and explicit queue/global deadlines.
+- [x] `workers/launcher.py` — construct fixed digest-based launches with bounded scratch/output, kill daemon-side jobs on timeout and cleanup; never shell-interpolate user fields.
+- [x] `workers/coordinator.py` — separate CLI loop, single coordinator lease/heartbeat, recovery and shutdown; sanitize all returned status; source adapters unavailable until 1.4.
+- [x] `backend/core/cleanup.py` — tombstone-first deletion, actual cleanup result/deadline/retry, late-result fences, session/report expiry and startup/minute sweep; persist unresolved cleanup and block admission.
+- [x] `backend/api/main.py`, `frontend/src/SourceIntake.tsx` — owned polling/delete routes, headers and truthful tool/deletion states; stop polling on unmount/404 and keep tokens in memory.
+- [x] `tests/test_lifecycle.py`, `tests/test_cleanup.py`, `tests/test_worker_isolation.py` — contention, expiry, idempotency, crash, cleanup failure and late-write tests; real Docker checks for read-only mounts, unavailable network/socket, quotas and non-root identity.
+- [x] `contracts/openapi.json`, `frontend/src/generated/`, `docs/DEVELOPMENT.md`, story/sprint records — regenerate shared artifacts and document separate API/coordinator commands and operational limitations.
 
 **Acceptance Criteria:**
 - Given accepted work and concurrent claimers, when scheduled, then exactly one claim runs restricted workers and no API/scanner receives daemon credentials.
@@ -67,9 +68,33 @@ Never run submitted code or use uploaded rules/config/suppressions. Do not intro
 
 ## Implementation Notes
 
+- Implemented SQLite transactional admission/claims, lease recovery, expiry and late-write fences; API never imports the Docker launcher.
+- Coordinator dispatch explicitly fails unsupported adapters with zero completed coverage and deterministic fallback guidance. No submitted code is run.
+- Cleanup is tombstone-first, durable and retried; failures block intake. Source retention, session expiry and orphan staging sweeps are implemented.
+- UI polls actual scan/tool/deletion states with abort/404 handling and memory-only tokens.
+- Physical Linux Docker containment/timeout/output cleanup checks passed (4 tests); lifecycle/cleanup focused checks passed (6 tests). Final combined validation/review remains with parent workflow.
+
 ## Spec Change Log
 
 ## Review Triage Log
+
+| Finding | Verdict and evidence / resolution |
+|---|---|
+| Blind 1: unreachable deletion | high: dialog had no opener; added accessible trigger and deletion UI regression. Patch. |
+| Blind 2: tool states hidden | medium: response tools not rendered; render actual states, tested failed transition. Patch. |
+| Blind 3: fallback hidden | medium: error/warnings/repair omitted; render escaped server guidance, tested. Patch. |
+| Blind 4: cleanup status race | high: stale API sweep could overwrite complete; conditional update forbids regression. Patch. |
+| Blind 5: lease expires during cleanup | high: stop can exceed lease; renew heartbeat during cleanup and fence claim after loss. Patch. |
+| Blind 6: queue expiry needs coordinator | medium: API sweep lacked queue expiry; core expiry invoked from sweeps, tested without coordinator. Patch. |
+| Blind 7: repeat terminal stop | medium: every terminal history row hit Docker; only stop terminal sources still present, repeated sweep tested. Patch. |
+| Blind 8: startup cleanup window | high: background first sweep permits admission first; await initial cleanup before lifespan yield. Patch. |
+| Blind 9: private metadata retention | medium: tombstones retained indefinitely; purge completed operation and scan metadata after retry TTL, tested. Patch. |
+| Edge 1: unreachable deletion | high: same UI defect, opener and deletion test resolve. Patch. |
+| Edge 2: missing observed state/guidance | medium: same omitted response fields, render tools and guidance. Patch. |
+| Edge 3: completed status regression | high: same stale write, conditional update resolves. Patch. |
+| Gaps 1: polling not tested | medium: previous tests stopped before polling; fake-timer failed/404 transitions and abort assertions now pass. Patch. |
+| Gaps other 1: closed dialog | high: same missing trigger; deletion dialog/open/request/cleanup tests pass. Patch. |
+| Gaps other 2: old status copy | medium: removed static unavailable statement in favor of observed warnings/states/guidance. Patch. |
 
 ## Verification
 
@@ -77,3 +102,5 @@ Never run submitted code or use uploaded rules/config/suppressions. Do not intro
 - Run isolated-worker integration tests against the local Linux Docker engine; assert actual restrictions, cancellation and cleanup.
 - Regenerate OpenAPI/types, then frontend contract checks, tests, build and lint pass.
 - Exercise a real owned submission, coordinator dispatch, foreign-session read and deletion; record unavailable scanner-adapter coverage honestly.
+
+Final verification: combined suite observed 101 passed, one total-upload deadline failure and three Docker opt-in skips. The deadline was fixed and all three deadline cases passed. Docker physical tests separately passed (4). Targeted lifecycle/cleanup after review: 9 passed; coordinator sequence: 1 passed. Targeted UI: 11 passed. Contract parity, production build and lint passed. No full-suite repetition after focused fixes per user instruction. No finding deferred. Existing Starlette warning remains.

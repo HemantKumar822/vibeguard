@@ -3,7 +3,7 @@
   "ready": true,
   "status": "tools_verified",
   "reason_code": "version_probes_only",
-  "containment_verified": false,
+  "containment_verified": true,
   "scanners": [
     {
       "name": "gitleaks",
@@ -30,5 +30,11 @@
       "status": "verified"
     }
   ],
-  "engine_version": "29.9.2"
+  "engine_version": "29.9.2",
+  "containment_evidence": {
+    "checked_at": "2026-10-24",
+    "command": "VIBEGUARD_DOCKER_TESTS=1 python -m pytest tests/test_worker_isolation.py -q",
+    "result": "4 passed",
+    "scope": "Source worker restrictions, timeout/output cap and daemon-side cleanup; trusted scanning adapters and rules remain unavailable."
+  }
 }

@@ -1,7 +1,7 @@
 ---
 story_id: '1.3'
 epic: 1
-status: ready-for-dev
+status: in-review
 prepared: true
 approval: pending-user-review
 assignee: unassigned
@@ -86,6 +86,6 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Implementation record
 
-Not started. Record PR, actual commands/results, sanitized evidence and remaining limitations here during implementation.
+Implemented persisted queue/claims, owned polling/deletion, tombstone and expiry cleanup, coordinator and restricted launcher. Focused lifecycle/cleanup/coordinator and frontend checks passed; four physical Docker checks passed; contract parity, build and lint passed. Independent review findings resolved. Full scanner adapters and rules remain story 1.4. Local implementation awaits teammate/PR review; no GitHub issue was closed. Detailed evidence is in spec-1-3-owned-job-lifecycle.md.
 
 [Parent epic](../github-issues/epics/epic-01-review-a-codebase-safely-and-act-on-real-findings.md) · [All stories](README.md)

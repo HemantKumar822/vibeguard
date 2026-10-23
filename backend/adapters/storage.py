@@ -59,8 +59,17 @@ class Storage:
         self.staging.mkdir(mode=0o700, exist_ok=True)
         self.database = self.root / 'metadata.sqlite3'
         with self.connect() as db:
+            db.execute('PRAGMA journal_mode=WAL')
             db.executescript('''CREATE TABLE IF NOT EXISTS sessions (id TEXT PRIMARY KEY, csrf TEXT, touched REAL);
             CREATE TABLE IF NOT EXISTS scans (id TEXT PRIMARY KEY, owner TEXT, idem TEXT, digest TEXT, created REAL, sharing INTEGER, payload TEXT, UNIQUE(owner,idem));''')
+            columns = {row[1] for row in db.execute('PRAGMA table_info(scans)')}
+            for name, declaration in [('state', "TEXT NOT NULL DEFAULT 'queued'"), ('claimed', 'REAL'), ('finished', 'REAL'), ('tombstone', 'INTEGER NOT NULL DEFAULT 0')]:
+                if name not in columns:
+                    db.execute(f'ALTER TABLE scans ADD COLUMN {name} {declaration}')
+            db.executescript('''CREATE TABLE IF NOT EXISTS deletions (id TEXT PRIMARY KEY, scan TEXT UNIQUE, owner TEXT, status TEXT, created REAL);
+            CREATE TABLE IF NOT EXISTS runtime_health (singleton INTEGER PRIMARY KEY CHECK(singleton=1), cleanup_ok INTEGER NOT NULL);
+            INSERT OR IGNORE INTO runtime_health VALUES (1,1);
+            CREATE TABLE IF NOT EXISTS coordinator (singleton INTEGER PRIMARY KEY CHECK(singleton=1), token TEXT, heartbeat REAL);''')
         os.chmod(self.database, 0o600)
 
     @contextmanager

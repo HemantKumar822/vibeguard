@@ -1,5 +1,7 @@
 """API v1: authorized source admission only; accepted scans remain queued."""
 import json
+import asyncio
+from contextlib import asynccontextmanager, suppress
 import re
 import secrets
 import shutil
@@ -15,9 +17,11 @@ from pydantic.json_schema import models_json_schema
 from backend.adapters.intake import receive
 from backend.adapters.storage import Storage
 from backend.api.session import IntakeError, owner
-from backend.core.contracts import Health, PUBLIC_MODELS, Scan, SessionResponse, Capabilities, ErrorResponse
+from backend.core.contracts import Health, PUBLIC_MODELS, Scan, SessionResponse, Capabilities, ErrorResponse, Deletion
 from backend.core.policy import POLICY_ID, LIMITS, FINGERPRINT
 from backend.core.settings import Settings
+from backend.core.lifecycle import Lifecycle
+from backend.core.cleanup import Cleanup
 
 
 def queued_scan(scan_id, accepted, exclusions):
@@ -35,11 +39,26 @@ def queued_scan(scan_id, accepted, exclusions):
         started_at=None, finished_at=None, input=dict(display_name='Submitted source tree', revision=None,
         repository=None, target_redacted=None, observation_id=None), tools=tools, coverage=coverage,
         findings=[], repair=None, warnings=['Accepted source inventory: ' + str(len(accepted)) + ' files. No scanner has run.',
-        'Scanner orchestration is unavailable; this submission remains queued.'], error=None)
+        'Waiting for the trusted coordinator. Trusted source adapters are unavailable.'], error=None)
 
 
 def create_app(settings=None):
-    api = FastAPI(title='VibeGuard API', version='0.1.0', docs_url=None, redoc_url=None)
+    @asynccontextmanager
+    async def lifespan(api):
+        if api.state.storage:
+            await asyncio.to_thread(Cleanup(api.state.storage).sweep)
+        async def sweep():
+            while True:
+                if api.state.storage:
+                    await asyncio.to_thread(Cleanup(api.state.storage).sweep)
+                await asyncio.sleep(60)
+        task=asyncio.create_task(sweep())
+        try:
+            yield
+        finally:
+            task.cancel()
+            with suppress(asyncio.CancelledError): await task
+    api = FastAPI(title='VibeGuard API', version='0.1.0', docs_url=None, redoc_url=None, lifespan=lifespan)
     settings = settings or Settings.environment()
     storage = Storage(settings.validate()) if settings else None
     api.state.storage = storage
@@ -104,24 +123,10 @@ def create_app(settings=None):
             directory = store.staging / secrets.token_hex(16)
             directory.mkdir(mode=0o700)
             metadata, accepted, exclusions, digest = await receive(request, directory)
-            with store.connect() as db:
-                db.execute('BEGIN IMMEDIATE')
-                db.execute('UPDATE scans SET idem=NULL WHERE owner=? AND idem=? AND created<=?',
-                           (session_id, key, time.time()-86400))
-                existing = db.execute('SELECT digest,payload FROM scans WHERE owner=? AND idem=? AND created>?',
-                                      (session_id, key, time.time()-86400)).fetchone()
-                if existing:
-                    if existing[0] != digest:
-                        raise IntakeError(409, 'idempotency_conflict')
-                    return Scan.model_validate_json(existing[1])
-                if db.execute('SELECT COUNT(*) FROM scans').fetchone()[0] >= 3:
-                    raise IntakeError(429, 'queue_full')
-                scan = queued_scan(directory.name, accepted, exclusions)
-                scan.accepted_files = accepted
-                scan.allow_external_ai = metadata.allow_external_ai
-                db.execute('INSERT INTO scans VALUES (?,?,?,?,?,?,?)', (scan.scan_id, session_id, key, digest,
-                           time.time(), metadata.allow_external_ai, scan.model_dump_json()))
-            published = True
+            scan = queued_scan(directory.name, accepted, exclusions)
+            scan.accepted_files = accepted
+            scan.allow_external_ai = metadata.allow_external_ai
+            scan, published = Lifecycle(store).admit(scan, session_id, key, digest, metadata.allow_external_ai)
             return scan
         finally:
             try:
@@ -136,11 +141,31 @@ def create_app(settings=None):
             session_id = owner(request, store, settings)
         except IntakeError:
             raise IntakeError(404, 'not_found') from None
-        with store.connect() as db:
-            row = db.execute('SELECT payload FROM scans WHERE id=? AND owner=?', (scan_id, session_id)).fetchone()
-        if row is None:
-            raise IntakeError(404, 'not_found')
-        return Scan.model_validate_json(row[0])
+        return Lifecycle(store).read(scan_id, session_id)
+    @api.delete('/api/v1/scans/{scan_id}', status_code=202, response_model=Deletion, responses=errors,
+                openapi_extra={'parameters': [origin_header, {'name': 'X-CSRF-Token', 'in': 'header', 'required': True, 'schema': {'type': 'string'}}]})
+    def delete_scan(scan_id: str, request: Request):
+        store = runtime()
+        try:
+            session_id = owner(request, store, settings)
+        except IntakeError:
+            raise IntakeError(404, 'not_found') from None
+        owner(request, store, settings, mutation=True)
+        return Cleanup(store).delete(scan_id, session_id)
+    @api.get('/api/v1/deletions/{operation_id}', response_model=Deletion, responses=errors)
+    def read_deletion(operation_id: str, request: Request):
+        store = runtime()
+        try:
+            session_id = owner(request, store, settings)
+        except IntakeError:
+            raise IntakeError(404, 'not_found') from None
+        return Cleanup(store).operation(operation_id, session_id)
+    @api.middleware('http')
+    async def private_headers(request, call_next):
+        response = await call_next(request)
+        response.headers['Cache-Control'] = 'no-store'
+        response.headers['X-Content-Type-Options'] = 'nosniff'
+        return response
     def contract_openapi():
         if api.openapi_schema is None:
             schema = get_openapi(title=api.title, version=api.version, routes=api.routes)

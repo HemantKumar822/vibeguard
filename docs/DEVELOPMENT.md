@@ -1,6 +1,6 @@
 # Development setup
 
-Stories 1.1–1.2 provide the application foundation, shared contracts, sessions and bounded source intake. Scanning and comparison algorithms are unavailable.
+Stories 1.1–1.2 provide the application foundation, shared contracts, sessions, bounded source intake and private job lifecycle. Scanning and comparison algorithms are unavailable.
 
 ## Install from a clean checkout
 
@@ -27,7 +27,7 @@ npm --prefix frontend run dev
 
 Open `http://127.0.0.1:5173`. Vite proxies `/api` to loopback port 8000, keeping browser requests same-origin. The actual health endpoint is `GET /api/v1/health`. Its response proves API availability only. Session, capabilities, source admission and owned-read routes are implemented; see the runtime configuration below. Do not expose the development server or API to the public network.
 
-The page clearly states scanner orchestration is unavailable. Development fixtures are synthetic contract examples. Its dynamic import is eliminated in production; the built application contains no fixture payloads. Production serving/session integration belongs to subsequent stories.
+The page displays actual coordinator/tool state and unavailable adapter coverage. Development fixtures are synthetic contract examples. Its dynamic import is eliminated in production; the built application contains no fixture payloads. Production serving/session integration belongs to subsequent stories.
 
 ## Shared contract workflow
 
@@ -36,7 +36,7 @@ The page clearly states scanner orchestration is unavailable. Development fixtur
 3. Run `uv run python scripts/export_contracts.py`, then `npm --prefix frontend run generate:types`.
 4. Run all checks below and commit models, OpenAPI, generated TypeScript and fixtures together.
 
-`contracts/openapi.json` exports the live routes and shared component schemas. Future orchestration routes remain absent. `Intake` describes repository/website JSON; `CodebaseMetadata` describes multipart metadata. The bounded source adapter enforces multipart intake; scanner/network enforcement belongs to later stories. Typed fixture declarations are generated from the same JSON examples and checked against generated TypeScript.
+`contracts/openapi.json` exports the live routes and shared component schemas. Owned polling and deletion-operation routes are included. `Intake` describes repository/website JSON; `CodebaseMetadata` describes multipart metadata. The bounded source adapter enforces multipart intake; scanner/network enforcement belongs to later stories. Typed fixture declarations are generated from the same JSON examples and checked against generated TypeScript.
 
 ## Verification
 
@@ -97,3 +97,26 @@ Directory selection preserves browser-provided relative paths. If unavailable or
 
 Verified commands: backend pytest, contract export/generation and parity, frontend tests/build/lint. Tests exercise real 25 MiB/5,000-file/2 MiB/depth-20/240-byte boundaries plus one, chunked bodies, interrupted uploads, unsafe paths, ownership, CSRF and failed-upload cleanup. Tests require OS access to private temporary directories outside the checkout; a restricted sandbox may require permission for that test run. The multipart parser is locked to python-multipart 0.0.22. Orchestration, deletion and lifecycle recovery belong to story 1.3.
 
+
+## Story 1.3 private bounded lifecycle
+
+Run the coordinator in a **separate host terminal**, using the same private runtime settings as the API:
+
+```powershell
+uv run python -m workers.coordinator
+```
+
+Only this trusted host process controls Docker. API and worker containers must receive neither a Docker socket nor host credentials. Source workers use the verified immutable digests, fixed version-only diagnostic commands, read-only root/source, non-root identity, no network, dropped capabilities, no-new-privileges, 2 CPUs, 2 GiB memory, 128 processes, 256 MiB scratch, a 90-second tool deadline and 5 MiB output ceiling. Raw diagnostic output is discarded. Version checks are diagnostics, never completed scan coverage.
+
+The persisted SQLite WAL queue accepts three waiting jobs and one running job. Claims and session-scoped canonical idempotency are transactional. Queue/global deadlines are 600/300 seconds. A single coordinator renews a 15-second lease; takeover marks abandoned work failed and cleans it before claiming again. Jobs are never automatically rerun. Before story 1.4 provides reviewed adapters/rules, dispatch produces explicit `trusted_adapters_unavailable` failure, zero completed coverage and deterministic manual-review guidance.
+
+Owned GET polling exposes actual Scan/tool states. DELETE returns a durable deletion operation: access is tombstoned immediately, late writes are refused, and `/api/v1/deletions/{operation_id}` reports pending/complete/failed cleanup. Cancellation and source removal must succeed before completion. Failures remain visible and block admission; coordinator sweeps retry them. Without a coordinator, deletion remains pending and becomes failed at the next sweep after 60 seconds. Retention is 24 hours from terminal completion and 24 hours of session inactivity. Reads refuse expired resources immediately; startup and minute sweeps enqueue expiry cleanup. Orphan upload directories receive a 600-second grace before purge. Runtime cleanup errors block admission.
+
+Physical verification (2026-10-24, Linux Docker 29.9.2):
+
+```powershell
+$env:VIBEGUARD_DOCKER_TESTS = '1'
+uv run pytest tests/test_worker_isolation.py -q
+```
+
+Four tests passed, including real read-only writes, denied external network/socket access, non-root/capability/no-new-privileges checks, observed cgroup and scratch limits, output overflow, timeout and daemon-side removal. These tests are opt-in when Docker is unavailable. This establishes the tested source-worker containment profile, not scanning correctness or website egress safety. Full scanning remains unavailable until trusted adapters/rules are installed in story 1.4.

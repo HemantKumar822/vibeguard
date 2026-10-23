@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { components } from './generated/api'
 type Scan = components['schemas']['Scan']
 
@@ -11,6 +11,47 @@ export default function SourceIntake() {
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
   const [scan, setScan] = useState<Scan | null>(null)
+  const [deletion, setDeletion] = useState<components['schemas']['Deletion'] | null>(null)
+  const csrf = useRef('')
+  const confirmation = useRef<HTMLDialogElement>(null)
+  const scanId = scan?.scan_id
+  const scanStatus = scan?.status
+  const deletionId = deletion?.operation_id
+  const deletionStatus = deletion?.status
+  useEffect(() => {
+    if (!scanId || !scanStatus || !['queued', 'running'].includes(scanStatus)) return
+    const controller = new AbortController()
+    const timer = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/v1/scans/${scanId}`, { signal: controller.signal })
+        if (response.status === 404) { clearInterval(timer); setScan(null); setError('Scan is unavailable or expired.'); return }
+        if (!response.ok) throw new Error('Scan status is temporarily unavailable.')
+        setScan(await response.json())
+      } catch (failure) { if (!controller.signal.aborted) setError(failure instanceof Error ? failure.message : 'Connection interrupted.') }
+    }, 1000)
+    return () => { clearInterval(timer); controller.abort() }
+  }, [scanId, scanStatus])
+  useEffect(() => {
+    if (!deletionId || deletionStatus === 'complete') return
+    const controller = new AbortController()
+    const timer = setInterval(async () => {
+      try {
+        const response = await fetch(`/api/v1/deletions/${deletionId}`, { signal: controller.signal })
+        if (response.status === 404) { clearInterval(timer); setDeletion(null); setError('Deletion operation is unavailable.'); return }
+        if (response.ok) setDeletion(await response.json())
+      } catch { /* Keep the last observed cleanup state during a disconnect. */ }
+    }, 1000)
+    return () => { clearInterval(timer); controller.abort() }
+  }, [deletionId, deletionStatus])
+  async function remove() {
+    confirmation.current?.close()
+    if (!scan) return
+    try {
+      const response = await fetch(`/api/v1/scans/${scan.scan_id}`, { method: 'DELETE', headers: { 'X-CSRF-Token': csrf.current } })
+      if (!response.ok) throw new Error('Deletion could not be requested. Reconnect the session and retry.')
+      setDeletion(await response.json()); setScan(null)
+    } catch (failure) { setError(failure instanceof Error ? failure.message : 'Connection interrupted.') }
+  }
   const retryKey = useRef<string | null>(null)
   function changed() { retryKey.current = null }
   function select(input: HTMLInputElement, directory: boolean) {
@@ -39,6 +80,7 @@ export default function SourceIntake() {
       const session = await fetch('/api/v1/session', { method: 'POST' })
       if (!session.ok) throw new Error('Session unavailable. Check the configured same-origin runtime.')
       const { csrf_token }: components['schemas']['SessionResponse'] = await session.json()
+      csrf.current = csrf_token
       const metadata: components['schemas']['CodebaseMetadata'] = { mode: 'codebase', authorization_confirmed: true,
         allow_external_ai: sharing, files: names.map((relative_path, index) => ({ part_id: `file_${index}`, relative_path })) }
       const body = new FormData()
@@ -70,9 +112,16 @@ export default function SourceIntake() {
       <button type="submit" disabled={pending || !permission || files.length === 0}>{pending ? 'Submitting…' : 'Submit source tree'}</button>
     </form>
     {error && <p role="alert">{error}</p>}
-    {scan && <div role="status"><h3>Accepted · {scan.status}</h3><p>No scanner has run. Scanner orchestration is unavailable.</p>
+    {scan && <div role="status"><h3>Accepted · {scan.status}</h3>
+      <ul>{scan.tools?.map(tool => <li key={tool.name}>{tool.name}: {tool.status}{tool.reason ? ` (${tool.reason})` : ''}</li>)}</ul>
+      {scan.warnings?.map((warning, index) => <p key={index}>{warning}</p>)}
+      {scan.error && <p role="alert">{scan.error.message}</p>}
+      {scan.repair && <p>{scan.repair.prompt_redacted}</p>}
+      <button type="button" onClick={() => confirmation.current?.showModal()}>Delete scan</button>
       <p>Scan ID: {scan.scan_id}</p><h4>Accepted files</h4><ul>{scan.accepted_files?.map(path => <li key={path}>{path}</li>)}</ul>
       <h4>Exclusions</h4><ul>{scan.coverage.exclusions.map(item => <li key={item.resource_key}>{item.resource_key}: {item.reason}</li>)}</ul></div>}
+    {deletion && <p role="status">Cleanup: {deletion.status}{deletion.status === 'failed' ? ' · Cleanup is incomplete; the coordinator will retry.' : ''}</p>}
+    <dialog ref={confirmation}><h3>Delete this scan and source?</h3><p>Access is revoked immediately. Cleanup status remains visible.</p><button autoFocus onClick={() => confirmation.current?.close()}>Cancel</button><button onClick={remove}>Delete scan</button></dialog>
   </section>
 }
 
