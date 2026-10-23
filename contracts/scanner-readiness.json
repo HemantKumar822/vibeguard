@@ -1,8 +1,8 @@
 {
-  "checked_at": "2026-10-23T18:19:08.717805+00:00",
-  "ready": false,
-  "status": "blocked",
-  "reason_code": "scanner_probe_failed",
+  "checked_at": "2026-10-23T18:38:58.197771+00:00",
+  "ready": true,
+  "status": "tools_verified",
+  "reason_code": "version_probes_only",
   "containment_verified": false,
   "scanners": [
     {
@@ -17,17 +17,17 @@
       "name": "semgrep",
       "requested_image": "semgrep/semgrep:1.182.1",
       "expected_version": "1.182.1",
-      "digest": null,
-      "observed_version": null,
-      "status": "timed_out"
+      "digest": "semgrep/semgrep@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6",
+      "observed_version": "1.182.1",
+      "status": "verified"
     },
     {
       "name": "zap",
       "requested_image": "ghcr.io/zaproxy/zaproxy:2.17.0",
       "expected_version": "2.17.0",
-      "digest": null,
-      "observed_version": null,
-      "status": "timed_out"
+      "digest": "ghcr.io/zaproxy/zaproxy@sha256:5ccfff9a411743ab2615136a2edd7416bec9ce41572fa94e935df38c14adb2b6",
+      "observed_version": "2.17.0",
+      "status": "verified"
     }
   ],
   "engine_version": "29.9.2"

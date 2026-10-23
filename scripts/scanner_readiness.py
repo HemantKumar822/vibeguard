@@ -10,8 +10,8 @@ import subprocess
 
 TOOLS = [
     ('gitleaks', 'ghcr.io/gitleaks/gitleaks:v8.30.1', '8.30.1', 'gitleaks', ['version']),
-    ('semgrep', 'semgrep/semgrep:1.182.1', '1.182.1', 'semgrep', ['--version']),
-    ('zap', 'ghcr.io/zaproxy/zaproxy:2.17.0', '2.17.0', 'zap.sh', ['-version']),
+    ('semgrep', 'semgrep/semgrep:1.182.1', '1.182.1', 'semgrep', ['--disable-version-check', '--metrics=off', '--version']),
+    ('zap', 'ghcr.io/zaproxy/zaproxy:2.17.0', '2.17.0', 'zap.sh', ['-dir', '/tmp/zap', '-version']),
 ]
 
 
@@ -44,25 +44,34 @@ def probe(find_docker=locate_docker, pull_timeout=180):
         result['engine_version'] = engine.stdout.strip()
         for scanner, (_, image, version, command, args) in zip(result['scanners'], TOOLS):
             try:
-                scanner['status'] = 'pull_failed'
-                pulled = subprocess.run([docker, 'pull', image], capture_output=True, timeout=pull_timeout, env=environment)
-                if pulled.returncode:
-                    continue
                 inspected = subprocess.run([docker, 'image', 'inspect', image, '--format', '{{json .RepoDigests}}'], capture_output=True, text=True, timeout=20, env=environment)
+                if inspected.returncode:
+                    scanner['status'] = 'pull_failed'
+                    pulled = subprocess.run([docker, 'pull', image], capture_output=True, timeout=pull_timeout, env=environment)
+                    if pulled.returncode:
+                        continue
+                    inspected = subprocess.run([docker, 'image', 'inspect', image, '--format', '{{json .RepoDigests}}'], capture_output=True, text=True, timeout=20, env=environment)
                 digests = json.loads(inspected.stdout) if inspected.returncode == 0 else []
                 if not digests or not re.fullmatch(r'[^\s]+@sha256:[a-f0-9]{64}', digests[0]):
                     scanner['status'] = 'digest_unavailable'
                     continue
                 scanner['digest'] = digests[0]
+                tool_env = ['--env', 'HOME=/tmp']
+                if command == 'semgrep':
+                    tool_env += ['--env', 'SEMGREP_ENABLE_VERSION_CHECK=0', '--env', 'SEMGREP_SEND_METRICS=off']
+                elif command == 'zap.sh':
+                    tool_env += ['--env', 'JAVA_TOOL_OPTIONS=-Duser.home=/tmp']
                 checked = subprocess.run([docker, 'run', '--rm', '--network', 'none', '--read-only',
                     '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges', '--user', '1000:1000',
                     '--memory', '2g', '--cpus', '2', '--pids-limit', '128',
-                    '--tmpfs', '/tmp:rw,nosuid,nodev,size=64m', '--entrypoint', command,
+                    '--tmpfs', '/tmp:rw,nosuid,nodev,size=256m', '--hostname', 'vibeguard-probe',
+                    '--add-host', 'vibeguard-probe:127.0.0.1', *tool_env, '--entrypoint', command,
                     digests[0], *args], capture_output=True, text=True, timeout=90, env=environment)
                 output = checked.stdout + '\n' + checked.stderr
                 observed = re.search(r'(?<!\d)' + re.escape(version) + r'(?![\d.])', output)
                 scanner['observed_version'] = version if observed else None
-                scanner['status'] = 'verified' if checked.returncode == 0 and observed else 'version_probe_failed'
+                fatal_startup = re.search(r'No space left on device|Read-only file system|The home path is not writable|java\.io\.IOException|Traceback \(most recent call last\)', output)
+                scanner['status'] = 'startup_failed' if fatal_startup else ('verified' if checked.returncode == 0 and observed else 'version_probe_failed')
             except subprocess.TimeoutExpired:
                 scanner['status'] = 'timed_out'
             except (OSError, ValueError):

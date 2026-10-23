@@ -85,14 +85,14 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Implementation record
 
-Implemented on `feat/1-1-project-bootstrap`; [Draft PR #22](https://github.com/HemantKumar822/vibeguard/pull/22) opened; teammate review and full scanner feasibility remain pending. No real submission or security scan is available yet.
+Implemented on `feat/1-1-project-bootstrap`; [PR #22](https://github.com/HemantKumar822/vibeguard/pull/22) opened; all three scanner version probes pass; teammate review remains pending. No real submission or security scan is available yet.
 
 - Started with failing tests for the missing backend, readiness checker, error envelope and failure states; implemented the smallest bootstrap to make them pass.
 - `uv sync --frozen`: passed. `npm --prefix frontend ci`: passed after stopping the development server that held a native module open on Windows.
-- `uv run pytest -q`: 16 passed; one upstream Starlette warning recommends replacing its deprecated httpx compatibility dependency with httpx2 in a later dependency update.
+- `uv run pytest -q`: 18 passed; one upstream Starlette warning recommends replacing its deprecated httpx compatibility dependency with httpx2 in a later dependency update.
 - Backend OpenAPI export, generated TypeScript, typecheck, production build and lint: passed.
 - All eight synthetic fixtures validate in Python and compile against generated frontend types. Production assets exclude the fixture module and payloads.
-- Docker Desktop 4.96.3 installed through winget; Linux engine 29.9.2 running. Gitleaks 8.30.1 passed its actual version probe by immutable digest. Semgrep/ZAP image pulls did not finish within the bounded attempts; [readiness evidence](../../contracts/scanner-readiness.json) remains an explicit blocking feasibility result. No version/digest is invented for unavailable images. AC-3's unavailable-tool branch is exercised, not a claim that scanners are ready.
+- Docker Desktop 4.96.3 installed through winget; Linux engine 29.9.2 running. Gitleaks 8.30.1, Semgrep 1.182.1 and ZAP 2.17.0 each passed actual restricted, network-disabled version probes by immutable image digest. [Readiness evidence](../../contracts/scanner-readiness.json) now records `ready: true`, with `containment_verified: false`; version readiness does not establish scan containment or detection accuracy.
 - Browser visual inspection was not performed because the browser access request was declined. No accessibility or rendered-layout pass is claimed.
 
 ## Code map
@@ -115,8 +115,11 @@ Review was performed inline per the user's preference to avoid routine subagent 
 | Failed deletion allowed no error | Added explicit failure-reason validation; regression passes. |
 | Newly installed Docker helper absent from inherited PATH | Observed credential-helper lookup failure; scoped PATH to Docker's sibling binaries and added regression. |
 | One scanner timeout skipped subsequent probes | Reproduced and fixed per-scanner timeout handling; subsequent tools are now attempted. |
+| Read-only home and startup resource errors | Reproduced Semgrep settings writes and ZAP scratch/Java-home failures; bounded 256 MiB scratch, temporary homes and loopback-only hostname resolution fix startup while retaining isolation. Fatal startup errors cannot pass based on version text alone. |
+| Registry refresh delayed cached probes | Cached image digests are now inspected and used locally; only missing images are pulled. Executed versions must still match. |
+| Semgrep version command attempted update/metrics activity | Explicitly disabled version checks and metrics for the offline probe; real version check passes without network access. |
 | Development fixtures might ship as production results | Checked built JS; fixture module/data are absent. |
 
-Scanner execution/containment, uploads, sessions, persistent state and rescan algorithms remain in their own stories. The scanner-readiness gate remains blocked until all actual image probes pass.
+Scanner execution/containment, uploads, sessions, persistent state and rescan algorithms remain in their own stories. The bootstrap scanner-version gate is cleared. Actual scan containment and feature acceptance remain future implementation gates.
 
 [Parent epic](../github-issues/epics/epic-01-review-a-codebase-safely-and-act-on-real-findings.md) · [All stories](README.md)

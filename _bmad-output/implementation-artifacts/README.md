@@ -6,4 +6,4 @@ These files are prepared implementation handoffs. Their acceptance comes from [e
 
 Use [sprint-status.yaml](sprint-status.yaml) for current implementation state. Fill a story’s implementation record during the build; do not regenerate over an active story.
 
-Story 1.1 now has a bootstrap in review on its feature branch. It is not merged; scanner feasibility remains blocked pending image downloads. Read its implementation record and the sprint tracker for current evidence.
+Story 1.1 now has a bootstrap in review on its feature branch. It is not merged; all three scanner version probes now pass. Read its implementation record and the sprint tracker for current evidence.
