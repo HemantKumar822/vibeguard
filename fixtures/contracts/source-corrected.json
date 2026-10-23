@@ -1,0 +1,135 @@
+{
+  "kind": "scan",
+  "data": {
+    "contract_version": "v1",
+    "scan_id": "development-repeat",
+    "baseline_id": "development-baseline",
+    "mode": "codebase",
+    "status": "complete",
+    "policy_id": "safety-v1",
+    "policy_fingerprint": "development-fixture-policy",
+    "created_at": "2026-10-23T12:00:00Z",
+    "started_at": "2026-10-23T12:00:00Z",
+    "finished_at": "2026-10-23T12:00:00Z",
+    "input": {
+      "display_name": "Development fixture only",
+      "revision": "development-corrected-revision",
+      "repository": null,
+      "target_redacted": null,
+      "observation_id": null
+    },
+    "tools": [
+      {
+        "name": "gitleaks",
+        "applicable": true,
+        "required": true,
+        "status": "complete",
+        "reason": null,
+        "version": "development-only",
+        "rules_fingerprint": "development-fixture-rules",
+        "started_at": "2026-10-23T12:00:00Z",
+        "finished_at": "2026-10-23T12:00:00Z",
+        "coverage": {
+          "required_count": 1,
+          "completed_count": 1,
+          "inspected": [
+            "src/demo.ts"
+          ],
+          "exclusions": [],
+          "rules_fingerprint": "development-fixture-rules",
+          "revision_or_observation": "development-corrected-revision",
+          "scope_complete": true
+        },
+        "error": null
+      },
+      {
+        "name": "semgrep",
+        "applicable": true,
+        "required": true,
+        "status": "complete",
+        "reason": null,
+        "version": "development-only",
+        "rules_fingerprint": "development-fixture-rules",
+        "started_at": "2026-10-23T12:00:00Z",
+        "finished_at": "2026-10-23T12:00:00Z",
+        "coverage": {
+          "required_count": 1,
+          "completed_count": 1,
+          "inspected": [
+            "src/demo.ts"
+          ],
+          "exclusions": [],
+          "rules_fingerprint": "development-fixture-rules",
+          "revision_or_observation": "development-corrected-revision",
+          "scope_complete": true
+        },
+        "error": null
+      },
+      {
+        "name": "zap",
+        "applicable": false,
+        "required": false,
+        "status": "skipped",
+        "reason": "not_applicable",
+        "version": null,
+        "rules_fingerprint": null,
+        "started_at": null,
+        "finished_at": null,
+        "coverage": {
+          "required_count": 0,
+          "completed_count": 0,
+          "inspected": [],
+          "exclusions": [],
+          "rules_fingerprint": null,
+          "revision_or_observation": "development-corrected-revision",
+          "scope_complete": false
+        },
+        "error": null
+      },
+      {
+        "name": "asset_secrets",
+        "applicable": false,
+        "required": false,
+        "status": "skipped",
+        "reason": "not_applicable",
+        "version": null,
+        "rules_fingerprint": null,
+        "started_at": null,
+        "finished_at": null,
+        "coverage": {
+          "required_count": 0,
+          "completed_count": 0,
+          "inspected": [],
+          "exclusions": [],
+          "rules_fingerprint": null,
+          "revision_or_observation": "development-corrected-revision",
+          "scope_complete": false
+        },
+        "error": null
+      }
+    ],
+    "coverage": {
+      "required_count": 2,
+      "completed_count": 2,
+      "inspected": [
+        "src/demo.ts"
+      ],
+      "exclusions": [],
+      "rules_fingerprint": "development-fixture-rules",
+      "revision_or_observation": "development-corrected-revision",
+      "scope_complete": true
+    },
+    "findings": [],
+    "repair": {
+      "mode": "template",
+      "status": "fallback",
+      "prompt_redacted": "Development fixture only. No actual scan ran. Review the actual evidence before changing code.",
+      "model_reason": "external_ai_disabled",
+      "human_actions": []
+    },
+    "warnings": [
+      "DEVELOPMENT FIXTURE \u2014 no real scan has run."
+    ],
+    "error": null
+  }
+}

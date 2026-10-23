@@ -1,0 +1,14 @@
+{
+  "kind": "deletion",
+  "data": {
+    "operation_id": "development-deletion",
+    "scan_id": "development-scan",
+    "status": "failed",
+    "error": {
+      "code": "cleanup_failed",
+      "message": "Cleanup did not finish; retry deletion.",
+      "request_id": "development-example",
+      "details": {}
+    }
+  }
+}

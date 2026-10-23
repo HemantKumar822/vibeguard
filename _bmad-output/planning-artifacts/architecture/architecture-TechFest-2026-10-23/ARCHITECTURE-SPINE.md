@@ -132,9 +132,9 @@ Cold-start candidate pins checked on 2026-10-23; installation and compatibility 
 
 | Name | Version |
 | --- | --- |
-| Node.js | 24.22.1 |
+| Node.js | 24.19.0 bootstrap runtime (Node 24 LTS); originally proposed 24.22.1 |
 | React / react-dom | 19.3.1 |
-| TypeScript | 7.0.2 |
+| TypeScript | 5.9.3 verified with openapi-typescript 7.13.0; proposed 7.0.2 incompatible |
 | Vite / react-ts starter | 8.3.5 |
 | Python | 3.12.13 |
 | FastAPI | 0.161.0 |
@@ -174,3 +174,7 @@ The trusted host launcher owns container orchestration. The API never gets Docke
 ## Deferred
 
 Provider-specific optional model integration follows the defined port; deterministic fallback works without it. Private repositories/history, authenticated/active website scans, dependency scanning and combined-mode linkage remain PRD deferrals. Component library and fine UI implementation belong to frontend stories, constrained by UX. Exact schema implementation and generated types belong to bootstrap under API-CONTRACT, not independently invented adapters. Immutable image digests, starter plugin versions and measured feasibility are build evidence; their acceptance stories precede integration, with failure blocking delivery rather than relaxing invariants. Public hosting/multitenancy, managed queues and high availability are outside the local-demo boundary.
+
+## Bootstrap evidence
+
+Story 1.1 uses the [verified development setup](../../../../docs/DEVELOPMENT.md), uv/npm locks and generated `contracts/openapi.json`. Version metadata did not establish compiler/generator compatibility: the proposed TypeScript 7 candidate failed generation because its main export lacks `ts.factory`; TypeScript 5.9.3 passes with openapi-typescript 7.13.0. Health is a loopback bootstrap-only endpoint with no user data. Feature/session routes remain unimplemented. Scanner readiness and immutable image pins are separately measured in `contracts/scanner-readiness.json`; null versions/digests mean unverified, not ready.

@@ -1,0 +1,57 @@
+{
+  "kind": "comparison",
+  "data": {
+    "baseline_id": "development-baseline",
+    "new_id": "development-repeat-partial",
+    "status": "partial",
+    "baseline_input": {
+      "display_name": "Development fixture only",
+      "revision": "development-revision",
+      "repository": null,
+      "target_redacted": null,
+      "observation_id": null
+    },
+    "new_input": {
+      "display_name": "Development fixture only",
+      "revision": "development-revision",
+      "repository": null,
+      "target_redacted": null,
+      "observation_id": null
+    },
+    "baseline_coverage": {
+      "required_count": 2,
+      "completed_count": 2,
+      "inspected": [
+        "src/demo.ts"
+      ],
+      "exclusions": [],
+      "rules_fingerprint": "development-fixture-rules",
+      "revision_or_observation": "development-revision",
+      "scope_complete": true
+    },
+    "new_coverage": {
+      "required_count": 2,
+      "completed_count": 1,
+      "inspected": [
+        "src/demo.ts"
+      ],
+      "exclusions": [],
+      "rules_fingerprint": "development-fixture-rules",
+      "revision_or_observation": "development-revision",
+      "scope_complete": false
+    },
+    "items": [
+      {
+        "baseline_finding_id": "development-finding",
+        "new_finding_id": null,
+        "status": "unverified",
+        "reason_code": "required_tool_timeout",
+        "baseline_evidence_ref": "development-baseline/development-finding",
+        "new_evidence_ref": null
+      }
+    ],
+    "human_actions": [
+      "Revoke or rotate an exposed private credential."
+    ]
+  }
+}
