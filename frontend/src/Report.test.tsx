@@ -48,3 +48,12 @@ test('shows requested and resolved repository identity in the same report', asyn
   expect(host.textContent).toContain('Resolved commit: ' + 'a'.repeat(40))
   expect(host.textContent).toContain(scan.findings[0].rule_id)
 })
+
+test('website findings use observed URLs and passive limitations', async () => {
+  const website = fixtures.find(item => item.name === 'website')!.data as components['schemas']['Scan']
+  await act(async () => root.render(<Report scan={website} />))
+  expect(host.textContent).toContain('Website observation')
+  expect(host.textContent).toContain(website.input.target_redacted)
+  expect(host.textContent).toContain('No browser JavaScript, authenticated pages or private backend source')
+  expect(host.textContent).toContain(website.findings[0].location.kind === 'web' ? website.findings[0].location.url_redacted : '')
+})

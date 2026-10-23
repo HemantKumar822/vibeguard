@@ -14,3 +14,6 @@ The [source/repository batch evidence](source-repository-batch-verification.md) 
 ## Subsequent acceptance — 2026-10-24
 
 After the focused review and push, the user requested completion/closure. Stories 1.2–2.2 and Epics 1–2 are accepted for completion through PR #23. Previous review/open-status statements above describe the earlier checkpoint. Rendered UI/accessibility and broader review remain explicitly deferred to Story 5.2 (#21); no unperformed check is claimed to pass.
+
+
+Epic 3 (Stories 3.1–3.4) is implemented and in review. See [verification evidence](epic-3-verification.md) for the single end-of-epic test batch, isolated passive ZAP, asset controls and authorized live target. Five implementation stories remain in Epics 4–5.

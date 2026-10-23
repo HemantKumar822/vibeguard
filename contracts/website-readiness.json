@@ -1,0 +1,19 @@
+{
+  "ready": true,
+  "checked_at": "2026-10-23T23:01:35.492224+00:00",
+  "implementation": "890ec09b8298cd691bd22352e17ec5efbdc0d22c46293ee282aae03c41715e1a",
+  "network_mode": "none",
+  "private_control": true,
+  "zap_image": "ghcr.io/zaproxy/zaproxy@sha256:5ccfff9a411743ab2615136a2edd7416bec9ce41572fa94e935df38c14adb2b6",
+  "gitleaks_image": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+  "target_redacted": "https://hemantkumar822.github.io/",
+  "scan_status": "partial",
+  "observed_resources": 6,
+  "findings": 51,
+  "tool_states": {
+    "zap": "complete",
+    "asset_secrets": "complete"
+  },
+  "source_removed": true,
+  "scope": "Connection-pinned bounded GET capture; offline passive ZAP and Gitleaks, never browser/active scanning."
+}

@@ -85,11 +85,39 @@ test('an old polling 404 cannot clear a newly accepted report', async () => {
   expect(host.textContent).toContain('Scan ID: ' + newId)
   expect(host.textContent).not.toContain('Scan is unavailable or expired')
 })
+
+test.each([true, false])('website admission checks measured readiness (%s)', async available => {
+  const fetch = vi.fn().mockImplementation(async (url: string) => {
+    if (url.endsWith('/session')) return { ok: true, json: async () => ({ csrf_token: 'csrf' }) }
+    if (url.endsWith('/capabilities')) return { ok: true, json: async () => ({ permitted_modes: available ? ['website'] : ['codebase', 'repository'] }) }
+    return { ok: true, json: async () => ({ scan_id: 'c'.repeat(32), mode: 'website', status: 'queued', findings: [], tools: [], warnings: [], coverage: { exclusions: [] }, input: { target_redacted: 'https://example.com/', observation_id: 'c'.repeat(32) } }) }
+  })
+  vi.stubGlobal('fetch', fetch)
+  await act(async () => root.render(<SourceIntake />))
+  const mode = host.querySelector('select')!
+  await act(async () => { mode.value = 'website'; mode.dispatchEvent(new Event('change', { bubbles: true })) })
+  const url = host.querySelector<HTMLInputElement>('input[type=url]')!
+  await act(async () => {
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(url, 'https://example.com/')
+    url.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+  await act(async () => host.querySelector<HTMLInputElement>('input[type=checkbox]')!.click())
+  await act(async () => host.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })))
+  if (available) {
+    expect(JSON.parse(fetch.mock.calls[2][1].body)).toMatchObject({ mode: 'website', target_url: 'https://example.com/', authorization_confirmed: true, allow_external_ai: false })
+    expect(host.textContent).toContain('Website observation')
+    expect(host.textContent).toContain('No browser JavaScript')
+  } else {
+    expect(fetch.mock.calls.filter(call => call[0] === '/api/v1/scans')).toHaveLength(0)
+    expect(host.querySelector('[role=alert]')?.textContent).toContain('safety verification is missing or stale')
+    expect(url.value).toBe('https://example.com/')
+  }
+})
 test('requires permission and leaves sharing off', async () => {
   await act(async () => root.render(<SourceIntake />))
   expect(host.querySelector('button')?.disabled).toBe(true)
   expect(Array.from(host.querySelectorAll<HTMLInputElement>('input[type=checkbox]')).every(input => !input.checked)).toBe(true)
-  expect(host.textContent).toContain('Public GitHub snapshots supported. Website intake is unavailable')
+  expect(host.querySelector('select')?.textContent).toContain('Website URL')
 })
 test('explains lost directory paths and offers explicit mapping', async () => {
   await act(async () => root.render(<SourceIntake />))

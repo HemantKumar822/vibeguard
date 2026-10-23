@@ -4,7 +4,8 @@ import Report from './Report'
 type Scan = components['schemas']['Scan']
 
 export default function SourceIntake() {
-  const [mode, setMode] = useState<'codebase' | 'repository'>('codebase')
+  const [mode, setMode] = useState<'codebase' | 'repository' | 'website'>('codebase')
+  const [website, setWebsite] = useState('')
   const [repository, setRepository] = useState('')
   const [ref, setRef] = useState('')
   const [reconnectId, setReconnectId] = useState('')
@@ -115,14 +116,20 @@ export default function SourceIntake() {
     retryKey.current ??= crypto.randomUUID()
     try {
       const csrf_token = await sessionToken()
+      if (mode === 'website') {
+        const response = await fetch('/api/v1/capabilities', { signal: AbortSignal.timeout(15_000) })
+        if (!response.ok) throw new Error('Website readiness could not be checked. Retry without changing your input.')
+        const capability: components['schemas']['Capabilities'] = await response.json()
+        if (!capability.permitted_modes.includes('website')) throw new Error('Website scanning is unavailable: the required networking/ZAP safety verification is missing or stale.')
+      }
       const metadata: components['schemas']['CodebaseMetadata'] = { mode: 'codebase', authorization_confirmed: true,
         allow_external_ai: sharing, files: names.map((relative_path, index) => ({ part_id: `file_${index}`, relative_path })) }
       const body = new FormData()
       body.append('metadata', JSON.stringify(metadata))
       files.forEach((file, index) => body.append(`file_${index}`, file))
       const response = await fetch('/api/v1/scans', { method: 'POST', signal: AbortSignal.timeout(75_000),
-        headers: { 'X-CSRF-Token': csrf_token, 'Idempotency-Key': retryKey.current, ...(mode === 'repository' ? { 'Content-Type': 'application/json' } : {}) },
-        body: mode === 'repository' ? JSON.stringify({ mode, repository_url: repository, ref: ref || null, authorization_confirmed: true, allow_external_ai: sharing }) : body })
+        headers: { 'X-CSRF-Token': csrf_token, 'Idempotency-Key': retryKey.current, ...(mode !== 'codebase' ? { 'Content-Type': 'application/json' } : {}) },
+        body: mode === 'repository' ? JSON.stringify({ mode, repository_url: repository, ref: ref || null, authorization_confirmed: true, allow_external_ai: sharing }) : mode === 'website' ? JSON.stringify({ mode, target_url: website, authorization_confirmed: true, allow_external_ai: sharing }) : body })
       if (!response.ok) {
         const result: components['schemas']['ErrorResponse'] = await response.json()
         throw new Error(`Submission rejected (${result.error.code}). Check permission, paths, mapping and limits.`)
@@ -137,12 +144,17 @@ export default function SourceIntake() {
   return <section className="workspace" aria-labelledby="source-title">
     <ol className="workflow-track" aria-label="Review workflow"><li data-current={!scan}><span className="step-number">01</span><div><strong>Choose your source</strong><small>Authorized code only</small></div></li><li data-current={!!scan && ['queued', 'running'].includes(scan.status)}><span className="step-number">02</span><div><strong>Inspect the evidence</strong><small>Real checks, visible coverage</small></div></li><li data-current={!!scan?.repair}><span className="step-number">03</span><div><strong>Plan your repair</strong><small>Clear next steps</small></div></li></ol>
     <div className="panel intake-panel">
-    <div className="section-heading"><div><p className="eyebrow">NEW REVIEW</p><h2 id="source-title">Start with your source.</h2><p className="muted">JS/TS and relevant web configuration. Public GitHub snapshots supported. Website intake is unavailable.</p></div><span className="scope-tag">SOURCE ANALYSIS</span></div>
+    <div className="section-heading"><div><p className="eyebrow">NEW REVIEW</p><h2 id="source-title">Start with your source.</h2><p className="muted">Codebase, public GitHub snapshot, or an authorized website. Website review requires verified passive-scan safety controls.</p></div><span className="scope-tag">{mode === 'website' ? 'PASSIVE WEB REVIEW' : 'SOURCE ANALYSIS'}</span></div>
     <form onSubmit={submit} className="intake-form">
-      <div className="source-controls"><label>Submission mode<select value={mode} disabled={pending} onChange={event => { changed(); setMode(event.target.value as 'codebase' | 'repository') }}><option value="codebase">Codebase</option><option value="repository">Repository</option></select></label><span className="mode-description">{mode === 'codebase' ? 'Keep your original file structure.' : 'Review one exact repository snapshot.'}</span></div>
-      <p className="limit-strip">25 MiB total · 5,000 files · 2 MiB per file<br />Path depth 20 · 240 UTF-8 bytes per path</p>
+      <div className="source-controls"><label>Submission mode<select value={mode} disabled={pending} onChange={event => { changed(); setMode(event.target.value as 'codebase' | 'repository' | 'website') }}><option value="codebase">Codebase</option><option value="repository">Repository</option><option value="website">Website URL</option></select></label><span className="mode-description">{mode === 'codebase' ? 'Keep your original file structure.' : mode === 'repository' ? 'Review one exact repository snapshot.' : 'Inspect captured responses, never private backend source.'}</span></div>
+      <p className="limit-strip">{mode === 'website' ? '200 requests · 50 pages · 50 linked assets · 20 MiB responses' : '25 MiB total · 5,000 files · 2 MiB per file · path depth 20 · 240 UTF-8 bytes per path'}</p>
       <div className="submission-layout"><div className="source-fields">
-      {mode === 'repository' ? <>
+      {mode === 'website' ? <>
+        <div className="repository-heading"><span className="source-symbol" aria-hidden="true">↗</span><h3>Review an authorized website</h3><p>Bounded public responses. Passive ZAP checks and browser-visible credential candidates.</p></div>
+        <label>Website URL<input type="url" required value={website} placeholder="https://your-authorized-site.example" disabled={pending} onChange={event => { changed(); setWebsite(event.target.value) }} /></label>
+        <p className="field-help">Public HTTP/HTTPS only, standard ports, exact-origin GET requests. No login, active attacks, browser JavaScript or cross-origin crawling.</p>
+        <p className="field-help">50 pages · 50 linked text assets · 200 requests · 20 MiB responses · 2 MiB/body. Runtime-loaded and unvisited resources remain outside the observed scope.</p>
+      </> : mode === 'repository' ? <>
         <div className="repository-heading"><span className="source-symbol" aria-hidden="true">⌥</span><h3>Connect a public repository</h3><p>Choose a branch, tag or commit. We’ll record exactly what was reviewed.</p></div>
         <label>Public GitHub repository URL<input type="url" required value={repository} placeholder="https://github.com/owner/repository" disabled={pending} onChange={event => { changed(); setRepository(event.target.value) }} /></label>
         <label>Branch, tag, or commit (optional)<input value={ref} maxLength={256} disabled={pending} onChange={event => { changed(); setRef(event.target.value) }} /></label>
@@ -153,16 +165,16 @@ export default function SourceIntake() {
       {mapped && <label>Relative paths, one per selected file<textarea value={paths} onChange={event => { if (event.target.value !== paths) changed(); setPaths(event.target.value) }} disabled={pending} /></label>}
       {files.length > 0 && <details className="selected-files"><summary>{files.length} files selected · {(files.reduce((total, file) => total + file.size, 0) / 1024).toFixed(1)} KiB</summary><ol>{files.map((file, index) => <li key={index}>{mapped ? file.name : file.webkitRelativePath} · {file.size} bytes</li>)}</ol></details>}
       </>}
-      </div><aside className="submission-context" aria-label="Review scope"><span className="context-icon" aria-hidden="true">{'{ }'}</span><h3>Know what you’re reviewing.</h3><p>Selected checks for credentials, unsafe input, insecure configuration and access-check candidates.</p><div className="scope-facts"><div><span>Maximum source size</span><strong>25 MiB</strong></div><div><span>Files per review</span><strong>5,000</strong></div><div><span>Maximum file size</span><strong>2 MiB</strong></div></div><p className="field-help">Path depth 20 · 240 UTF-8 bytes per path</p><div className="privacy-note"><strong>Evidence without exposed values</strong><p>Reports omit source literals. Exposed credentials still need revocation or rotation.</p></div></aside></div>
-      <div className="consent-area"><label className="checkbox-row"><input type="checkbox" checked={permission} onChange={event => { changed(); setPermission(event.target.checked) }} disabled={pending} required /><span>I have permission to review this source.<small>Only submit code you own or are authorized to assess.</small></span></label>
+      </div><aside className="submission-context" aria-label="Review scope"><span className="context-icon" aria-hidden="true">{'{ }'}</span><h3>Know what you’re reviewing.</h3><p>{mode === 'website' ? 'Passive response and header checks, plus private-credential candidates in observed browser-visible text.' : 'Selected checks for credentials, unsafe input, insecure configuration and access-check candidates.'}</p><div className="scope-facts"><div><span>{mode === 'website' ? 'Total response budget' : 'Maximum source size'}</span><strong>{mode === 'website' ? '20 MiB' : '25 MiB'}</strong></div><div><span>{mode === 'website' ? 'Maximum GET requests' : 'Files per review'}</span><strong>{mode === 'website' ? '200' : '5,000'}</strong></div><div><span>{mode === 'website' ? 'Maximum response body' : 'Maximum file size'}</span><strong>2 MiB</strong></div></div><p className="field-help">{mode === 'website' ? '50 pages · 50 linked text assets · exact origin only' : 'Path depth 20 · 240 UTF-8 bytes per path'}</p><div className="privacy-note"><strong>Evidence without exposed values</strong><p>Reports omit source literals. Exposed credentials still need revocation or rotation.</p></div></aside></div>
+      <div className="consent-area"><label className="checkbox-row"><input type="checkbox" checked={permission} onChange={event => { changed(); setPermission(event.target.checked) }} disabled={pending} required /><span>{mode === 'website' ? 'I have permission to review this website.' : 'I have permission to review this source.'}<small>{mode === 'website' ? 'Only assess sites you own or are authorized to review.' : 'Only submit code you own or are authorized to assess.'}</small></span></label>
       <label className="checkbox-row secondary-consent"><input type="checkbox" checked={sharing} onChange={event => { changed(); setSharing(event.target.checked) }} disabled={pending} /><span>Allow external AI sharing for this submission (AI is currently unavailable).<small>Repair guidance works without AI. Sharing is off by default.</small></span></label></div>
-      <div className="submit-row"><p>{pending ? 'Preparing your submission. Keep this page open.' : 'Select your source and confirm permission to begin.'}</p><button className="primary-button" type="submit" disabled={pending || !permission || (mode === 'codebase' ? files.length === 0 : !repository)}>{pending ? 'Submitting…' : mode === 'repository' ? 'Review repository' : 'Submit source tree'}</button></div>
+      <div className="submit-row"><p>{pending ? 'Preparing your submission. Keep this page open.' : 'Select your input and confirm permission to begin.'}</p><button className="primary-button" type="submit" disabled={pending || !permission || (mode === 'codebase' ? files.length === 0 : mode === 'repository' ? !repository : !website)}>{pending ? 'Submitting…' : mode === 'repository' ? 'Review repository' : mode === 'website' ? 'Review website' : 'Submit source tree'}</button></div>
     </form>
     <details className="reconnect-panel"><summary>Reconnect to an existing scan</summary><p>Use the same browser session and Scan ID after refresh. Reconnecting does not submit new work. Lost cookies cannot be recovered.</p>
       <label>Scan ID<input value={reconnectId} maxLength={32} onChange={event => setReconnectId(event.target.value)} /></label><button type="button" onClick={() => reconnect()}>Reconnect</button></details>
     {error && <p role="alert" className="error-banner">{error}</p>}
     </div>
-    {scan && <div className="panel results-panel"><div className="results-heading"><div><p className="eyebrow">YOUR REVIEW</p><h3 role="status">Accepted · {scan.status}</h3></div><span className="scope-tag">{scan.mode === 'repository' ? 'REPOSITORY' : 'CODEBASE'}</span></div>
+    {scan && <div className="panel results-panel"><div className="results-heading"><div><p className="eyebrow">YOUR REVIEW</p><h3 role="status">Accepted · {scan.status}</h3></div><span className="scope-tag">{scan.mode === 'repository' ? 'REPOSITORY' : scan.mode === 'website' ? 'WEBSITE' : 'CODEBASE'}</span></div>
       <Report scan={scan} key={scan.scan_id} />
       <div className="report-footer"><p>Scan ID: <code>{scan.scan_id}</code></p><button className="danger-button" type="button" onClick={() => confirmation.current?.showModal()}>Delete scan</button></div></div>}
     {!scan && !deletion && <div className="report-placeholder"><span className="placeholder-mark" aria-hidden="true">[ / ]</span><div><h3>Your evidence will appear here.</h3><p>Submit authorized source to inspect real findings and copy a repair prompt.</p></div><span className="scope-tag">AWAITING SOURCE</span></div>}

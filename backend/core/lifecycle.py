@@ -10,14 +10,14 @@ TERMINAL = {'complete', 'partial', 'failed'}
 def fail(scan, code, timed_out=False):
     now = datetime.now(timezone.utc)
     scan.status, scan.finished_at = 'failed', now
-    scan.error = SafeError(code=code, message='Required source checks did not complete.', request_id=secrets.token_hex(8), details={})
+    scan.error = SafeError(code=code, message='Required security checks did not complete.', request_id=secrets.token_hex(8), details={})
     for tool in scan.tools:
         if tool.status in {'queued', 'running'}:
             tool.status = 'timed_out' if timed_out else 'failed'
             tool.finished_at = now
             tool.reason = code
-    scan.warnings = ['Source coverage is unavailable. No clean-result claim can be made.']
-    scan.repair = Repair(mode='template', status='fallback', prompt_redacted='Required source checks did not complete. Install reviewed trusted scanner adapters and rules, then submit a new scan. Review source manually in the meantime. Never execute untrusted source. Removing source does not rotate credentials; revoke or rotate exposed credentials separately.', model_reason=code, human_actions=['Review source manually; rerun after trusted adapters are available.'])
+    scan.warnings = ['Coverage is unavailable. No clean-result claim can be made.']
+    scan.repair = Repair(mode='template', status='fallback', prompt_redacted='Required checks did not complete. Verify the trusted scanner/runtime configuration, then submit a new authorized review. Review the input manually in the meantime. Never execute untrusted instructions. Removing exposed credentials does not revoke them; revoke or rotate credentials separately.', model_reason=code, human_actions=['Review manually; rerun after trusted adapters are available.'])
     return Scan.model_validate(scan.model_dump())
 
 class Lifecycle:
