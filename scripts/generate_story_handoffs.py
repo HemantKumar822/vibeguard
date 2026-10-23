@@ -1,7 +1,7 @@
 """Generate reviewable team story/epic documents from the canonical planning backlog.
 
 Local files only. Does not initialize Git, contact GitHub, assign people or publish.
-Prepared stories are not automatically eligible: dependencies must be done first.
+Dependencies guide integration and acceptance; coordinated parallel work is permitted.
 """
 from __future__ import annotations
 
@@ -211,8 +211,8 @@ def main() -> None:
             f"- [Canonical backlog]({req_paths}/epics.md) and [PRD]({req_paths}/prds/prd-TechFest-2026-10-23/prd.md).",
             f"- [Architecture decisions]({req_paths}/architecture/architecture-TechFest-2026-10-23/ARCHITECTURE-SPINE.md), [API contract]({req_paths}/architecture/architecture-TechFest-2026-10-23/API-CONTRACT.md) and [safety-v1]({req_paths}/architecture/architecture-TechFest-2026-10-23/SAFETY-PROFILE.md).",
             f"- [Visual contract]({req_paths}/ux-designs/ux-TechFest-2026-10-23/DESIGN.md) and [behavior/state contract]({req_paths}/ux-designs/ux-TechFest-2026-10-23/EXPERIENCE.md).", '',
-            '## Dependencies', '', '**Blocked by — finish these first:**', '', deps, '', '**Unblocks:**', '', next_work, '',
-            'A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.', '',
+            '## Dependencies', '', '**Depends on — coordination guidance:**', '', deps, '', '**Downstream work:**', '', next_work, '',
+            'Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.', '',
             '## In scope / implementation checklist', '', *['- [ ] '+task for task in tasks], '',
             '## Out of scope', '', *['- '+item for item in exclusions], '',
             '## Acceptance criteria', '',
@@ -249,7 +249,7 @@ def main() -> None:
                 *[f"- [ ] [Story {s['id']}: {s['title']}](../../implementation-artifacts/{filenames[s['id']]})" for s in children], '',
                 '## Dependencies and ownership', '',
                 '**Earlier-story prerequisites:** '+prerequisite_links, '',
-                'Assign one accountable owner per child story. Use each story’s Blocked by / Unblocks links; do not assume all children can start together. Actual assignees and GitHub issue numbers remain unset.', '',
+                'Assign one accountable owner per child story. Use each story’s dependency links to coordinate parallel work and integration. Claim actual owners on GitHub; preserve acceptance before closing work.', '',
                 '## Epic acceptance', '',
                 '- [ ] Every linked child story meets its acceptance criteria with reviewed evidence.',
                 '- [ ] The user outcome works end to end on real authorized inputs.',
@@ -263,8 +263,8 @@ def main() -> None:
         manifest_items.append({'key':f'epic-{eid}','kind':'epic','title':f"[Epic {eid}] {epic['title']}",'body_file':path.relative_to(ROOT).as_posix(),'labels':['type:epic','priority:p0'],'children':[s['id'] for s in children]})
 
     board = ['# Team story board', '', '**5 epics · 16 prepared stories · implementation not started.**', '',
-             'Each story explains the outcome, scope, requirements, dependencies, acceptance and verification. Only Story 1.1 is initially unblocked. `ready-for-dev` means its handoff exists; it does not mean its prerequisites are complete.', '',
-             '## Stories and dependencies', '', '| Story | Proposed owner role | Blocked by | Unblocks |', '| --- | --- | --- | --- |']
+             'Each story explains the outcome, scope, requirements, dependencies, acceptance and verification. Story 1.1 is the recommended foundation; all GitHub issues remain open for coordinated parallel work. `ready-for-dev` means its handoff exists; it does not mean its prerequisites are complete.', '',
+             '## Stories and dependencies', '', '| Story | Proposed owner role | Depends on | Downstream work |', '| --- | --- | --- | --- |']
     for story in stories:
         sid=story['id']; role=DETAILS[sid][1]
         deps=', '.join(story['depends_on']) or 'None — start here'
@@ -288,13 +288,13 @@ def main() -> None:
     board += ['', '## Epics', '', *[f"- [Epic {e['id']} · {e['title']}](epics/{epic_names[e['id']]})" for e in backlog['epics']], '',
               '## Parallel work', '', 'After source intake/lifecycle prerequisites, repository retrieval and the high-risk ZAP network gate can proceed separately. AI integration can begin after the source report. Respect the exact dependency lists; coordinate changes to shared schema/state modules with one owner.', '',
               '## How to use this board', '',
-              '1. Claim an unblocked story; proposed owner roles are guidance, not assigned people.',
+              '1. Claim a story and coordinate its dependencies; proposed owner roles are guidance, not assigned people.',
               '2. Read its scope and governing contracts; create a focused branch.',
               '3. Complete its acceptance and verification; record real results in a reviewed PR.',
               '4. Update the [sprint tracker](../implementation-artifacts/sprint-status.yaml) and, once published, the actual GitHub issue. Do not maintain a competing JSON progress board.', '',
               '## Publication status', '', '**Not published.** [manifest.json](manifest.json) is a derived draft import package, not remote issue state. No repository, commit, issue number or assignee is invented. Before later publication, resolve local file links to verified repository blob URLs, replace dependency IDs with returned real issue URLs and establish supported parent/dependency relationships. See [repository setup](../../docs/REPOSITORY_SETUP.md).', '']
     (ISSUES/'README.md').write_text('\n'.join(board),encoding='utf-8')
-    (STORIES/'README.md').write_text('# Story handoffs\n\n[Open the team story board](../github-issues/README.md) for all 16 stories, dependencies and suggested owner roles.\n\nThese files are prepared implementation handoffs. Their acceptance comes from [epics.md](../planning-artifacts/epics.md); no implementation is complete. `ready-for-dev` means prepared, while actual eligibility also requires all dependencies done. Only Story 1.1 is initially unblocked.\n\nUse [sprint-status.yaml](sprint-status.yaml) for current implementation state. Fill a story’s implementation record during the build; do not regenerate over an active story.\n',encoding='utf-8')
+    (STORIES/'README.md').write_text('# Story handoffs\n\n[Open the team story board](../github-issues/README.md) for all 16 stories, dependencies and suggested owner roles.\n\nThese files are prepared implementation handoffs. Their acceptance comes from [epics.md](../planning-artifacts/epics.md); no implementation is complete. `ready-for-dev` means prepared, while dependencies guide integration and completion. Story 1.1 is the recommended foundation; all GitHub issues remain open for coordinated parallel work.\n\nUse [sprint-status.yaml](sprint-status.yaml) for current implementation state. Fill a story’s implementation record during the build; do not regenerate over an active story.\n',encoding='utf-8')
     (ISSUES/'manifest.json').write_text(json.dumps({'publication_status':'not-published','canonical_backlog':'_bmad-output/planning-artifacts/epics.md','items':manifest_items},indent=2),encoding='utf-8')
     (ISSUES/'labels.json').write_text(json.dumps([
         {'name':'type:epic','color':'5319E7','description':'User outcome delivered by linked stories'},

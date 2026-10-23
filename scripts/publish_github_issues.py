@@ -84,9 +84,9 @@ def main():
             parent = record['issues'][item['parent']]['url']
             body += '\n\n## GitHub tracking\n\nParent epic: ' + parent + '\n'
             for dep in item['depends_on']:
-                body += '- Blocked by ' + record['issues'][dep]['url'] + '\n'
+                body += '- Depends on (guidance): ' + record['issues'][dep]['url'] + '\n'
             for successor in item['blocks']:
-                body += '- Blocks ' + record['issues'][successor]['url'] + '\n'
+                body += '- Downstream work: ' + record['issues'][successor]['url'] + '\n'
         assert not re.search(r'(?<![A-Za-z0-9])[A-Za-z]:[\\/]', body), 'Local path in published body'
         number = record['issues'][item['key']]['number']
         api(f'repos/{REPO}/issues/{number}', 'PATCH', {'body': body})
@@ -100,9 +100,10 @@ def main():
         parent = record['issues'][item['parent']]
         edges = [(item['parent'] + '>' + item['key'],
                   f"repos/{REPO}/issues/{parent['number']}/sub_issues", {'sub_issue_id': child['id']})]
-        edges += [(item['key'] + '<' + dep,
-                   f"repos/{REPO}/issues/{child['number']}/dependencies/blocked_by",
-                   {'issue_id': record['issues'][dep]['id']}) for dep in item['depends_on']]
+        # Team preference: dependencies are descriptive guidance, not native
+        # blocking relationships. Keep the parent/sub-issue tree intact.
+        for dep in item['depends_on']:
+            record['relationships'][item['key'] + '<' + dep] = 'description only; team parallel-work preference'
         for edge, endpoint, payload in edges:
             if record['relationships'].get(edge) == 'native':
                 continue

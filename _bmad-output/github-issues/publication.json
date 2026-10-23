@@ -5,144 +5,193 @@
     "epic-1": {
       "number": 1,
       "id": 6002339659,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/1"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/1",
+      "milestone": 1
     },
     "epic-2": {
       "number": 2,
       "id": 6002339890,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/2"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/2",
+      "milestone": 2
     },
     "epic-3": {
       "number": 3,
       "id": 6002340164,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/3"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/3",
+      "milestone": 3
     },
     "epic-4": {
       "number": 4,
       "id": 6002340422,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/4"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/4",
+      "milestone": 4
     },
     "epic-5": {
       "number": 5,
       "id": 6002340693,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/5"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/5",
+      "milestone": 5
     },
     "1.1": {
       "number": 6,
       "id": 6002340952,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/6"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/6",
+      "milestone": 1
     },
     "1.2": {
       "number": 7,
       "id": 6002341211,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/7"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/7",
+      "milestone": 1
     },
     "1.3": {
       "number": 8,
       "id": 6002341477,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/8"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/8",
+      "milestone": 1
     },
     "1.4": {
       "number": 9,
       "id": 6002341722,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/9"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/9",
+      "milestone": 1
     },
     "1.5": {
       "number": 10,
       "id": 6002341951,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/10"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/10",
+      "milestone": 1
     },
     "2.1": {
       "number": 11,
       "id": 6002342211,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/11"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/11",
+      "milestone": 2
     },
     "2.2": {
       "number": 12,
       "id": 6002342566,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/12"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/12",
+      "milestone": 2
     },
     "3.1": {
       "number": 13,
       "id": 6002342825,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/13"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/13",
+      "milestone": 3
     },
     "3.2": {
       "number": 14,
       "id": 6002343073,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/14"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/14",
+      "milestone": 3
     },
     "3.3": {
       "number": 15,
       "id": 6002343372,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/15"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/15",
+      "milestone": 3
     },
     "3.4": {
       "number": 16,
       "id": 6002343622,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/16"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/16",
+      "milestone": 3
     },
     "4.1": {
       "number": 17,
       "id": 6002343875,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/17"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/17",
+      "milestone": 4
     },
     "4.2": {
       "number": 18,
       "id": 6002344156,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/18"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/18",
+      "milestone": 4
     },
     "4.3": {
       "number": 19,
       "id": 6002344435,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/19"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/19",
+      "milestone": 4
     },
     "5.1": {
       "number": 20,
       "id": 6002344707,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/20"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/20",
+      "milestone": 5
     },
     "5.2": {
       "number": 21,
       "id": 6002344962,
-      "url": "https://github.com/HemantKumar822/vibeguard/issues/21"
+      "url": "https://github.com/HemantKumar822/vibeguard/issues/21",
+      "milestone": 5
     }
   },
   "relationships": {
     "epic-1>1.1": "native",
     "epic-1>1.2": "native",
-    "1.2<1.1": "native",
+    "1.2<1.1": "description only; team parallel-work preference",
     "epic-1>1.3": "native",
-    "1.3<1.2": "native",
+    "1.3<1.2": "description only; team parallel-work preference",
     "epic-1>1.4": "native",
-    "1.4<1.3": "native",
+    "1.4<1.3": "description only; team parallel-work preference",
     "epic-1>1.5": "native",
-    "1.5<1.4": "native",
+    "1.5<1.4": "description only; team parallel-work preference",
     "epic-2>2.1": "native",
-    "2.1<1.4": "native",
+    "2.1<1.4": "description only; team parallel-work preference",
     "epic-2>2.2": "native",
-    "2.2<2.1": "native",
-    "2.2<1.5": "native",
+    "2.2<2.1": "description only; team parallel-work preference",
+    "2.2<1.5": "description only; team parallel-work preference",
     "epic-3>3.1": "native",
-    "3.1<1.3": "native",
+    "3.1<1.3": "description only; team parallel-work preference",
     "epic-3>3.2": "native",
-    "3.2<3.1": "native",
-    "3.2<1.4": "native",
+    "3.2<3.1": "description only; team parallel-work preference",
+    "3.2<1.4": "description only; team parallel-work preference",
     "epic-3>3.3": "native",
-    "3.3<3.2": "native",
+    "3.3<3.2": "description only; team parallel-work preference",
     "epic-3>3.4": "native",
-    "3.4<3.3": "native",
-    "3.4<1.5": "native",
+    "3.4<3.3": "description only; team parallel-work preference",
+    "3.4<1.5": "description only; team parallel-work preference",
     "epic-4>4.1": "native",
-    "4.1<1.5": "native",
+    "4.1<1.5": "description only; team parallel-work preference",
     "epic-4>4.2": "native",
-    "4.2<2.2": "native",
-    "4.2<3.4": "native",
+    "4.2<2.2": "description only; team parallel-work preference",
+    "4.2<3.4": "description only; team parallel-work preference",
     "epic-4>4.3": "native",
-    "4.3<4.2": "native",
+    "4.3<4.2": "description only; team parallel-work preference",
     "epic-5>5.1": "native",
-    "5.1<4.3": "native",
+    "5.1<4.3": "description only; team parallel-work preference",
     "epic-5>5.2": "native",
-    "5.2<5.1": "native"
-  }
+    "5.2<5.1": "description only; team parallel-work preference"
+  },
+  "milestones": {
+    "1": {
+      "number": 1,
+      "title": "M1 \u2014 Safe source review",
+      "url": "https://github.com/HemantKumar822/vibeguard/milestone/1"
+    },
+    "2": {
+      "number": 2,
+      "title": "M2 \u2014 Repository review",
+      "url": "https://github.com/HemantKumar822/vibeguard/milestone/2"
+    },
+    "3": {
+      "number": 3,
+      "title": "M3 \u2014 Website review with OWASP ZAP",
+      "url": "https://github.com/HemantKumar822/vibeguard/milestone/3"
+    },
+    "4": {
+      "number": 4,
+      "title": "M4 \u2014 Repair guidance and real rescans",
+      "url": "https://github.com/HemantKumar822/vibeguard/milestone/4"
+    },
+    "5": {
+      "number": 5,
+      "title": "M5 \u2014 Validated hackathon demo",
+      "url": "https://github.com/HemantKumar822/vibeguard/milestone/5"
+    }
+  },
+  "dependency_policy": "Informational descriptions only. No native blocking relationships; all issues remain open for team coordination."
 }

@@ -2,13 +2,13 @@
 
 **5 epics · 16 prepared stories · implementation not started.**
 
-[Live GitHub issues](https://github.com/HemantKumar822/vibeguard/issues) · [Published issue IDs and relationships](publication.json). GitHub tracks ownership and implementation; the handoffs below retain full specifications.
+[Live GitHub issues](https://github.com/HemantKumar822/vibeguard/issues) · [Delivery milestones](https://github.com/HemantKumar822/vibeguard/milestones) · [Team guide](../../docs/TEAM_DELIVERY.md) · [Published issue IDs and relationships](publication.json). GitHub tracks ownership and implementation; the handoffs below retain full specifications.
 
-Each story explains the outcome, scope, requirements, dependencies, acceptance and verification. Only Story 1.1 is initially unblocked. `ready-for-dev` means its handoff exists; it does not mean its prerequisites are complete.
+Each story explains the outcome, scope, requirements, dependencies, acceptance and verification. Story 1.1 is the recommended foundation; all GitHub issues remain open for coordinated parallel work. `ready-for-dev` means its handoff exists; it does not mean its prerequisites are complete.
 
 ## Stories and dependencies
 
-| Story | Proposed owner role | Blocked by | Unblocks |
+| Story | Proposed owner role | Depends on | Downstream work |
 | --- | --- | --- | --- |
 | [1.1 · Set up initial project from starter template and freeze contracts](../implementation-artifacts/1-1-set-up-initial-project-from-starter-template-and-freeze-contracts.md) | Full-stack / platform | None — start here | 1.2 |
 | [1.2 · Accept an authorized bounded source tree](../implementation-artifacts/1-2-accept-an-authorized-bounded-source-tree.md) | Backend / intake | 1.1 | 1.3 |
@@ -41,7 +41,7 @@ After source intake/lifecycle prerequisites, repository retrieval and the high-r
 
 ## How to use this board
 
-1. Claim an unblocked story; proposed owner roles are guidance, not assigned people.
+1. Claim a story and coordinate its dependencies; proposed owner roles are guidance, not assigned people.
 2. Read its scope and governing contracts; create a focused branch.
 3. Complete its acceptance and verification; record real results in a reviewed PR.
 4. Update the [sprint tracker](../implementation-artifacts/sprint-status.yaml) and, once published, the actual GitHub issue. Do not maintain a competing JSON progress board.

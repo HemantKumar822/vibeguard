@@ -39,15 +39,15 @@ As a developer, I want optional AI explanations grounded in my findings, so that
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - [Story 1.5: Investigate findings and copy a deterministic repair prompt](1-5-investigate-findings-and-copy-a-deterministic-repair-prompt.md)
 
-**Unblocks:**
+**Downstream work:**
 
 - No direct successor; completion contributes to its epic acceptance.
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

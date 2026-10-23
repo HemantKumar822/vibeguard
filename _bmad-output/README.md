@@ -1,6 +1,6 @@
 # Shared project documents
 
-Start with the [team story board](github-issues/README.md). It links all five epics and 16 detailed stories, with dependencies and proposed owner roles. Only Story 1.1 is initially unblocked.
+Start with the [team story board](github-issues/README.md). It links all five epics and 16 detailed stories, with dependencies and proposed owner roles. Story 1.1 is the recommended foundation; all GitHub issues remain open for coordinated parallel work.
 
 ## Planning and delivery
 

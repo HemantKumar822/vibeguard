@@ -24,15 +24,15 @@ As a developer, I want to select a public repository and reference, so that the 
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - [Story 1.4: Detect and sanitize source findings with trusted rules](../../implementation-artifacts/1-4-detect-and-sanitize-source-findings-with-trusted-rules.md)
 
-**Unblocks:**
+**Downstream work:**
 
 - [Story 2.2: Review repository findings with commit attribution](../../implementation-artifacts/2-2-review-repository-findings-with-commit-attribution.md)
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

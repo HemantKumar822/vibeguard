@@ -18,7 +18,9 @@ The required journey is a graphical workspace, not a chatbot. Findings remain ca
 
 ## Start here as a teammate
 
-1. Read the [team story board](_bmad-output/github-issues/README.md) and choose an unblocked story.
+Use the [team delivery guide](docs/TEAM_DELIVERY.md) for epics, milestones, dependency badges and the starting story.
+
+1. Read the [team story board](_bmad-output/github-issues/README.md) and coordinate a story with the team.
 2. Read that story's description, dependencies, acceptance criteria and verification plan. Every story has its own file in [_bmad-output/implementation-artifacts/](_bmad-output/implementation-artifacts/README.md).
 3. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [project rules](docs/PROJECT_RULES.md). Claim one story before changing shared files.
 4. Start implementation with **Story 1.1**. It introduces real setup/build/test commands and locked dependencies; guessed application commands are deliberately not published here.

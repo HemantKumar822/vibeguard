@@ -24,16 +24,16 @@ As a developer, I want a corrected submission assessed again against its baselin
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - [Story 2.2: Review repository findings with commit attribution](../../implementation-artifacts/2-2-review-repository-findings-with-commit-attribution.md)
 - [Story 3.4: Investigate website findings in the shared workspace](../../implementation-artifacts/3-4-investigate-website-findings-in-the-shared-workspace.md)
 
-**Unblocks:**
+**Downstream work:**
 
 - [Story 4.3: Inspect paired rescan evidence and recovery](../../implementation-artifacts/4-3-inspect-paired-rescan-evidence-and-recovery.md)
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

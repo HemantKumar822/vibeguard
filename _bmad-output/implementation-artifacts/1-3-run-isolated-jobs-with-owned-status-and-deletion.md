@@ -37,16 +37,16 @@ As a submitting developer, I want bounded private scans that I can track and del
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - [Story 1.2: Accept an authorized bounded source tree](1-2-accept-an-authorized-bounded-source-tree.md)
 
-**Unblocks:**
+**Downstream work:**
 
 - [Story 1.4: Detect and sanitize source findings with trusted rules](1-4-detect-and-sanitize-source-findings-with-trusted-rules.md)
 - [Story 3.1: Enforce authorized website networking and budgets](3-1-enforce-authorized-website-networking-and-budgets.md)
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

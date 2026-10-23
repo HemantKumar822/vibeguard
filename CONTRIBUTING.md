@@ -4,9 +4,9 @@ Start from the [story board](_bmad-output/github-issues/README.md). Every story 
 
 ## Pick and claim work
 
-1. Check the [sprint tracker](_bmad-output/implementation-artifacts/sprint-status.yaml) and the story's **Blocked by** section.
+1. Check the [sprint tracker](_bmad-output/implementation-artifacts/sprint-status.yaml) and the story's **Dependencies** section.
 2. Claim one story with the team. Once GitHub issues exist, assign its issue to one accountable owner; additional collaborators are welcome.
-3. A prepared story is not automatically unblocked. Begin only after its dependencies are done, or after the team explicitly records a scoped contract-only task that does not claim the dependent story complete.
+3. Dependencies guide integration order. Coordinate contracts and ownership when working in parallel; finish required integration and acceptance checks before closing a story.
 4. Use a focused branch such as `feat/1-2-source-intake`, `fix/3-1-redirect-check` or `docs/5-2-demo-guide`. Prefer small PRs; avoid mixing unrelated stories.
 
 ## Build within the contract

@@ -22,15 +22,15 @@ As a team developer, I want a reproducible starter and shared boundary fixtures,
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - None. This is the starting story.
 
-**Unblocks:**
+**Downstream work:**
 
 - [Story 1.2: Accept an authorized bounded source tree](../../implementation-artifacts/1-2-accept-an-authorized-bounded-source-tree.md)
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

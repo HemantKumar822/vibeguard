@@ -21,7 +21,7 @@ Users optionally enable sanitized AI explanation, then genuinely repeat all supp
 
 **Earlier-story prerequisites:** [Story 1.5](../../implementation-artifacts/1-5-investigate-findings-and-copy-a-deterministic-repair-prompt.md), [Story 2.2](../../implementation-artifacts/2-2-review-repository-findings-with-commit-attribution.md), [Story 3.4](../../implementation-artifacts/3-4-investigate-website-findings-in-the-shared-workspace.md)
 
-Assign one accountable owner per child story. Use each story’s Blocked by / Unblocks links; do not assume all children can start together. Actual assignees and GitHub issue numbers remain unset.
+Assign one accountable owner per child story. Use each story’s dependency links to coordinate parallel work and integration. Claim actual owners on GitHub; preserve acceptance before closing work.
 
 ## Epic acceptance
 

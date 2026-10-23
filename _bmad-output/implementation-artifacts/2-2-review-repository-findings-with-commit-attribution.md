@@ -39,16 +39,16 @@ As a developer, I want repository submission and evidence in the same workspace,
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - [Story 2.1: Retrieve a bounded public repository snapshot](2-1-retrieve-a-bounded-public-repository-snapshot.md)
 - [Story 1.5: Investigate findings and copy a deterministic repair prompt](1-5-investigate-findings-and-copy-a-deterministic-repair-prompt.md)
 
-**Unblocks:**
+**Downstream work:**
 
 - [Story 4.2: Execute real rescans and classify comparable findings](4-2-execute-real-rescans-and-classify-comparable-findings.md)
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

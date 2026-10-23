@@ -41,6 +41,10 @@ def main() -> int:
         publication=json.loads((OUT/'github-issues/publication.json').read_text(encoding='utf-8'))
         ensure(publication['status']=='published' and len(publication['issues'])==21,'Incomplete publication record')
         ensure(all(v.get('url') and v.get('number') for v in publication['issues'].values()),'Missing published issue identities')
+        if 'milestones' in publication:
+            ensure(len(publication['milestones'])==5,'Expected five delivery milestones')
+            milestone_numbers={m['number'] for m in publication['milestones'].values()}
+            ensure(all(v.get('milestone') in milestone_numbers for v in publication['issues'].values()),'An issue has no recorded delivery milestone')
     items={item['key']:item for item in manifest['items']}
     ensure(len(items)==21 and len(manifest['items'])==21,'Expected 5 unique epics and 16 unique story drafts')
     stories=backlog['stories']; ids=[s['id'] for s in stories]; incoming={s['id']:s['depends_on'] for s in stories}
@@ -83,7 +87,7 @@ def main() -> int:
         item=items[f'epic-{eid}']; paths.append(ROOT/item['body_file'])
         ensure(item['children']==[s['id'] for s in stories if s['epic']==eid],f'Epic {eid}: wrong children')
     paths += [ROOT/'README.md',ROOT/'CONTRIBUTING.md',ROOT/'SECURITY.md',
-              ROOT/'docs/PROJECT_RULES.md',ROOT/'docs/REPOSITORY_SETUP.md',
+              ROOT/'docs/PROJECT_RULES.md',ROOT/'docs/REPOSITORY_SETUP.md',ROOT/'docs/TEAM_DELIVERY.md',
               OUT/'README.md',OUT/'repository-preparation/README.md',
               OUT/'github-issues/README.md',OUT/'implementation-artifacts/README.md',ROOT/'.github/pull_request_template.md']
     paths += list((ROOT/'.github/ISSUE_TEMPLATE').glob('*.md'))
@@ -153,7 +157,8 @@ def main() -> int:
             'canonical_acceptance_criteria':total_acceptance,'dependency_and_reverse_links':'PASS',
             'local_markdown_links':local_links,'ignore_policy_cases':len(set(ignored+shared)),
             'shareable_file_count':len(shareable),'shareable_files':shareable,
-            'initially_eligible_stories':eligible,'tracked_file_audit':tracked_audit,
+            'dependency_clear_foundation_stories':eligible,'tracked_file_audit':tracked_audit,
+            'dependency_policy':'Informational guidance; coordinated parallel work is permitted and no native GitHub blockers are used',
             'project_git_created':False,'remote_actions':False,
             'limitations':'Preparation checks only; no application/security acceptance tests or remote publication.'}
     if args.output:

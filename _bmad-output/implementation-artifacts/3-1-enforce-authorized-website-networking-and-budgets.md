@@ -36,15 +36,15 @@ As a developer, I want URL checks restricted to permitted destinations and scope
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - [Story 1.3: Run isolated jobs with owned status and deletion](1-3-run-isolated-jobs-with-owned-status-and-deletion.md)
 
-**Unblocks:**
+**Downstream work:**
 
 - [Story 3.2: Produce located ZAP baseline findings](3-2-produce-located-zap-baseline-findings.md)
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

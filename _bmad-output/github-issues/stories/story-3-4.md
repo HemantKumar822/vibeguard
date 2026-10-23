@@ -28,16 +28,16 @@ As a developer, I want website submission, evidence and repair guidance together
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - [Story 3.3: Detect secrets in bounded visible assets](../../implementation-artifacts/3-3-detect-secrets-in-bounded-visible-assets.md)
 - [Story 1.5: Investigate findings and copy a deterministic repair prompt](../../implementation-artifacts/1-5-investigate-findings-and-copy-a-deterministic-repair-prompt.md)
 
-**Unblocks:**
+**Downstream work:**
 
 - [Story 4.2: Execute real rescans and classify comparable findings](../../implementation-artifacts/4-2-execute-real-rescans-and-classify-comparable-findings.md)
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

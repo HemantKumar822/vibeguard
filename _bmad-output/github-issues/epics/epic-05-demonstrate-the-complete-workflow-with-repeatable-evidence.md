@@ -20,7 +20,7 @@ The team can operate and evaluate every required mode on the demo machine, with 
 
 **Earlier-story prerequisites:** [Story 4.3](../../implementation-artifacts/4-3-inspect-paired-rescan-evidence-and-recovery.md)
 
-Assign one accountable owner per child story. Use each story’s Blocked by / Unblocks links; do not assume all children can start together. Actual assignees and GitHub issue numbers remain unset.
+Assign one accountable owner per child story. Use each story’s dependency links to coordinate parallel work and integration. Claim actual owners on GitHub; preserve acceptance before closing work.
 
 ## Epic acceptance
 

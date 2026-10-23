@@ -22,15 +22,15 @@ As a team presenter, I want a usable, rehearsed application and operator guide, 
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - [Story 5.1: Run the labeled acceptance and adversarial corpus](../../implementation-artifacts/5-1-run-the-labeled-acceptance-and-adversarial-corpus.md)
 
-**Unblocks:**
+**Downstream work:**
 
 - No direct successor; completion contributes to its epic acceptance.
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

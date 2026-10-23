@@ -5,9 +5,9 @@
   "story_issue_drafts": 16,
   "canonical_acceptance_criteria": 54,
   "dependency_and_reverse_links": "PASS",
-  "local_markdown_links": 455,
-  "ignore_policy_cases": 92,
-  "shareable_file_count": 108,
+  "local_markdown_links": 458,
+  "ignore_policy_cases": 93,
+  "shareable_file_count": 111,
   "shareable_files": [
     ".env.example",
     ".gitattributes",
@@ -114,14 +114,18 @@
     "_bmad-output/workflow-status.md",
     "docs/PROJECT_RULES.md",
     "docs/REPOSITORY_SETUP.md",
+    "docs/TEAM_DELIVERY.md",
     "scripts/generate_story_handoffs.py",
+    "scripts/organize_github_milestones.py",
     "scripts/publish_github_issues.py",
+    "scripts/remove_github_blockers.py",
     "scripts/validate_repo_preparation.py"
   ],
-  "initially_eligible_stories": [
+  "dependency_clear_foundation_stories": [
     "1.1"
   ],
   "tracked_file_audit": "PASS: no ignored artifacts already tracked",
+  "dependency_policy": "Informational guidance; coordinated parallel work is permitted and no native GitHub blockers are used",
   "project_git_created": false,
   "remote_actions": false,
   "limitations": "Preparation checks only; no application/security acceptance tests or remote publication."

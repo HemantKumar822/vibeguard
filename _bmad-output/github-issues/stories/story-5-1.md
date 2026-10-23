@@ -29,15 +29,15 @@ As a hackathon evaluator, I want a repeatable real-output demonstration and fail
 
 ## Dependencies
 
-**Blocked by — finish these first:**
+**Depends on — coordination guidance:**
 
 - [Story 4.3: Inspect paired rescan evidence and recovery](../../implementation-artifacts/4-3-inspect-paired-rescan-evidence-and-recovery.md)
 
-**Unblocks:**
+**Downstream work:**
 
 - [Story 5.2: Verify accessible recovery and rehearse the honest demo](../../implementation-artifacts/5-2-verify-accessible-recovery-and-rehearse-the-honest-demo.md)
 
-A prepared story is not automatically unblocked. Do not mark it in progress while required predecessors remain unfinished; discuss any contract-only parallel task separately.
+Dependencies are coordination guidance. Team members may start parallel work by agreeing shared contracts and ownership; acceptance and integration must still satisfy the listed prerequisites. No native GitHub blockers are used.
 
 ## In scope / implementation checklist
 

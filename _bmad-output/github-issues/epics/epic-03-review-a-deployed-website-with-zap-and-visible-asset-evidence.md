@@ -22,7 +22,7 @@ Users scan an authorized public deployment, understand passive coverage and insp
 
 **Earlier-story prerequisites:** [Story 1.3](../../implementation-artifacts/1-3-run-isolated-jobs-with-owned-status-and-deletion.md), [Story 1.4](../../implementation-artifacts/1-4-detect-and-sanitize-source-findings-with-trusted-rules.md), [Story 1.5](../../implementation-artifacts/1-5-investigate-findings-and-copy-a-deterministic-repair-prompt.md)
 
-Assign one accountable owner per child story. Use each story’s Blocked by / Unblocks links; do not assume all children can start together. Actual assignees and GitHub issue numbers remain unset.
+Assign one accountable owner per child story. Use each story’s dependency links to coordinate parallel work and integration. Claim actual owners on GitHub; preserve acceptance before closing work.
 
 ## Epic acceptance
 

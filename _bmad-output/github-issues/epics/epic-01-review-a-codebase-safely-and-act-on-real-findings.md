@@ -23,7 +23,7 @@ Users submit source, inspect masked scanner evidence, copy deterministic repair 
 
 **Earlier-story prerequisites:** None; this epic establishes the starting workflow.
 
-Assign one accountable owner per child story. Use each story’s Blocked by / Unblocks links; do not assume all children can start together. Actual assignees and GitHub issue numbers remain unset.
+Assign one accountable owner per child story. Use each story’s dependency links to coordinate parallel work and integration. Claim actual owners on GitHub; preserve acceptance before closing work.
 
 ## Epic acceptance
 
