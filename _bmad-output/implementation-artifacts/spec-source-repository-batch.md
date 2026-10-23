@@ -2,7 +2,7 @@
 title: Source scanning and public repository review batch
 type: feature
 created: '2026-10-24'
-status: in-review
+status: done
 route: dispatch
 baseline_commit: 56270eeb4386b36da5a1f5171e7c5e1f34f6fb38
 context: []
@@ -55,3 +55,6 @@ Planning completed inline to honor the user's explicit speed and usage preferenc
 One combined Python/frontend suite, build/lint/generated parity and targeted real scanner/repository integration after the batch. Record visual/manual checks separately; do not infer them from compilation.
 
 Batch implementation and automated verification complete. Both epics remain in progress for review, including a rendered accessibility check. Actual outcomes: [verification record](source-repository-batch-verification.md).
+
+
+User accepted completion and requested issue/milestone closure on 2026-10-24 after focused review. Rendered accessibility checks remain an explicit Story 5.2 follow-up, not a passing claim.

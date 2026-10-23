@@ -47,3 +47,8 @@ Public source-only test repository: `https://github.com/expressjs/serve-static`,
 Implementation and inspection were performed inline to honor the user's usage/speed preference. No repeated independent multi-agent review was launched. Automated DOM checks cover escaped evidence, filtering, clipboard fallback, repository rejection, mode preservation and reconnect without resubmission. A rendered browser/accessibility check (keyboard, 360px viewport, 200% zoom and reduced motion) remains pending; it is not inferred from DOM tests or compilation. This is why the UI stories and both epics remain open for review.
 
 Rules are deliberately narrow and locally authored under `rules/LICENSE`; no submitted rule pack or registry download is used. Evidence includes trusted rule/file/real line with source literals omitted. Route findings require contextual authorization review. Private repositories, history, submodule/LFS retrieval, websites/ZAP, external AI and real comparison are not implemented in this batch.
+
+
+## Subsequent acceptance — 2026-10-24
+
+After the focused review and push, the user requested completion/closure. Stories 1.2–2.2 and Epics 1–2 are accepted for completion through PR #23. Previous review/open-status statements above describe the earlier checkpoint. Rendered UI/accessibility and broader review remain explicitly deferred to Story 5.2 (#21); no unperformed check is claimed to pass.
