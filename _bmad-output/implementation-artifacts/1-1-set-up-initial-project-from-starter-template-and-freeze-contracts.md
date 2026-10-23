@@ -85,7 +85,7 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Implementation record
 
-Implemented on `feat/1-1-project-bootstrap`; PR/teammate review pending. No real submission or security scan is available yet.
+Implemented on `feat/1-1-project-bootstrap`; [Draft PR #22](https://github.com/HemantKumar822/vibeguard/pull/22) opened; teammate review and full scanner feasibility remain pending. No real submission or security scan is available yet.
 
 - Started with failing tests for the missing backend, readiness checker, error envelope and failure states; implemented the smallest bootstrap to make them pass.
 - `uv sync --frozen`: passed. `npm --prefix frontend ci`: passed after stopping the development server that held a native module open on Windows.
