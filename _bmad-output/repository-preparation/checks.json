@@ -7,7 +7,7 @@
   "dependency_and_reverse_links": "PASS",
   "local_markdown_links": 458,
   "ignore_policy_cases": 93,
-  "shareable_file_count": 111,
+  "shareable_file_count": 112,
   "shareable_files": [
     ".env.example",
     ".gitattributes",
@@ -119,6 +119,7 @@
     "scripts/organize_github_milestones.py",
     "scripts/publish_github_issues.py",
     "scripts/remove_github_blockers.py",
+    "scripts/use_milestones_only.py",
     "scripts/validate_repo_preparation.py"
   ],
   "dependency_clear_foundation_stories": [

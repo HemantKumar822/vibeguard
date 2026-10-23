@@ -44,7 +44,7 @@ At initial tracker generation, only Story 1.1 had a handoff. During the subseque
 
 ## Next
 
-**Repository/GitHub setup is complete.** The private VibeGuard repository contains shared plans and team guidance; five epics and 16 stories are published with native relationships. Three Write invitations were sent. See [publication identities](../github-issues/publication.json). Zero setup stages remain; Amelia's `bmad-build` starts Story 1.1 next. Implementation and functional/demo verification remain ahead.
+**Repository/GitHub setup is complete.** The private VibeGuard repository contains shared plans and team guidance; 16 open stories are grouped in five milestones, with dependencies as written guidance only. Three Write invitations were sent. See [publication identities](../github-issues/publication.json). Zero setup stages remain; Amelia's `bmad-build` starts Story 1.1 next. Implementation and functional/demo verification remain ahead.
 
 ## Final scope refinements applied
 

@@ -30,3 +30,7 @@ See the [publication record](../_bmad-output/github-issues/publication.json) for
 ## Team workflow settings
 
 Squash merging and automatic deletion of merged branches are enabled; merge commits and rebase merging are disabled. Use feature branches and reviewed pull requests. CI and enforced branch protection are not installed or claimed; working build/test commands belong to Story 1.1. Collaborator invitations require each teammate to accept. No story owner is invented and no license is selected.
+
+## Current tracking model
+
+The user chose milestones and stories only. Five milestones contain the 16 open stories; duplicate epic issues were deleted. Dependencies are descriptions only, without native blocking edges. The canonical planning epics and original issue drafts remain historical authoring inputs, not instructions to recreate duplicate issues. Legacy publishing scripts refuse to run against the milestone-only publication record.

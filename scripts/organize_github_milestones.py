@@ -17,6 +17,8 @@ def main():
     assert api('repos/' + REPO)['private']
     record_path = PACKAGE / 'publication.json'
     record = json.loads(record_path.read_text(encoding='utf-8'))
+    if record.get('tracking_model') == 'milestones-and-stories-only':
+        raise RuntimeError('Milestone-only tracking is active. Use the existing milestones and 16 story identities; do not recreate epic issues.')
     manifest = json.loads((PACKAGE / 'manifest.json').read_text(encoding='utf-8'))
     existing = api(f'repos/{REPO}/milestones?state=all&per_page=100')
     labels = api(f'repos/{REPO}/labels?per_page=100')

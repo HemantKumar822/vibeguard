@@ -4,10 +4,10 @@ Local content preparation passed before the authorized publication to [HemantKum
 
 ## Shared package
 
-- Five epics and 16 detailed story handoffs: outcome, requirements, tasks, exclusions, dependencies, 54 canonical acceptance criteria, verification and definition of done.
+- Five planning epic groups and 16 detailed story handoffs: outcome, requirements, tasks, exclusions, dependencies, 54 canonical acceptance criteria, verification and definition of done.
 - README, contributor/security guidance, project rules, environment example, Git attributes, issue and pull request templates.
 - `.gitignore` keeps installed agents, skills, BMAD runtime source, credentials and runtime data local. Generated `_bmad-output/` plans remain shared.
-- [Publication identities and relationship results](../github-issues/publication.json); local issue-body files are retained as authoring sources, not a separate live tracker.
+- [Publication identities and relationship results](../github-issues/publication.json); local issue-body files are retained as authoring sources, not a separate live tracker. GitHub has five milestones and 16 open story issues only; duplicate epic issues were removed at the user’s request.
 
 ## Validation and operating state
 

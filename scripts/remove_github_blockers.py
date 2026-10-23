@@ -9,6 +9,8 @@ def main():
     assert api(f'repos/{REPO}')['private']
     path = PACKAGE / 'publication.json'
     record = json.loads(path.read_text(encoding='utf-8'))
+    if record.get('tracking_model') == 'milestones-and-stories-only':
+        raise RuntimeError('Milestone-only tracking is active; epic issue checks no longer apply. All story blockers were already removed.')
     manifest = json.loads((PACKAGE / 'manifest.json').read_text(encoding='utf-8'))
 
     def remove(item):

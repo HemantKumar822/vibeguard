@@ -39,7 +39,8 @@ def main() -> int:
     ensure(manifest['publication_status'] in ('not-published','published'),'Unknown publication state')
     if manifest['publication_status']=='published':
         publication=json.loads((OUT/'github-issues/publication.json').read_text(encoding='utf-8'))
-        ensure(publication['status']=='published' and len(publication['issues'])==21,'Incomplete publication record')
+        expected_remote=16 if publication.get('tracking_model')=='milestones-and-stories-only' else 21
+        ensure(publication['status']=='published' and len(publication['issues'])==expected_remote,'Incomplete publication record')
         ensure(all(v.get('url') and v.get('number') for v in publication['issues'].values()),'Missing published issue identities')
         if 'milestones' in publication:
             ensure(len(publication['milestones'])==5,'Expected five delivery milestones')

@@ -18,7 +18,7 @@ The required journey is a graphical workspace, not a chatbot. Findings remain ca
 
 ## Start here as a teammate
 
-Use the [team delivery guide](docs/TEAM_DELIVERY.md) for epics, milestones, dependency badges and the starting story.
+Use the [team delivery guide](docs/TEAM_DELIVERY.md) for the five milestones, their 16 stories and parallel-work guidance.
 
 1. Read the [team story board](_bmad-output/github-issues/README.md) and coordinate a story with the team.
 2. Read that story's description, dependencies, acceptance criteria and verification plan. Every story has its own file in [_bmad-output/implementation-artifacts/](_bmad-output/implementation-artifacts/README.md).

@@ -1,6 +1,8 @@
 # Team story board
 
-**5 epics · 16 prepared stories · implementation not started.**
+**5 delivery milestones · 16 open story issues · implementation not started.**
+
+Planning epics are represented by milestones on GitHub. Duplicate epic issues were removed; local epic draft files are retained only as planning references.
 
 [Live GitHub issues](https://github.com/HemantKumar822/vibeguard/issues) · [Delivery milestones](https://github.com/HemantKumar822/vibeguard/milestones) · [Team guide](../../docs/TEAM_DELIVERY.md) · [Published issue IDs and relationships](publication.json). GitHub tracks ownership and implementation; the handoffs below retain full specifications.
 

@@ -32,6 +32,8 @@ def main():
     manifest = json.loads((PACKAGE / 'manifest.json').read_text(encoding='utf-8'))
     record_path = PACKAGE / 'publication.json'
     record = json.loads(record_path.read_text(encoding='utf-8')) if record_path.exists() else {}
+    if record.get('tracking_model') == 'milestones-and-stories-only':
+        raise RuntimeError('Milestone-only tracking is active. Do not recreate removed epic issues; update existing stories by their recorded IDs.')
     record.update(repository=BASE, status='publishing')
     record.setdefault('issues', {})
     record.setdefault('relationships', {})
