@@ -15,9 +15,11 @@ from fastapi.openapi.utils import get_openapi
 from fastapi.responses import JSONResponse
 from pydantic.json_schema import models_json_schema
 from backend.adapters.intake import receive
+from backend.adapters.repository import identity, retrieve, request_digest
 from backend.adapters.storage import Storage
 from backend.api.session import IntakeError, owner
-from backend.core.contracts import Health, PUBLIC_MODELS, Scan, SessionResponse, Capabilities, ErrorResponse, Deletion
+from backend.core.contracts import Health, PUBLIC_MODELS, Scan, SessionResponse, Capabilities, ErrorResponse, Deletion, RepositoryIntake
+from pydantic import ValidationError
 from backend.core.policy import POLICY_ID, LIMITS, FINGERPRINT
 from backend.core.settings import Settings
 from backend.core.lifecycle import Lifecycle
@@ -39,7 +41,7 @@ def queued_scan(scan_id, accepted, exclusions):
         started_at=None, finished_at=None, input=dict(display_name='Submitted source tree', revision=None,
         repository=None, target_redacted=None, observation_id=None), tools=tools, coverage=coverage,
         findings=[], repair=None, warnings=['Accepted source inventory: ' + str(len(accepted)) + ' files. No scanner has run.',
-        'Waiting for the trusted coordinator. Trusted source adapters are unavailable.'], error=None)
+        'Waiting for the trusted coordinator. No required check has completed.'], error=None)
 
 
 def create_app(settings=None):
@@ -100,12 +102,12 @@ def create_app(settings=None):
     @api.get('/api/v1/capabilities', response_model=Capabilities, responses=errors)
     def capabilities(request: Request):
         owner(request, runtime(), settings)
-        return dict(policy_id=POLICY_ID, policy_fingerprint=FINGERPRINT, permitted_modes=['codebase'],
-                    limits=LIMITS, ai_available=False, unavailable_modes=['repository', 'website'])
+        return dict(policy_id=POLICY_ID, policy_fingerprint=FINGERPRINT, permitted_modes=['codebase', 'repository'],
+                    limits=LIMITS, ai_available=False, unavailable_modes=['website'])
     @api.post('/api/v1/scans', status_code=202, response_model=Scan, responses=errors,
         openapi_extra={'parameters': [origin_header, *[{'name': name, 'in': 'header', 'required': True,
             'schema': {'type': 'string'}} for name in ['X-CSRF-Token', 'Idempotency-Key']]],
-            'requestBody': {'required': True, 'content': {'multipart/form-data': {'schema': {
+            'requestBody': {'required': True, 'content': {'application/json': {'schema': {'$ref':'#/components/schemas/RepositoryIntake'}}, 'multipart/form-data': {'schema': {
             'type': 'object', 'required': ['metadata'], 'properties': {'metadata': {'type': 'string',
             'description': 'JSON CodebaseMetadata; additional named binary parts map each part_id exactly once.'}},
             'additionalProperties': {'type': 'string', 'format': 'binary'}}}}}})
@@ -122,8 +124,39 @@ def create_app(settings=None):
         try:
             directory = store.staging / secrets.token_hex(16)
             directory.mkdir(mode=0o700)
-            metadata, accepted, exclusions, digest = await receive(request, directory)
+            repository=None
+            if request.headers.get('content-type','').split(';')[0].strip()=='application/json':
+                body=bytearray()
+                async with asyncio.timeout(15):
+                    async for chunk in request.stream():
+                        body.extend(chunk)
+                        if len(body)>8192: raise IntakeError(413,'metadata_too_large')
+                try:
+                    metadata=RepositoryIntake.model_validate_json(body)
+                except (ValueError,ValidationError):
+                    raise IntakeError(422,'invalid_repository_submission') from None
+                identity(metadata.repository_url,metadata.ref)
+                digest=request_digest(metadata)
+                existing=Lifecycle(store).existing(session_id,key,digest)
+                if existing: return existing
+                retrieval=asyncio.create_task(asyncio.to_thread(retrieve,metadata,directory))
+                try:
+                    accepted,exclusions,repository,requested,commit=await asyncio.shield(retrieval)
+                except asyncio.CancelledError:
+                    # Do not remove private scratch while the bounded retrieval thread still writes it.
+                    with suppress(Exception): await retrieval
+                    raise
+            else:
+                metadata, accepted, exclusions, digest = await receive(request, directory)
             scan = queued_scan(directory.name, accepted, exclusions)
+            if repository:
+                scan.mode='repository'
+                scan.input.repository=repository
+                scan.input.display_name=repository.removeprefix('https://github.com/')
+                scan.input.revision=commit
+                scan.input.requested_ref=requested
+                scan.coverage.revision_or_observation=commit
+                for tool in scan.tools: tool.coverage.revision_or_observation=commit
             scan.accepted_files = accepted
             scan.allow_external_ai = metadata.allow_external_ai
             scan, published = Lifecycle(store).admit(scan, session_id, key, digest, metadata.allow_external_ai)

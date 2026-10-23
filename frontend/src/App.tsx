@@ -25,9 +25,9 @@ export default function App() {
   return <main>
     <header><span className="wordmark">VibeGuard<span aria-hidden="true"> /</span></span><span className="eyebrow">CY-02 · Security reviewer</span></header>
     <section className="intro" aria-labelledby="title">
-      <p className="eyebrow">Project foundation</p>
+      <p className="eyebrow">Source review workspace</p>
       <h1 id="title">Evidence before<br />confidence.</h1>
-      <p className="lede">A workspace for reviewing AI-built websites.<br />Submit an authorized source tree. Scanner orchestration is not available yet.</p>
+      <p className="lede">Review authorized source trees or public GitHub snapshots.<br />Inspect masked evidence and copy concrete repair guidance.</p>
     </section>
     {import.meta.env.DEV && <section className="panel" aria-label="Development health">
       <h2>Development connection</h2>

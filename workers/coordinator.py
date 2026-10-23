@@ -9,7 +9,7 @@ from backend.core.lifecycle import Lifecycle
 from backend.core.cleanup import Cleanup
 from workers.launcher import Launcher
 
-def run_once(lifecycle, cleanup, token):
+def run_once(lifecycle, cleanup, token, launcher=None):
     if not lifecycle.lease(token):
         raise RuntimeError('Another coordinator holds the lease')
     # Recovery/deletion must stop daemon-side work before the next claim.
@@ -28,16 +28,23 @@ def run_once(lifecycle, cleanup, token):
     pulse.start()
     try:
         cleanup.sweep()
+        if lost.is_set() or not lifecycle.lease(token):
+            raise RuntimeError('Coordinator lease lost')
+        scan=lifecycle.claim(token)
+        if scan:
+            try:
+                if launcher is None:
+                    lifecycle.unavailable(scan.scan_id,token)
+                else:
+                    from workers.source import execute
+                    execute(scan,lifecycle,launcher,token)
+            except Exception:
+                lifecycle.unavailable(scan.scan_id,token)
+            cleanup.sweep()
+        return scan
     finally:
         stopped.set()
         pulse.join(timeout=5)
-    if lost.is_set() or not lifecycle.lease(token):
-        raise RuntimeError('Coordinator lease lost')
-    scan=lifecycle.claim(token)
-    if scan:
-        lifecycle.unavailable(scan.scan_id,token)
-        cleanup.sweep()
-    return scan
 
 def main():
     settings=Settings.environment()
@@ -50,9 +57,7 @@ def main():
     signal.signal(signal.SIGINT,shutdown); signal.signal(signal.SIGTERM,shutdown)
     try:
         while running:
-            # Story 1.4 installs trusted adapters. Version probes never count
-            # as coverage, so dispatch currently fails explicitly and safely.
-            run_once(lifecycle,cleanup,token)
+            run_once(lifecycle,cleanup,token,launcher)
             time.sleep(1)
     finally:
         with store.connect() as db:

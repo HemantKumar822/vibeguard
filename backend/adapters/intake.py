@@ -20,6 +20,18 @@ EXCLUDED = {'node_modules', 'vendor', 'dist', 'build', '.git', '.next', 'coverag
 TOTAL_UPLOAD_SECONDS = 120
 IDLE_UPLOAD_SECONDS = 15
 
+
+def exclusion_reason(relative_path, content):
+    path=PurePosixPath(relative_path)
+    if content.startswith(b'version https://git-lfs.github.com/spec/v1\n'): return 'git_lfs_pointer_not_retrieved'
+    if any(p.casefold() in EXCLUDED for p in path.parts): return 'vendor_or_build_output'
+    if path.suffix.casefold() not in SOURCE and path.name not in CONFIG and not path.name.startswith('.env.'):
+        return 'unsupported_file_type'
+    try:
+        if '\x00' in content.decode('utf-8'): return 'binary_content'
+    except UnicodeDecodeError: return 'binary_content'
+    return None
+
 def safe_paths(metadata):
     paths, ids = set(), set()
     for item in metadata.files:
@@ -29,7 +41,7 @@ def safe_paths(metadata):
             or any(p in {'', '.', '..'} or p.endswith((' ', '.')) or RESERVED.fullmatch(p) for p in parts)
             or any(ord(c) < 32 or ord(c) == 127 or c in '\\:<>"|?*' for c in value)
             or unicodedata.normalize('NFKC', value) != value
-            or re.search(r'(?:AKIA[A-Z0-9]{16}|gh[pousr]_[A-Za-z0-9]{20,}|sk-[A-Za-z0-9]{20,})', value)):
+            or re.search(r'(?:(?:AKIA|ASIA)[A-Z0-9]{16}|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-(?:[A-Za-z0-9_-]{20,})|sk_live_[A-Za-z0-9]{20,})', value)):
             raise IntakeError(422, 'unsafe_path', 'files')
         key = value.casefold()
         if not PART.fullmatch(item.part_id) or RESERVED.fullmatch(item.part_id) or item.part_id in ids or key in paths:
@@ -139,19 +151,7 @@ async def receive(request, directory):
             raise IntakeError(413, 'upload_too_large')
         accepted, exclusions = [], []
         for item in metadata.files:
-            path = PurePosixPath(item.relative_path)
-            reason = None
-            if any(p.casefold() in EXCLUDED for p in path.parts):
-                reason = 'vendor_or_build_output'
-            elif path.suffix.casefold() not in SOURCE and path.name not in CONFIG and not path.name.startswith('.env.'):
-                reason = 'unsupported_file_type'
-            else:
-                try:
-                    text = (directory / item.part_id).read_bytes().decode('utf-8')
-                    if '\x00' in text:
-                        reason = 'binary_content'
-                except UnicodeDecodeError:
-                    reason = 'binary_content'
+            reason = exclusion_reason(item.relative_path, (directory / item.part_id).read_bytes())
             if reason:
                 exclusions.append({'resource_key': item.relative_path, 'reason': reason})
                 (directory / item.part_id).unlink()

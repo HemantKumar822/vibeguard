@@ -1,7 +1,7 @@
 ---
 story_id: '1.5'
 epic: 1
-status: ready-for-dev
+status: done
 prepared: true
 approval: pending-user-review
 assignee: unassigned
@@ -91,6 +91,11 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Implementation record
 
-Not started. Record PR, actual commands/results, sanitized evidence and remaining limitations here during implementation.
+Implemented in the source/repository batch on 2026-10-24. See [batch evidence](source-repository-batch-verification.md) for actual checks, live commit attribution and pending review. No GitHub issue or epic was closed. Rendered UI/accessibility acceptance remains pending for UI stories.
 
 [Parent epic](../github-issues/epics/epic-01-review-a-codebase-safely-and-act-on-real-findings.md) · [All stories](README.md)
+
+
+## Completion acceptance — 2026-10-24
+
+User requested closure after the focused review and verified batch in [PR #23](https://github.com/HemantKumar822/vibeguard/pull/23). Automated and live scanner/repository checks are recorded in the batch evidence. Broader independent review and rendered keyboard/360px/200%-zoom/reduced-motion checks are deferred to Story 5.2 (#21); they are not claimed as performed.

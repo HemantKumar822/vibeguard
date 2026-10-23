@@ -11,7 +11,7 @@ def test_sessions_origin_csrf_and_cookie(tmp_path):
     cookie = response.headers['set-cookie'].lower()
     assert 'httponly' in cookie and 'samesite=strict' in cookie
     assert client.post('/api/v1/session', headers={'Origin':'http://127.0.0.1:8000'}).json() == response.json()
-    assert client.get('/api/v1/capabilities').json()['permitted_modes'] == ['codebase']
+    assert client.get('/api/v1/capabilities').json()['permitted_modes'] == ['codebase','repository']
     assert client.post('/api/v1/scans').status_code == 403
 
 def test_runtime_rejects_checkout_and_onedrive(tmp_path):

@@ -68,6 +68,7 @@ class CodebaseMetadata(AuthorizedInput):
 
 
 class InputIdentity(Contract):
+    requested_ref: str | None = None
     display_name: str
     revision: str | None
     repository: str | None
@@ -99,6 +100,7 @@ class Coverage(Contract):
 
 
 class Tool(Contract):
+    image_digest: str | None = None
     name: ToolName
     applicable: bool
     required: bool

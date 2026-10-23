@@ -4,7 +4,7 @@ Evidence-backed security review for AI-built websites: **submit → inspect → 
 
 Built for the CY-02 hackathon challenge. The application will accept a full codebase, a repository, or an authorized deployed website URL; explain candidate security findings; produce one repair prompt for the developer's coding tool; and compare a real repeat scan.
 
-**Current status:** Story 1.1 introduces a React/TypeScript foundation, live FastAPI health endpoint and shared generated contracts. Scanning, submission and comparison are not implemented yet. Scanner readiness is a separate measured gate; no accuracy or containment result is claimed. The team repository is [HemantKumar822/vibeguard](https://github.com/HemantKumar822/vibeguard) (private). Published issue links are recorded in the [publication record](_bmad-output/github-issues/publication.json).
+**Current status:** Source upload, owned jobs, isolated Gitleaks/Semgrep checks, masked findings and deterministic repair guidance are implemented. Public GitHub snapshots use the same pipeline and retain the requested ref and full resolved commit. Stories 1.2–2.2 and Epics 1–2 are accepted for completion through PR #23 after focused review. Broader/rendered accessibility review remains tracked in Story 5.2. Website/ZAP review, AI and rescans remain unimplemented. See the [batch verification record](_bmad-output/implementation-artifacts/source-repository-batch-verification.md) for observed checks and remaining UI review. The team repository is [HemantKumar822/vibeguard](https://github.com/HemantKumar822/vibeguard) (private).
 
 **Run locally:** follow [development setup](docs/DEVELOPMENT.md) for installation, two-terminal startup, type generation and verification.
 
@@ -25,9 +25,9 @@ Use the [team delivery guide](docs/TEAM_DELIVERY.md) for the five milestones, th
 1. Read the [team story board](_bmad-output/github-issues/README.md) and coordinate a story with the team.
 2. Read that story's description, dependencies, acceptance criteria and verification plan. Every story has its own file in [_bmad-output/implementation-artifacts/](_bmad-output/implementation-artifacts/README.md).
 3. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [project rules](docs/PROJECT_RULES.md). Claim one story before changing shared files.
-4. Use [Story 1.1's development setup](docs/DEVELOPMENT.md) for actual setup/build/test commands and locked dependencies. Keep real scanning disabled until the scanner and containment gates pass.
+4. Use [development setup](docs/DEVELOPMENT.md) for actual setup/build/test commands and locked dependencies. Start the API, trusted coordinator and frontend separately. Real source checks require the verified pinned Linux Docker images.
 
-For the current documentation-only workspace, Python 3.10+ and Git can run the actual preparation checks:
+Python and Git can also run the preparation checks:
 
 ```bash
 python scripts/validate_repo_preparation.py
@@ -52,9 +52,9 @@ This validates stories, dependency links, shared-file policy and documentation. 
 
 ## Repository shape
 
-Present now: team documentation, local validation scripts, GitHub templates and `_bmad-output/` planning/story/issue drafts. Local agent installations are intentionally excluded by `.gitignore`; teammates do not need those files to understand or implement the plan.
+Present now: `frontend/` React/TypeScript workspace, `backend/` FastAPI/core/adapters, `workers/` trusted coordinator and restricted launchers, locally authored `rules/`, typed `contracts/`, synthetic `fixtures/`, tests, team documentation and `_bmad-output/` planning/implementation records. Local agent installations remain excluded by `.gitignore`.
 
-Story 1.1 will create the application scaffold: React/TypeScript frontend, Python/FastAPI API, isolated workers, rules, fixtures and tests. Stack versions in the architecture are candidate pins; compatibility must be demonstrated before the implementation locks are accepted.
+Exact compatible dependencies are recorded in `uv.lock` and `frontend/package-lock.json`. Submitted code, SQLite, scanner output and runtime artifacts belong outside the checkout and OneDrive.
 
 ## Contribution and safety
 
