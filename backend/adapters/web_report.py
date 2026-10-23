@@ -60,6 +60,6 @@ def asset_findings(findings,mapping):
         if resource is None: raise ValueError('unknown_asset_location')
         finding.scanner='asset_secrets'
         finding.location=WebLocation(kind='web',url_redacted=resource['display'],resource_key=resource['key'],part='asset',parameter_redacted=None,line_start=finding.location.line_start)
-        finding.match_context=f'asset_secrets:{finding.rule_id}:{resource["key"]}:{finding.location.line_start}'
+        finding.match_context=f'asset_secrets:{finding.rule_id}:{resource["display"]}:asset'
         result.append(finding)
     return result

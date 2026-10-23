@@ -29,7 +29,7 @@ def execute(scan,lifecycle,launcher,token,capture_fn=capture):
     observed=capture_fn(request['target_url'],active=active)
     if not active(): raise RuntimeError('job_cancelled')
     entries=observed['entries']
-    resources={entry['url']:{'key':f'web-{index:04d} {display(entry["url"])}','display':display(entry['url'])} for index,entry in enumerate(entries)}
+    resources={entry['url']:{'key':display(entry['url']),'display':display(entry['url'])} for index,entry in enumerate(entries)}
     scan.coverage.exclusions=[Exclusion.model_validate(item) for item in observed['exclusions']]
     scan.warnings.append(f'Observed {observed["requests"]} GET requests and {observed["bytes"]} response bytes within the shared capture budget.')
     if not observed['complete']: scan.warnings.append('Capture is incomplete. Review omissions before drawing absence conclusions.')
@@ -92,7 +92,7 @@ def execute(scan,lifecycle,launcher,token,capture_fn=capture):
     scan.coverage.scope_complete=scan.coverage.completed_count==2
     scan.status='complete' if scan.coverage.scope_complete else ('partial' if scan.findings or scan.coverage.inspected else 'failed')
     scan.finished_at=datetime.now(timezone.utc)
-    scan.repair=repair_for(scan)
+    scan.repair=repair_for(scan,budget_seconds=max(0, min(15, 300-(datetime.now(timezone.utc)-scan.started_at).total_seconds())) if scan.started_at else 0)
     if scan.status=='failed': scan.error=SafeError(code='website_review_failed',message='Website review did not complete.',request_id=scan.scan_id,details={})
     lifecycle.publish(scan,token)
     return Scan.model_validate(scan.model_dump())

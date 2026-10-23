@@ -381,6 +381,284 @@
         }
       }
     },
+    "/api/v1/scans/{scan_id}/rescans": {
+      "post": {
+        "summary": "Rescan",
+        "operationId": "rescan_api_v1_scans__scan_id__rescans_post",
+        "parameters": [
+          {
+            "name": "scan_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Scan Id"
+            }
+          },
+          {
+            "name": "Origin",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-CSRF-Token",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Scan"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Intake"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "metadata"
+                ],
+                "properties": {
+                  "metadata": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/scans/{baseline_id}/comparisons/{new_id}": {
+      "get": {
+        "summary": "Comparison",
+        "operationId": "comparison_api_v1_scans__baseline_id__comparisons__new_id__get",
+        "parameters": [
+          {
+            "name": "baseline_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Baseline Id"
+            }
+          },
+          {
+            "name": "new_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "New Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comparison"
+                }
+              }
+            }
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Request Entity Too Large"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Too Many Requests"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Service Unavailable"
+          }
+        }
+      }
+    },
     "/api/v1/scans/{scan_id}": {
       "get": {
         "summary": "Read Scan",
@@ -781,6 +1059,139 @@
           "ai_available"
         ],
         "title": "Capabilities",
+        "type": "object"
+      },
+      "Comparison": {
+        "additionalProperties": false,
+        "properties": {
+          "baseline_id": {
+            "title": "Baseline Id",
+            "type": "string"
+          },
+          "new_id": {
+            "title": "New Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "comparable",
+              "partial"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "baseline_input": {
+            "$ref": "#/components/schemas/InputIdentity"
+          },
+          "new_input": {
+            "$ref": "#/components/schemas/InputIdentity"
+          },
+          "baseline_coverage": {
+            "$ref": "#/components/schemas/Coverage"
+          },
+          "new_coverage": {
+            "$ref": "#/components/schemas/Coverage"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ComparisonItem"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "human_actions": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Human Actions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "baseline_id",
+          "new_id",
+          "status",
+          "baseline_input",
+          "new_input",
+          "baseline_coverage",
+          "new_coverage",
+          "items",
+          "human_actions"
+        ],
+        "title": "Comparison",
+        "type": "object"
+      },
+      "ComparisonItem": {
+        "additionalProperties": false,
+        "properties": {
+          "baseline_finding_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Finding Id"
+          },
+          "new_finding_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "New Finding Id"
+          },
+          "status": {
+            "enum": [
+              "still_detected",
+              "not_detected",
+              "newly_detected",
+              "unverified"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "reason_code": {
+            "title": "Reason Code",
+            "type": "string"
+          },
+          "baseline_evidence_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Baseline Evidence Ref"
+          },
+          "new_evidence_ref": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "New Evidence Ref"
+          }
+        },
+        "required": [
+          "baseline_finding_id",
+          "new_finding_id",
+          "status",
+          "reason_code",
+          "baseline_evidence_ref",
+          "new_evidence_ref"
+        ],
+        "title": "ComparisonItem",
         "type": "object"
       },
       "Coverage": {
@@ -1676,139 +2087,6 @@
           "files"
         ],
         "title": "CodebaseMetadata",
-        "type": "object"
-      },
-      "Comparison": {
-        "additionalProperties": false,
-        "properties": {
-          "baseline_id": {
-            "title": "Baseline Id",
-            "type": "string"
-          },
-          "new_id": {
-            "title": "New Id",
-            "type": "string"
-          },
-          "status": {
-            "enum": [
-              "comparable",
-              "partial"
-            ],
-            "title": "Status",
-            "type": "string"
-          },
-          "baseline_input": {
-            "$ref": "#/components/schemas/InputIdentity"
-          },
-          "new_input": {
-            "$ref": "#/components/schemas/InputIdentity"
-          },
-          "baseline_coverage": {
-            "$ref": "#/components/schemas/Coverage"
-          },
-          "new_coverage": {
-            "$ref": "#/components/schemas/Coverage"
-          },
-          "items": {
-            "items": {
-              "$ref": "#/components/schemas/ComparisonItem"
-            },
-            "title": "Items",
-            "type": "array"
-          },
-          "human_actions": {
-            "items": {
-              "type": "string"
-            },
-            "title": "Human Actions",
-            "type": "array"
-          }
-        },
-        "required": [
-          "baseline_id",
-          "new_id",
-          "status",
-          "baseline_input",
-          "new_input",
-          "baseline_coverage",
-          "new_coverage",
-          "items",
-          "human_actions"
-        ],
-        "title": "Comparison",
-        "type": "object"
-      },
-      "ComparisonItem": {
-        "additionalProperties": false,
-        "properties": {
-          "baseline_finding_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Baseline Finding Id"
-          },
-          "new_finding_id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "New Finding Id"
-          },
-          "status": {
-            "enum": [
-              "still_detected",
-              "not_detected",
-              "newly_detected",
-              "unverified"
-            ],
-            "title": "Status",
-            "type": "string"
-          },
-          "reason_code": {
-            "title": "Reason Code",
-            "type": "string"
-          },
-          "baseline_evidence_ref": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Baseline Evidence Ref"
-          },
-          "new_evidence_ref": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "New Evidence Ref"
-          }
-        },
-        "required": [
-          "baseline_finding_id",
-          "new_finding_id",
-          "status",
-          "reason_code",
-          "baseline_evidence_ref",
-          "new_evidence_ref"
-        ],
-        "title": "ComparisonItem",
         "type": "object"
       },
       "FileMapping": {

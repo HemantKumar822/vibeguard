@@ -2,6 +2,7 @@
 import hashlib
 import json
 import secrets
+import re
 from pathlib import Path
 from backend.core.contracts import Finding, SourceLocation
 
@@ -19,10 +20,19 @@ RULE_DATA = {
 
 
 def fingerprint():
-    digest = hashlib.sha256(b'vibeguard-source-v1:no-suppressions:no-source-execution')
+    digest = hashlib.sha256(b'vibeguard-source-v2:allowlisted-structural-identifiers:uncertain-unknown-identifiers:no-suppressions:no-source-execution')
     for name in ('gitleaks.toml', 'semgrep.json', 'empty.ignore'):
         digest.update(name.encode()); digest.update((RULES / name).read_bytes())
     return digest.hexdigest()
+
+
+def structure(source, path, line):
+    # Preserve only punctuation/keyword shape, never literals or caller identifiers.
+    text=(source/path).read_text(encoding='utf-8').splitlines()[line-1]
+    text=re.sub(r'([\"\'`])(?:\\.|(?!\1).)*?\1', ' LITERAL ', text)
+    tokens=re.findall(r'[A-Za-z_$][A-Za-z0-9_$]*|[0-9]+|[^\w\s]',text)
+    keywords={'const','let','var','return','if','else','function','async','await','true','false','null','new','eval','req','request','query','params','body','code','JSON','parse','app','get','post','res','response','send','rejectUnauthorized','verify','LITERAL'}
+    return ' '.join(token if token in keywords or not re.fullmatch(r'[A-Za-z0-9_$]+',token) else 'uncertain_identifier' for token in tokens)[:512]
 
 
 def normalize(tool, raw, source):
@@ -58,7 +68,7 @@ def normalize(tool, raw, source):
                 explanation=title + '. ' + reason, fix_guidance=fix,
                 verification_steps=['Review the reported location and any surrounding authorization/data flow.',
                                     'Add a vulnerable/control regression case and rerun the same trusted checks.'],
-                human_actions=actions, match_context=f'{tool}:{rule}:{path}:{line}'))
+                human_actions=actions, match_context=f'structural-v2:{tool}:{rule}:{path}:{structure(source,path,line)}'))
         return findings, inspected
     except (ValueError, TypeError, KeyError, AttributeError, OSError):
         raise ValueError('invalid_scanner_report') from None

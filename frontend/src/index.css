@@ -197,3 +197,10 @@ dialog::backdrop { background: #000b; }
 @media (max-width: 1050px) { .limit-strip { display: block; } }
 @media (max-width: 767px) { .report .tool-states { grid-template-columns: minmax(0, 1fr); } }
 .sidebar { overflow-y: auto; }
+
+.paired-evidence { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 1.5rem; }
+.paired-evidence article { min-width: 0; padding: 1rem; border: 1px solid var(--border, #b8c4c2); border-radius: 12px; overflow-wrap: anywhere; }
+.paired-evidence pre { overflow-x: auto; }
+.comparison-list { list-style: none; padding: 0; }
+.comparison-list button { min-height: 44px; text-align: left; margin-block: .25rem; }
+@media (max-width: 767px) { .paired-evidence { grid-template-columns: minmax(0,1fr); } }

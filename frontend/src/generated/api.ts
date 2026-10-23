@@ -72,6 +72,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/scans/{scan_id}/rescans": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Rescan */
+        post: operations["rescan_api_v1_scans__scan_id__rescans_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/scans/{baseline_id}/comparisons/{new_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Comparison */
+        get: operations["comparison_api_v1_scans__baseline_id__comparisons__new_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/scans/{scan_id}": {
         parameters: {
             query?: never;
@@ -127,6 +161,44 @@ export interface components {
             };
             /** Ai Available */
             ai_available: boolean;
+        };
+        /** Comparison */
+        Comparison: {
+            /** Baseline Id */
+            baseline_id: string;
+            /** New Id */
+            new_id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "comparable" | "partial";
+            baseline_input: components["schemas"]["InputIdentity"];
+            new_input: components["schemas"]["InputIdentity"];
+            baseline_coverage: components["schemas"]["Coverage"];
+            new_coverage: components["schemas"]["Coverage"];
+            /** Items */
+            items: components["schemas"]["ComparisonItem"][];
+            /** Human Actions */
+            human_actions: string[];
+        };
+        /** ComparisonItem */
+        ComparisonItem: {
+            /** Baseline Finding Id */
+            baseline_finding_id: string | null;
+            /** New Finding Id */
+            new_finding_id: string | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "still_detected" | "not_detected" | "newly_detected" | "unverified";
+            /** Reason Code */
+            reason_code: string;
+            /** Baseline Evidence Ref */
+            baseline_evidence_ref: string | null;
+            /** New Evidence Ref */
+            new_evidence_ref: string | null;
         };
         /** Coverage */
         Coverage: {
@@ -422,44 +494,6 @@ export interface components {
             mode: "codebase";
             /** Files */
             files: components["schemas"]["FileMapping"][];
-        };
-        /** Comparison */
-        Comparison: {
-            /** Baseline Id */
-            baseline_id: string;
-            /** New Id */
-            new_id: string;
-            /**
-             * Status
-             * @enum {string}
-             */
-            status: "comparable" | "partial";
-            baseline_input: components["schemas"]["InputIdentity"];
-            new_input: components["schemas"]["InputIdentity"];
-            baseline_coverage: components["schemas"]["Coverage"];
-            new_coverage: components["schemas"]["Coverage"];
-            /** Items */
-            items: components["schemas"]["ComparisonItem"][];
-            /** Human Actions */
-            human_actions: string[];
-        };
-        /** ComparisonItem */
-        ComparisonItem: {
-            /** Baseline Finding Id */
-            baseline_finding_id: string | null;
-            /** New Finding Id */
-            new_finding_id: string | null;
-            /**
-             * Status
-             * @enum {string}
-             */
-            status: "still_detected" | "not_detected" | "newly_detected" | "unverified";
-            /** Reason Code */
-            reason_code: string;
-            /** Baseline Evidence Ref */
-            baseline_evidence_ref: string | null;
-            /** New Evidence Ref */
-            new_evidence_ref: string | null;
         };
         /** FileMapping */
         FileMapping: {
@@ -763,6 +797,208 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Scan"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Too Many Requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    rescan_api_v1_scans__scan_id__rescans_post: {
+        parameters: {
+            query?: never;
+            header: {
+                Origin: string;
+                "X-CSRF-Token": string;
+                "Idempotency-Key": string;
+            };
+            path: {
+                scan_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Intake"];
+                "multipart/form-data": {
+                    metadata: string;
+                } & {
+                    [key: string]: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Scan"];
+                };
+            };
+            /** @description Bad Request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Not Found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Too Many Requests */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorResponse"];
+                };
+            };
+        };
+    };
+    comparison_api_v1_scans__baseline_id__comparisons__new_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                baseline_id: string;
+                new_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Comparison"];
                 };
             };
             /** @description Bad Request */

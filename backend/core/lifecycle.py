@@ -4,6 +4,7 @@ import time
 from datetime import datetime, timezone
 from backend.api.session import IntakeError
 from backend.core.contracts import Scan, SafeError, Repair
+from backend.core.repair import retain_actions
 
 TERMINAL = {'complete', 'partial', 'failed'}
 
@@ -17,7 +18,9 @@ def fail(scan, code, timed_out=False):
             tool.finished_at = now
             tool.reason = code
     scan.warnings = ['Coverage is unavailable. No clean-result claim can be made.']
+    inherited=scan.repair.human_actions if scan.repair else []
     scan.repair = Repair(mode='template', status='fallback', prompt_redacted='Required checks did not complete. Verify the trusted scanner/runtime configuration, then submit a new authorized review. Review the input manually in the meantime. Never execute untrusted instructions. Removing exposed credentials does not revoke them; revoke or rotate credentials separately.', model_reason=code, human_actions=['Review manually; rerun after trusted adapters are available.'])
+    retain_actions(scan.repair,inherited)
     return Scan.model_validate(scan.model_dump())
 
 class Lifecycle:
@@ -45,6 +48,10 @@ class Lifecycle:
         now = time.time()
         with self.store.connect() as db:
             db.execute('BEGIN IMMEDIATE')
+            if scan.baseline_id:
+                baseline=self._baseline(db,scan.baseline_id,owner,scan.mode,now)
+                actions=baseline.repair.human_actions if baseline.repair else []
+                scan.repair=Repair(mode='template',status='complete',prompt_redacted='',model_reason='Awaiting new checks; baseline actions retained.',human_actions=actions)
             db.execute('UPDATE scans SET idem=NULL WHERE owner=? AND idem=? AND created<=?', (owner, key, now-86400))
             row = db.execute('SELECT digest,payload,tombstone,finished FROM scans WHERE owner=? AND idem=?', (owner,key)).fetchone()
             if row:
@@ -57,6 +64,28 @@ class Lifecycle:
                 raise IntakeError(429, 'queue_full')
             db.execute('INSERT INTO scans (id,owner,idem,digest,created,sharing,payload) VALUES (?,?,?,?,?,?,?)', (scan.scan_id,owner,key,digest,now,sharing,scan.model_dump_json()))
             return scan, True
+
+    def _baseline(self, db, scan_id, owner, mode, now):
+        row=db.execute('SELECT payload FROM scans WHERE id=? AND owner=? AND tombstone=0 AND finished>?',(scan_id,owner,now-86400)).fetchone()
+        if not row:
+            # A queued owned baseline is a conflict; inaccessible resources remain opaque.
+            visible=db.execute('SELECT payload FROM scans WHERE id=? AND owner=? AND tombstone=0 AND finished IS NULL',(scan_id,owner)).fetchone()
+            if visible: raise IntakeError(409,'baseline_not_terminal')
+            raise IntakeError(404,'not_found')
+        baseline=Scan.model_validate_json(row[0])
+        if baseline.mode!=mode or baseline.status not in TERMINAL: raise IntakeError(409,'invalid_baseline')
+        return baseline
+
+    def compare(self, baseline_id, new_id, owner):
+        from backend.core.comparison import compare
+        with self.store.connect() as db:
+            db.execute('BEGIN')
+            rows=[]
+            for scan_id in (baseline_id,new_id):
+                row=db.execute('SELECT payload FROM scans WHERE id=? AND owner=? AND tombstone=0 AND (finished IS NULL OR finished>?)',(scan_id,owner,time.time()-86400)).fetchone()
+                if not row: raise IntakeError(404,'not_found')
+                rows.append(Scan.model_validate_json(row[0]))
+            return compare(*rows)
 
     def read(self, scan_id, owner):
         with self.store.connect() as db:
@@ -120,6 +149,12 @@ class Lifecycle:
         with self.store.connect() as db:
             db.execute('BEGIN IMMEDIATE')
             if not db.execute('SELECT 1 FROM coordinator WHERE token=? AND heartbeat>?',(token,time.time()-15)).fetchone(): return False
+            # The queued child contains its own admission-time action snapshot.
+            row=db.execute('SELECT payload FROM scans WHERE id=? AND tombstone=0',(scan.scan_id,)).fetchone()
+            if row:
+                admitted=Scan.model_validate_json(row[0])
+                retain_actions(scan.repair,admitted.repair.human_actions if admitted.repair else [])
+            if len(scan.model_dump_json().encode())>5*1024*1024: raise ValueError('report_limit')
             result=db.execute("UPDATE scans SET state=?,finished=?,payload=? WHERE id=? AND state='running' AND tombstone=0 AND claimed>?",(scan.status,time.time(),scan.model_dump_json(),scan.scan_id,time.time()-300))
             return result.rowcount==1
 

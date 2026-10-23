@@ -1,7 +1,7 @@
 {
   "ready": true,
-  "checked_at": "2026-10-23T23:01:35.492224+00:00",
-  "implementation": "890ec09b8298cd691bd22352e17ec5efbdc0d22c46293ee282aae03c41715e1a",
+  "checked_at": "2026-10-23T23:35:39.107545+00:00",
+  "implementation": "fc3867c31a76fc08f07719729305db4cc5cb20cc3457999b889e3331f5d0d1f0",
   "network_mode": "none",
   "private_control": true,
   "zap_image": "ghcr.io/zaproxy/zaproxy@sha256:5ccfff9a411743ab2615136a2edd7416bec9ce41572fa94e935df38c14adb2b6",

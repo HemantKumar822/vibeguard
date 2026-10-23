@@ -64,10 +64,10 @@ development_status:
   3-3-detect-secrets-in-bounded-visible-assets: done
   3-4-investigate-website-findings-in-the-shared-workspace: done
   epic-3-retrospective: optional
-  epic-4: backlog
-  4-1-add-opt-in-bounded-ai-explanations-with-fallback: ready-for-dev
-  4-2-execute-real-rescans-and-classify-comparable-findings: ready-for-dev
-  4-3-inspect-paired-rescan-evidence-and-recovery: ready-for-dev
+  epic-4: in-progress
+  4-1-add-opt-in-bounded-ai-explanations-with-fallback: review
+  4-2-execute-real-rescans-and-classify-comparable-findings: review
+  4-3-inspect-paired-rescan-evidence-and-recovery: review
   epic-4-retrospective: optional
   epic-5: backlog
   5-1-run-the-labeled-acceptance-and-adversarial-corpus: ready-for-dev

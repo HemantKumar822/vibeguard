@@ -19,6 +19,47 @@ async function repositoryForm() {
   return mode
 }
 
+test('repeat preserves baseline, resets consent, and sends owned same-mode request', async () => {
+  const oldId='a'.repeat(32), newId='b'.repeat(32)
+  const report={scan_id:oldId,mode:'repository',status:'complete',input:{repository:'https://github.com/team/project',revision:'c'.repeat(40)},accepted_files:[],findings:[],tools:[],warnings:[],coverage:{exclusions:[],inspected:[],completed_count:2,required_count:2},repair:{prompt_redacted:'Baseline guidance',human_actions:[]}}
+  const fetch=vi.fn().mockImplementation(async(url:string)=>({ok:true,json:async()=>url.endsWith('/session')?{csrf_token:'csrf'}:url.endsWith('/rescans')?{...report,scan_id:newId,baseline_id:oldId,status:'queued',repair:null}:report}))
+  vi.stubGlobal('fetch',fetch)
+  await act(async()=>root.render(<SourceIntake/>))
+  await repositoryForm()
+  await act(async()=>host.querySelector('form')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})))
+  await act(async()=>Array.from(host.querySelectorAll('button')).find(button=>button.textContent==='Rescan corrected input')!.click())
+  expect(host.textContent).toContain('Baseline guidance')
+  expect(host.querySelector<HTMLSelectElement>('select')!.disabled).toBe(true)
+  expect(host.querySelector<HTMLInputElement>('input[type=checkbox]')!.checked).toBe(false)
+  await act(async()=>host.querySelector<HTMLInputElement>('input[type=checkbox]')!.click())
+  await act(async()=>host.querySelector('form')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})))
+  const call=fetch.mock.calls.find(call=>call[0]===`/api/v1/scans/${oldId}/rescans`)!
+  expect(JSON.parse(call[1].body)).toMatchObject({mode:'repository',authorization_confirmed:true,allow_external_ai:false})
+  expect(host.textContent).toContain('Before - preserved baseline')
+  expect(host.textContent).toContain('Scan ID: '+newId)
+})
+
+test('a delayed reconnect cannot overwrite a newer accepted submission', async () => {
+  let release!: (value:unknown)=>void
+  const deferred=new Promise(resolve=>{release=resolve})
+  const oldId='a'.repeat(32), newId='b'.repeat(32)
+  const report={mode:'repository',status:'queued',input:{},accepted_files:[],findings:[],tools:[],warnings:[],coverage:{exclusions:[]}}
+  const fetch=vi.fn().mockImplementation(async(url:string)=>{
+    if(url.endsWith('/session'))return{ok:true,json:async()=>({csrf_token:'csrf'})}
+    if(url.endsWith('/'+oldId))return deferred
+    return{ok:true,json:async()=>({...report,scan_id:newId})}
+  })
+  vi.stubGlobal('fetch',fetch)
+  await act(async()=>root.render(<SourceIntake/>))
+  const id=host.querySelector<HTMLInputElement>('input[maxlength="32"]')!
+  await act(async()=>{Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value')!.set!.call(id,oldId);id.dispatchEvent(new Event('input',{bubbles:true}))})
+  await act(async()=>Array.from(host.querySelectorAll('button')).find(button=>button.textContent==='Reconnect')!.click())
+  await repositoryForm()
+  await act(async()=>host.querySelector('form')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})))
+  await act(async()=>{release({ok:true,json:async()=>({...report,scan_id:oldId})});await deferred})
+  expect(host.textContent).toContain('Scan ID: '+newId)
+})
+
 test('repository submission preserves report across mode changes and reconnects without resubmitting', async () => {
   const report = { scan_id: 'a'.repeat(32), status: 'complete', mode: 'repository',
     input: { repository: 'https://github.com/team/project', requested_ref: 'main', revision: 'b'.repeat(40) },
@@ -80,6 +121,7 @@ test('an old polling 404 cannot clear a newly accepted report', async () => {
   const submit = () => host.querySelector('form')!.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
   await act(async () => { submit() })
   await act(async () => vi.advanceTimersByTimeAsync(1000))
+  await act(async () => host.querySelector<HTMLInputElement>('input[type=checkbox]')!.click())
   await act(async () => { submit() })
   await act(async () => { resolveOld({ status: 404 }); await oldResponse })
   expect(host.textContent).toContain('Scan ID: ' + newId)

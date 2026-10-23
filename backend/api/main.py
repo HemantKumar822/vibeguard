@@ -17,8 +17,9 @@ from pydantic.json_schema import models_json_schema
 from backend.adapters.intake import receive
 from backend.adapters.repository import identity, retrieve, request_digest
 from backend.adapters.storage import Storage
+from backend.adapters.explanations import configuration as ai_configuration
 from backend.api.session import IntakeError, owner
-from backend.core.contracts import Health, PUBLIC_MODELS, Scan, SessionResponse, Capabilities, ErrorResponse, Deletion, Intake
+from backend.core.contracts import Health, PUBLIC_MODELS, Scan, SessionResponse, Capabilities, ErrorResponse, Deletion, Intake, Comparison
 from backend.adapters.web_capture import target as website_target, display as website_display, LIMITS as WEB_LIMITS, CaptureError
 from backend.core.website_readiness import ready as website_ready
 from pydantic import ValidationError
@@ -26,6 +27,11 @@ from backend.core.policy import POLICY_ID, LIMITS, FINGERPRINT
 from backend.core.settings import Settings
 from backend.core.lifecycle import Lifecycle
 from backend.core.cleanup import Cleanup
+
+
+def bound_digest(digest, baseline_id):
+    import hashlib
+    return hashlib.sha256((digest+':baseline:'+baseline_id).encode()).hexdigest() if baseline_id else digest
 
 
 def queued_scan(scan_id, accepted, exclusions, mode='codebase'):
@@ -106,7 +112,7 @@ def create_app(settings=None):
         owner(request, runtime(), settings)
         enabled=website_ready()
         return dict(policy_id=POLICY_ID, policy_fingerprint=FINGERPRINT, permitted_modes=['codebase', 'repository']+(['website'] if enabled else []),
-                    limits={**LIMITS,**{'website_'+key:value for key,value in WEB_LIMITS.items()}}, ai_available=False, unavailable_modes=[] if enabled else ['website'])
+                    limits={**LIMITS,**{'website_'+key:value for key,value in WEB_LIMITS.items()}}, ai_available=ai_configuration() is not None, unavailable_modes=[] if enabled else ['website'])
     @api.post('/api/v1/scans', status_code=202, response_model=Scan, responses=errors,
         openapi_extra={'parameters': [origin_header, *[{'name': name, 'in': 'header', 'required': True,
             'schema': {'type': 'string'}} for name in ['X-CSRF-Token', 'Idempotency-Key']]],
@@ -115,8 +121,13 @@ def create_app(settings=None):
             'description': 'JSON CodebaseMetadata; additional named binary parts map each part_id exactly once.'}},
             'additionalProperties': {'type': 'string', 'format': 'binary'}}}}}})
     async def submit(request: Request):
+        return await submit_intake(request)
+
+    async def submit_intake(request: Request, baseline_id: str | None = None):
         store = runtime()
         session_id = owner(request, store, settings, mutation=True)
+        baseline = Lifecycle(store).read(baseline_id, session_id) if baseline_id else None
+        if baseline and baseline.status not in {'complete','partial','failed'}: raise IntakeError(409,'baseline_not_terminal')
         key = request.headers.get('idempotency-key', '')
         if not re.fullmatch(r'[A-Za-z0-9_-]{1,128}', key):
             raise IntakeError(422, 'idempotency_key_required', 'Idempotency-Key')
@@ -145,7 +156,8 @@ def create_app(settings=None):
                     if not website_ready(): raise IntakeError(503,'website_safety_unverified')
                     try: website=website_target(metadata.target_url)
                     except CaptureError: raise IntakeError(422,'invalid_website_target','target_url') from None
-                digest=request_digest(metadata)
+                if baseline and baseline.mode!=metadata.mode: raise IntakeError(409,"rescan_mode_mismatch")
+                digest=bound_digest(request_digest(metadata),baseline_id)
                 existing=Lifecycle(store).existing(session_id,key,digest)
                 if existing: return existing
                 if website:
@@ -161,6 +173,8 @@ def create_app(settings=None):
                         raise
             else:
                 metadata, accepted, exclusions, digest = await receive(request, directory)
+            if baseline and baseline.mode!=metadata.mode: raise IntakeError(409,"rescan_mode_mismatch")
+            if metadata.mode=="codebase": digest=bound_digest(digest,baseline_id)
             scan = queued_scan(directory.name, accepted, exclusions,'website' if website else 'codebase')
             if website:
                 scan.input.display_name='Authorized website review'
@@ -176,6 +190,7 @@ def create_app(settings=None):
                 scan.input.requested_ref=requested
                 scan.coverage.revision_or_observation=commit
                 for tool in scan.tools: tool.coverage.revision_or_observation=commit
+            scan.baseline_id = baseline_id
             scan.accepted_files = accepted
             scan.allow_external_ai = metadata.allow_external_ai
             scan, published = Lifecycle(store).admit(scan, session_id, key, digest, metadata.allow_external_ai)
@@ -186,6 +201,19 @@ def create_app(settings=None):
                     shutil.rmtree(directory)
             finally:
                 api.state.intake_guard.release()
+    @api.post('/api/v1/scans/{scan_id}/rescans', status_code=202, response_model=Scan, responses=errors,
+              openapi_extra={'parameters': [origin_header, *[{'name': name, 'in': 'header', 'required': True, 'schema': {'type': 'string'}} for name in ['X-CSRF-Token','Idempotency-Key']]],
+                            'requestBody': {'required': True, 'content': {'application/json': {'schema': {'$ref':'#/components/schemas/Intake'}}, 'multipart/form-data': {'schema': {'type':'object','required':['metadata'],'properties':{'metadata':{'type':'string'}},'additionalProperties':{'type':'string','format':'binary'}}}}}})
+    async def rescan(scan_id: str, request: Request):
+        return await submit_intake(request, scan_id)
+
+    @api.get('/api/v1/scans/{baseline_id}/comparisons/{new_id}', response_model=Comparison, responses=errors)
+    def comparison(baseline_id: str, new_id: str, request: Request):
+        store=runtime()
+        try: session_id=owner(request,store,settings)
+        except IntakeError: raise IntakeError(404,'not_found') from None
+        return Lifecycle(store).compare(baseline_id,new_id,session_id)
+
     @api.get('/api/v1/scans/{scan_id}', response_model=Scan, responses=errors)
     def read_scan(scan_id: str, request: Request):
         store = runtime()

@@ -74,7 +74,7 @@ def execute(scan, lifecycle, launcher, token):
         if truncated: scan.warnings.append('Finding limit reached; report coverage is incomplete.')
         scan.status='complete' if scan.coverage.scope_complete else ('partial' if scan.findings or scan.coverage.completed_count else 'failed')
         scan.finished_at=datetime.now(timezone.utc)
-        scan.repair=repair_for(scan)
+        scan.repair=repair_for(scan,budget_seconds=max(0, min(15, 300-(datetime.now(timezone.utc)-scan.started_at).total_seconds())) if scan.started_at else 0)
         # Large inventories/evidence must not silently turn into a clean result
         # or exceed the public report boundary. Retain explicit partial coverage.
         if len(scan.model_dump_json().encode())>5*1024*1024:
@@ -88,7 +88,7 @@ def execute(scan, lifecycle, launcher, token):
             scan.coverage.completed_count=0
             while scan.findings and len(scan.model_dump_json().encode())>5*1024*1024:
                 scan.findings=scan.findings[:len(scan.findings)//2]
-            scan.repair=repair_for(scan)
+            scan.repair=repair_for(scan,budget_seconds=0)
         if scan.status=='failed': scan.error=SafeError(code='source_checks_failed',message='Required source checks failed.',request_id=scan.scan_id,details={})
         lifecycle.publish(scan,token)
         return scan

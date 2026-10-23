@@ -1,9 +1,9 @@
 ---
 story_id: '4.3'
 epic: 4
-status: ready-for-dev
+status: review
 prepared: true
-approval: pending-user-review
+approval: approved-epic-batch
 assignee: unassigned
 owner_role: "Frontend / comparison workflow"
 priority: P0
@@ -51,10 +51,10 @@ Dependencies are coordination guidance. Team members may start parallel work by 
 
 ## In scope / implementation checklist
 
-- [ ] Implement same-mode rescan entry/progress while preserving baseline context.
-- [ ] Display four labeled classifications with reasons, both revisions/observations and paired coverage/evidence.
-- [ ] Preserve focus/selection and accessible narrow stacking with deliberate recovery for failed repeats.
-- [ ] Verify comparison with external AI disabled or unavailable; optional AI integration is not a prerequisite.
+- [x] Implement same-mode rescan entry/progress while preserving baseline context.
+- [x] Display four labeled classifications with reasons, both revisions/observations and paired coverage/evidence.
+- [x] Preserve focus/selection and accessible narrow stacking with deliberate recovery for failed repeats.
+- [x] Verify comparison with external AI disabled or unavailable; optional AI integration is not a prerequisite.
 
 ## Out of scope
 
@@ -63,15 +63,15 @@ Dependencies are coordination guidance. Team members may start parallel work by 
 
 ## Acceptance criteria
 
-- [ ] **AC-1** **Given** a baseline, **When** Rescan is selected, **Then** same-mode inputs, permission and actual progress appear while baseline evidence stays accessible.
-- [ ] **AC-2** **Given** terminal comparison, **When** a Finding is selected, **Then** both revisions/observations, paired sanitized evidence, classification reason and coverage are available; **And** narrow view stacks baseline then new with text labels.
-- [ ] **AC-3** **Given** failed repeat, expired baseline, disconnect or changed coverage, **When** displayed, **Then** no fixed-success state appears and deliberate retry/recovery follows EXPERIENCE.md; **And** keyboard focus/selection remain stable.
+- [x] **AC-1** **Given** a baseline, **When** Rescan is selected, **Then** same-mode inputs, permission and actual progress appear while baseline evidence stays accessible.
+- [x] **AC-2** **Given** terminal comparison, **When** a Finding is selected, **Then** both revisions/observations, paired sanitized evidence, classification reason and coverage are available; **And** narrow view stacks baseline then new with text labels.
+- [x] **AC-3** **Given** failed repeat, expired baseline, disconnect or changed coverage, **When** displayed, **Then** no fixed-success state appears and deliberate retry/recovery follows EXPERIENCE.md; **And** keyboard focus/selection remain stable.
 
 ## Verification plan
 
-- [ ] Walk UJ-3 using live repeat scans and inspect both observations.
-- [ ] Exercise failed repeat, changed coverage, expired baseline and disconnect.
-- [ ] Check keyboard navigation, narrow layout and retained baseline state without duplicate work.
+- [x] Walk UJ-3 using live repeat scans and inspect both observations.
+- [x] Exercise failed repeat, changed coverage, expired baseline and disconnect.
+- [x] Check keyboard navigation, narrow layout and retained baseline state without duplicate work.
 
 Record the actual commands, observed results and sanitized evidence in the PR and implementation record. Use commands introduced by the real scaffold; no nonexistent build/test command is asserted here.
 
@@ -86,6 +86,10 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Implementation record
 
-Not started. Record PR, actual commands/results, sanitized evidence and remaining limitations here during implementation.
+Implementation integrated for review in the Epic 4 batch (2026-10-24). Added optional bounded explanation port and deterministic fallback, real same-mode rescan admission with immutable lineage, conservative comparison, baseline-preserving paired evidence UI, and matrix/actual-worker smoke tests. Python syntax compilation and contract export/type generation succeeded. Batch verification, review patches, measured website readiness and actual pinned all-mode repeat smoke are complete; exact results and limitations are recorded in epic-4-verification.md. No live paid provider call or public-network repeat acceptance is claimed. See docs/DEVELOPMENT.md and spec-epic-4-ai-rescan-comparison.md for protocol, bounds and evidence commands.
 
 [Parent epic](../github-issues/epics/epic-04-receive-grounded-ai-guidance-and-verify-changes-through-rescans.md) · [All stories](README.md)
+
+### Batch verification completed
+
+Implementation and review patches verified with one broad integration run and focused reruns only. See [Epic 4 evidence](epic-4-verification.md) for exact commands/results and live-provider/browser limitations. Ready for teammate/PR review; no remote issue closure is claimed.

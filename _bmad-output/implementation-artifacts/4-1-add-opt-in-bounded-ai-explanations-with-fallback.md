@@ -1,9 +1,9 @@
 ---
 story_id: '4.1'
 epic: 4
-status: ready-for-dev
+status: review
 prepared: true
-approval: pending-user-review
+approval: approved-epic-batch
 assignee: unassigned
 owner_role: "Backend / AI integration"
 priority: P0
@@ -51,9 +51,9 @@ Dependencies are coordination guidance. Team members may start parallel work by 
 
 ## In scope / implementation checklist
 
-- [ ] Connect a server-configured provider behind the bounded explanation port and explicit per-submission opt-in.
-- [ ] Send sanitized structured findings only and validate returned IDs/locations/output shape.
-- [ ] Keep core-owned master prompt composition and deterministic fallback, including all relevant human rotation actions.
+- [x] Connect a server-configured provider behind the bounded explanation port and explicit per-submission opt-in.
+- [x] Send sanitized structured findings only and validate returned IDs/locations/output shape.
+- [x] Keep core-owned master prompt composition and deterministic fallback, including all relevant human rotation actions.
 
 ## Out of scope
 
@@ -62,15 +62,15 @@ Dependencies are coordination guidance. Team members may start parallel work by 
 
 ## Acceptance criteria
 
-- [ ] **AC-1** **Given** sharing disabled, **When** a report is composed, **Then** no external request occurs and deterministic guidance remains usable.
-- [ ] **AC-2** **Given** sharing enabled and a configured provider, **When** bounded sanitized findings are sent once, **Then** only valid existing IDs/locations are accepted and core composes the master prompt; **And** injected source/page instructions cannot trigger tools or widen sharing.
-- [ ] **AC-3** **Given** timeout, invalid/invented output, unavailable provider or limit overflow, **When** processed, **Then** deterministic guidance covers affected/remaining Findings with an explicit reason and preserves rotation advice.
+- [x] **AC-1** **Given** sharing disabled, **When** a report is composed, **Then** no external request occurs and deterministic guidance remains usable.
+- [x] **AC-2** **Given** sharing enabled and a configured provider, **When** bounded sanitized findings are sent once, **Then** only valid existing IDs/locations are accepted and core composes the master prompt; **And** injected source/page instructions cannot trigger tools or widen sharing.
+- [x] **AC-3** **Given** timeout, invalid/invented output, unavailable provider or limit overflow, **When** processed, **Then** deterministic guidance covers affected/remaining Findings with an explicit reason and preserves rotation advice.
 
 ## Verification plan
 
-- [ ] Assert no model request when sharing is off.
-- [ ] Inspect the enabled request for bounded sanitized evidence and test valid explanation output.
-- [ ] Test timeout/invented IDs/locations/invalid response/prompt injection and confirm usable honest fallback.
+- [x] Assert no model request when sharing is off.
+- [x] Inspect the enabled request for bounded sanitized evidence and test valid explanation output.
+- [x] Test timeout/invented IDs/locations/invalid response/prompt injection and confirm usable honest fallback.
 
 Record the actual commands, observed results and sanitized evidence in the PR and implementation record. Use commands introduced by the real scaffold; no nonexistent build/test command is asserted here.
 
@@ -85,6 +85,10 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Implementation record
 
-Not started. Record PR, actual commands/results, sanitized evidence and remaining limitations here during implementation.
+Implementation integrated for review in the Epic 4 batch (2026-10-24). Added optional bounded explanation port and deterministic fallback, real same-mode rescan admission with immutable lineage, conservative comparison, baseline-preserving paired evidence UI, and matrix/actual-worker smoke tests. Python syntax compilation and contract export/type generation succeeded. Batch verification, review patches, measured website readiness and actual pinned all-mode repeat smoke are complete; exact results and limitations are recorded in epic-4-verification.md. No live paid provider call or public-network repeat acceptance is claimed. See docs/DEVELOPMENT.md and spec-epic-4-ai-rescan-comparison.md for protocol, bounds and evidence commands.
 
 [Parent epic](../github-issues/epics/epic-04-receive-grounded-ai-guidance-and-verify-changes-through-rescans.md) · [All stories](README.md)
+
+### Batch verification completed
+
+Implementation and review patches verified with one broad integration run and focused reruns only. See [Epic 4 evidence](epic-4-verification.md) for exact commands/results and live-provider/browser limitations. Ready for teammate/PR review; no remote issue closure is claimed.

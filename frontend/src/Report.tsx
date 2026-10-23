@@ -60,8 +60,8 @@ export default function Report({ scan }: { scan: Scan }) {
               {active.human_actions.length > 0 && <><h4>Separate human actions</h4><ul>{active.human_actions.map(action => <li key={action}>{action}</li>)}</ul></>}
             </article>}</div>}
     </>}
-    {scan.repair && <section aria-label="Repair prompt"><h3>Consolidated repair prompt</h3>
-      <p>Deterministic guidance · no AI required.</p><button className="primary-button" type="button" onClick={copyPrompt}>Copy repair prompt</button><p role="status">{copy}</p>
+    {scan.repair && ['complete', 'partial', 'failed'].includes(scan.status) && <section aria-label="Repair prompt"><h3>Consolidated repair prompt</h3>
+      <p>{scan.repair.mode === 'ai_assisted' ? 'AI-assisted explanations with deterministic guidance' : 'Deterministic guidance · no AI required.'} · {scan.repair.status}</p><p>Sharing: {scan.allow_external_ai ? 'allowed for this submission' : 'off'}. {scan.repair.model_reason}</p><button className="primary-button" type="button" onClick={copyPrompt}>Copy repair prompt</button><p role="status">{copy}</p>
       <label>Sanitized repair prompt<textarea readOnly value={scan.repair.prompt_redacted} aria-label="Sanitized repair prompt" /></label>
       {scan.repair.human_actions?.length > 0 && <><h4>Separate human actions</h4><ul>{scan.repair.human_actions.map(action => <li key={action}>{action}</li>)}</ul></>}
     </section>}
