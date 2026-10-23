@@ -28,6 +28,8 @@ def test_new_install_makes_sibling_credential_helpers_available(monkeypatch):
 
 def test_one_pull_timeout_does_not_skip_other_scanners(monkeypatch):
     def command(args, **kwargs):
+        if 'rm' in args:
+            return SimpleNamespace(returncode=0, stdout='', stderr='')
         if 'info' in args:
             return SimpleNamespace(returncode=0, stdout='29.9.2')
         if 'semgrep/semgrep:1.182.1' in args:
@@ -43,6 +45,8 @@ def test_version_probes_use_writable_scratch_home_without_weakening_isolation(mo
     versions = {'gitleaks': '8.30.1', 'semgrep': '1.182.1', 'zap.sh': '2.17.0'}
 
     def command(args, **kwargs):
+        if 'rm' in args:
+            return SimpleNamespace(returncode=0, stdout='', stderr='')
         if 'info' in args:
             return SimpleNamespace(returncode=0, stdout='29.9.2')
         if 'pull' in args:
@@ -73,6 +77,8 @@ def test_version_probes_use_writable_scratch_home_without_weakening_isolation(mo
 def test_version_text_with_fatal_startup_errors_is_not_verified(monkeypatch):
     versions = {'gitleaks': '8.30.1', 'semgrep': '1.182.1', 'zap.sh': '2.17.0'}
     def command(args, **kwargs):
+        if 'rm' in args:
+            return SimpleNamespace(returncode=0, stdout='', stderr='')
         if 'info' in args:
             return SimpleNamespace(returncode=0, stdout='29.9.2')
         if 'inspect' in args:
@@ -86,3 +92,23 @@ def test_version_text_with_fatal_startup_errors_is_not_verified(monkeypatch):
     result = probe(find_docker=lambda _: 'docker')
     assert result['ready'] is False
     assert result['scanners'][2]['status'] == 'startup_failed'
+
+
+def test_timed_out_containers_are_removed_by_their_unique_name(monkeypatch):
+    started, removed = [], []
+    def command(args, **kwargs):
+        if 'info' in args:
+            return SimpleNamespace(returncode=0, stdout='29.9.2')
+        if 'inspect' in args:
+            return SimpleNamespace(returncode=0, stdout=json.dumps(['example/tool@sha256:' + 'a' * 64]))
+        if 'rm' in args:
+            removed.append(args[-1])
+            return SimpleNamespace(returncode=0, stdout='', stderr='')
+        if 'run' in args:
+            started.append(args[args.index('--name') + 1] if '--name' in args else 'unnamed')
+            raise subprocess.TimeoutExpired(args, 90)
+        raise AssertionError('Unexpected command')
+    monkeypatch.setattr('scripts.scanner_readiness.subprocess.run', command)
+    result = probe(find_docker=lambda _: 'docker')
+    assert len(started) == 3 and len(set(started)) == 3 and started == removed
+    assert all(s['status'] == 'timed_out' for s in result['scanners'])

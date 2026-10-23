@@ -2,7 +2,7 @@
   "kind": "comparison",
   "data": {
     "baseline_id": "development-baseline",
-    "new_id": "development-repeat",
+    "new_id": "development-repeat-partial",
     "status": "partial",
     "baseline_input": {
       "display_name": "Development fixture only",

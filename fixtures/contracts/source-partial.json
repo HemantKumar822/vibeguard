@@ -2,8 +2,8 @@
   "kind": "scan",
   "data": {
     "contract_version": "v1",
-    "scan_id": "development-codebase-partial",
-    "baseline_id": null,
+    "scan_id": "development-repeat-partial",
+    "baseline_id": "development-baseline",
     "mode": "codebase",
     "status": "partial",
     "policy_id": "safety-v1",
@@ -83,11 +83,9 @@
         "coverage": {
           "required_count": 0,
           "completed_count": 0,
-          "inspected": [
-            "src/demo.ts"
-          ],
+          "inspected": [],
           "exclusions": [],
-          "rules_fingerprint": "development-fixture-rules",
+          "rules_fingerprint": null,
           "revision_or_observation": "development-revision",
           "scope_complete": false
         },
@@ -106,11 +104,9 @@
         "coverage": {
           "required_count": 0,
           "completed_count": 0,
-          "inspected": [
-            "src/demo.ts"
-          ],
+          "inspected": [],
           "exclusions": [],
-          "rules_fingerprint": "development-fixture-rules",
+          "rules_fingerprint": null,
           "revision_or_observation": "development-revision",
           "scope_complete": false
         },

@@ -7,12 +7,33 @@ from pathlib import Path
 import re
 import shutil
 import subprocess
+from uuid import uuid4
 
 TOOLS = [
     ('gitleaks', 'ghcr.io/gitleaks/gitleaks:v8.30.1', '8.30.1', 'gitleaks', ['version']),
     ('semgrep', 'semgrep/semgrep:1.182.1', '1.182.1', 'semgrep', ['--disable-version-check', '--metrics=off', '--version']),
     ('zap', 'ghcr.io/zaproxy/zaproxy:2.17.0', '2.17.0', 'zap.sh', ['-dir', '/tmp/zap', '-version']),
 ]
+
+
+class ProbeCleanupError(RuntimeError):
+    pass
+
+
+def run_version_container(docker, arguments, environment):
+    name = 'vibeguard-version-' + uuid4().hex
+    try:
+        return subprocess.run([docker, 'run', '--name', name, *arguments],
+                              capture_output=True, text=True, timeout=90, env=environment)
+    finally:
+        # Killing a timed-out Docker client does not stop its daemon-side job.
+        try:
+            cleanup = subprocess.run([docker, 'rm', '--force', name],
+                capture_output=True, text=True, timeout=20, env=environment)
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            raise ProbeCleanupError('Probe cleanup did not complete') from exc
+        if cleanup.returncode and 'No such container' not in cleanup.stderr:
+            raise ProbeCleanupError('Probe container could not be removed')
 
 
 def locate_docker(name):
@@ -61,17 +82,19 @@ def probe(find_docker=locate_docker, pull_timeout=180):
                     tool_env += ['--env', 'SEMGREP_ENABLE_VERSION_CHECK=0', '--env', 'SEMGREP_SEND_METRICS=off']
                 elif command == 'zap.sh':
                     tool_env += ['--env', 'JAVA_TOOL_OPTIONS=-Duser.home=/tmp']
-                checked = subprocess.run([docker, 'run', '--rm', '--network', 'none', '--read-only',
+                checked = run_version_container(docker, ['--rm', '--network', 'none', '--read-only',
                     '--cap-drop', 'ALL', '--security-opt', 'no-new-privileges', '--user', '1000:1000',
                     '--memory', '2g', '--cpus', '2', '--pids-limit', '128',
                     '--tmpfs', '/tmp:rw,nosuid,nodev,size=256m', '--hostname', 'vibeguard-probe',
                     '--add-host', 'vibeguard-probe:127.0.0.1', *tool_env, '--entrypoint', command,
-                    digests[0], *args], capture_output=True, text=True, timeout=90, env=environment)
+                    digests[0], *args], environment)
                 output = checked.stdout + '\n' + checked.stderr
                 observed = re.search(r'(?<!\d)' + re.escape(version) + r'(?![\d.])', output)
                 scanner['observed_version'] = version if observed else None
                 fatal_startup = re.search(r'No space left on device|Read-only file system|The home path is not writable|java\.io\.IOException|Traceback \(most recent call last\)', output)
                 scanner['status'] = 'startup_failed' if fatal_startup else ('verified' if checked.returncode == 0 and observed else 'version_probe_failed')
+            except ProbeCleanupError:
+                scanner['status'] = 'cleanup_failed'
             except subprocess.TimeoutExpired:
                 scanner['status'] = 'timed_out'
             except (OSError, ValueError):

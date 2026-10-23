@@ -2,7 +2,7 @@
   "kind": "scan",
   "data": {
     "contract_version": "v1",
-    "scan_id": "development-codebase-complete",
+    "scan_id": "development-ai-fallback",
     "baseline_id": null,
     "mode": "codebase",
     "status": "complete",
@@ -78,11 +78,9 @@
         "coverage": {
           "required_count": 0,
           "completed_count": 0,
-          "inspected": [
-            "src/demo.ts"
-          ],
+          "inspected": [],
           "exclusions": [],
-          "rules_fingerprint": "development-fixture-rules",
+          "rules_fingerprint": null,
           "revision_or_observation": "development-revision",
           "scope_complete": false
         },
@@ -101,11 +99,9 @@
         "coverage": {
           "required_count": 0,
           "completed_count": 0,
-          "inspected": [
-            "src/demo.ts"
-          ],
+          "inspected": [],
           "exclusions": [],
-          "rules_fingerprint": "development-fixture-rules",
+          "rules_fingerprint": null,
           "revision_or_observation": "development-revision",
           "scope_complete": false
         },

@@ -93,6 +93,8 @@ class Coverage(Contract):
     def counts(self):
         if self.completed_count > self.required_count:
             raise ValueError('Completed coverage cannot exceed required coverage')
+        if self.scope_complete and self.completed_count != self.required_count:
+            raise ValueError('Complete scope requires all coverage checks complete')
         return self
 
 
@@ -111,6 +113,8 @@ class Tool(Contract):
 
     @model_validator(mode='after')
     def applicability(self):
+        if self.status == 'skipped' and not (self.reason and self.reason.strip()):
+            raise ValueError('Skipped tools require an explicit reason')
         if not self.applicable and (self.required or self.status != 'skipped' or self.reason != 'not_applicable'):
             raise ValueError('Nonapplicable tools must be explicitly skipped and not required')
         return self
@@ -208,6 +212,8 @@ class Scan(Contract):
             raise ValueError('Complete scan requires all required checks and scope')
         if self.status in {'complete', 'partial', 'failed'} and (self.finished_at is None or self.repair is None):
             raise ValueError('Terminal scans require timestamp and deterministic repair guidance')
+        if self.status in {'complete', 'partial', 'failed'} and any(t.status in {'queued', 'running'} for t in self.tools):
+            raise ValueError('Terminal scans cannot retain nonterminal tools')
         return self
 
 
@@ -218,6 +224,18 @@ class ComparisonItem(Contract):
     reason_code: str
     baseline_evidence_ref: str | None
     new_evidence_ref: str | None
+
+    @model_validator(mode='after')
+    def observed_identity(self):
+        baseline, new = bool(self.baseline_finding_id), bool(self.new_finding_id)
+        if not baseline and not new:
+            raise ValueError('A comparison item requires an observed finding')
+        expected = {'still_detected': (True, True), 'not_detected': (True, False), 'newly_detected': (False, True)}
+        if self.status in expected and (baseline, new) != expected[self.status]:
+            raise ValueError('Finding identities do not match comparison classification')
+        if (baseline, new) != (bool(self.baseline_evidence_ref), bool(self.new_evidence_ref)):
+            raise ValueError('Observed findings require corresponding evidence references')
+        return self
 
 
 class Comparison(Contract):

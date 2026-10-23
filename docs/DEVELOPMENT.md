@@ -44,13 +44,15 @@ The page clearly states scanning is unavailable. A development-only selector sho
 uv run pytest -q
 uv run python scripts/export_contracts.py
 npm --prefix frontend run generate:types
+npm --prefix frontend run check:contracts
+npm --prefix frontend test
 npm --prefix frontend run typecheck
 npm --prefix frontend run build
 npm --prefix frontend run lint
 uv run python scripts/validate_repo_preparation.py
 ```
 
-The Python suite checks live HTTP health, absent scan routes, all eight fixture states, invalid input/location/status cases, truthful completion and checked-in schema parity. Frontend compilation checks fixture payloads against generated types. No scanner acceptance or containment is established by these tests.
+The Python suite checks live HTTP health, absent scan routes, all ten fixture states, invalid input/location/status cases, truthful completion and checked-in schema parity. Frontend compilation checks fixture payloads against generated types. No scanner acceptance or containment is established by these tests.
 
 ## Scanner feasibility gate
 
@@ -73,3 +75,5 @@ The planning candidates Node 24.22.1 / TypeScript 7.0.2 were not used unchanged.
 On Windows, stop Vite before running `npm ci`; otherwise a loaded native module can cause an EPERM unlink error. The readiness command accepts `--pull-timeout 30` for a shorter bounded retry (default 180 seconds per image). A timeout is a blocked result, not proof an image or version is invalid.
 
 Verified on 2026-10-24: Linux Docker engine 29.9.2 executes Gitleaks 8.30.1, Semgrep 1.182.1 and ZAP 2.17.0 by the digests recorded in `contracts/scanner-readiness.json`. Probes remain non-root, network-disabled and read-only, with a 256 MiB temporary filesystem. HOME and Java user.home point into that scratch; the probe hostname resolves only to loopback. Semgrep version-check and metrics activity are disabled. Startup resource errors prevent a passing probe even if version text appears. These probes do not establish application scanner containment.
+
+Pre-merge review added strict TypeScript null checking, generated-file drift checks, a production fixture-exclusion gate built into `npm run build`, and in-memory frontend health tests. Health requests have a 10-second deadline. Synthetic comparison examples link actual baseline/corrected/partial Scan fixtures. Probe containers are uniquely named and forcibly removed in a finally block, including timeout/error paths.

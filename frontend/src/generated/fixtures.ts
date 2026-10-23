@@ -3,7 +3,7 @@ import type { components } from "./api";
 
 const ai_fallback = {
   "contract_version": "v1",
-  "scan_id": "development-codebase-complete",
+  "scan_id": "development-ai-fallback",
   "baseline_id": null,
   "mode": "codebase",
   "status": "complete",
@@ -79,11 +79,9 @@ const ai_fallback = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
+        "rules_fingerprint": null,
         "revision_or_observation": "development-revision",
         "scope_complete": false
       },
@@ -102,11 +100,9 @@ const ai_fallback = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
+        "rules_fingerprint": null,
         "revision_or_observation": "development-revision",
         "scope_complete": false
       },
@@ -139,7 +135,7 @@ const ai_fallback = {
 } satisfies components["schemas"]["Scan"];
 const comparison_unverified = {
   "baseline_id": "development-baseline",
-  "new_id": "development-repeat",
+  "new_id": "development-repeat-partial",
   "status": "partial",
   "baseline_input": {
     "display_name": "Development fixture only",
@@ -204,7 +200,7 @@ const comparison = {
   },
   "new_input": {
     "display_name": "Development fixture only",
-    "revision": "development-revision",
+    "revision": "development-corrected-revision",
     "repository": null,
     "target_redacted": null,
     "observation_id": null
@@ -228,7 +224,7 @@ const comparison = {
     ],
     "exclusions": [],
     "rules_fingerprint": "development-fixture-rules",
-    "revision_or_observation": "development-revision",
+    "revision_or_observation": "development-corrected-revision",
     "scope_complete": true
   },
   "items": [
@@ -256,6 +252,167 @@ const deletion_failed = {
     "details": {}
   }
 } satisfies components["schemas"]["Deletion"];
+const source_baseline = {
+  "contract_version": "v1",
+  "scan_id": "development-baseline",
+  "baseline_id": null,
+  "mode": "codebase",
+  "status": "complete",
+  "policy_id": "safety-v1",
+  "policy_fingerprint": "development-fixture-policy",
+  "created_at": "2026-10-23T12:00:00Z",
+  "started_at": "2026-10-23T12:00:00Z",
+  "finished_at": "2026-10-23T12:00:00Z",
+  "input": {
+    "display_name": "Development fixture only",
+    "revision": "development-revision",
+    "repository": null,
+    "target_redacted": null,
+    "observation_id": null
+  },
+  "tools": [
+    {
+      "name": "gitleaks",
+      "applicable": true,
+      "required": true,
+      "status": "complete",
+      "reason": null,
+      "version": "development-only",
+      "rules_fingerprint": "development-fixture-rules",
+      "started_at": "2026-10-23T12:00:00Z",
+      "finished_at": "2026-10-23T12:00:00Z",
+      "coverage": {
+        "required_count": 1,
+        "completed_count": 1,
+        "inspected": [
+          "src/demo.ts"
+        ],
+        "exclusions": [],
+        "rules_fingerprint": "development-fixture-rules",
+        "revision_or_observation": "development-revision",
+        "scope_complete": true
+      },
+      "error": null
+    },
+    {
+      "name": "semgrep",
+      "applicable": true,
+      "required": true,
+      "status": "complete",
+      "reason": null,
+      "version": "development-only",
+      "rules_fingerprint": "development-fixture-rules",
+      "started_at": "2026-10-23T12:00:00Z",
+      "finished_at": "2026-10-23T12:00:00Z",
+      "coverage": {
+        "required_count": 1,
+        "completed_count": 1,
+        "inspected": [
+          "src/demo.ts"
+        ],
+        "exclusions": [],
+        "rules_fingerprint": "development-fixture-rules",
+        "revision_or_observation": "development-revision",
+        "scope_complete": true
+      },
+      "error": null
+    },
+    {
+      "name": "zap",
+      "applicable": false,
+      "required": false,
+      "status": "skipped",
+      "reason": "not_applicable",
+      "version": null,
+      "rules_fingerprint": null,
+      "started_at": null,
+      "finished_at": null,
+      "coverage": {
+        "required_count": 0,
+        "completed_count": 0,
+        "inspected": [],
+        "exclusions": [],
+        "rules_fingerprint": null,
+        "revision_or_observation": "development-revision",
+        "scope_complete": false
+      },
+      "error": null
+    },
+    {
+      "name": "asset_secrets",
+      "applicable": false,
+      "required": false,
+      "status": "skipped",
+      "reason": "not_applicable",
+      "version": null,
+      "rules_fingerprint": null,
+      "started_at": null,
+      "finished_at": null,
+      "coverage": {
+        "required_count": 0,
+        "completed_count": 0,
+        "inspected": [],
+        "exclusions": [],
+        "rules_fingerprint": null,
+        "revision_or_observation": "development-revision",
+        "scope_complete": false
+      },
+      "error": null
+    }
+  ],
+  "coverage": {
+    "required_count": 2,
+    "completed_count": 2,
+    "inspected": [
+      "src/demo.ts"
+    ],
+    "exclusions": [],
+    "rules_fingerprint": "development-fixture-rules",
+    "revision_or_observation": "development-revision",
+    "scope_complete": true
+  },
+  "findings": [
+    {
+      "id": "development-finding",
+      "scanner": "gitleaks",
+      "rule_id": "development-credential-case",
+      "category": "credential",
+      "title": "Development credential candidate",
+      "severity": "high",
+      "confidence": "needs_review",
+      "confidence_reason": "Synthetic contract example; no detector ran.",
+      "location": {
+        "kind": "source",
+        "path": "src/demo.ts",
+        "line_start": 1,
+        "line_end": 1
+      },
+      "evidence_redacted": "credential = [REDACTED]",
+      "explanation": "A private credential would need review.",
+      "fix_guidance": "Remove private credentials from browser assets.",
+      "verification_steps": [
+        "Repeat the real asset check."
+      ],
+      "human_actions": [
+        "Revoke or rotate an exposed private credential."
+      ],
+      "match_context": "development-structural-example"
+    }
+  ],
+  "repair": {
+    "mode": "template",
+    "status": "fallback",
+    "prompt_redacted": "Development fixture only. No actual scan ran. Review the actual evidence before changing code.",
+    "model_reason": "external_ai_disabled",
+    "human_actions": [
+      "Revoke or rotate an exposed private credential."
+    ]
+  },
+  "warnings": [
+    "DEVELOPMENT FIXTURE \u2014 no real scan has run."
+  ],
+  "error": null
+} satisfies components["schemas"]["Scan"];
 const source_clean = {
   "contract_version": "v1",
   "scan_id": "development-codebase-complete",
@@ -334,11 +491,9 @@ const source_clean = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
+        "rules_fingerprint": null,
         "revision_or_observation": "development-revision",
         "scope_complete": false
       },
@@ -357,11 +512,9 @@ const source_clean = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
+        "rules_fingerprint": null,
         "revision_or_observation": "development-revision",
         "scope_complete": false
       },
@@ -392,10 +545,142 @@ const source_clean = {
   ],
   "error": null
 } satisfies components["schemas"]["Scan"];
+const source_corrected = {
+  "contract_version": "v1",
+  "scan_id": "development-repeat",
+  "baseline_id": "development-baseline",
+  "mode": "codebase",
+  "status": "complete",
+  "policy_id": "safety-v1",
+  "policy_fingerprint": "development-fixture-policy",
+  "created_at": "2026-10-23T12:00:00Z",
+  "started_at": "2026-10-23T12:00:00Z",
+  "finished_at": "2026-10-23T12:00:00Z",
+  "input": {
+    "display_name": "Development fixture only",
+    "revision": "development-corrected-revision",
+    "repository": null,
+    "target_redacted": null,
+    "observation_id": null
+  },
+  "tools": [
+    {
+      "name": "gitleaks",
+      "applicable": true,
+      "required": true,
+      "status": "complete",
+      "reason": null,
+      "version": "development-only",
+      "rules_fingerprint": "development-fixture-rules",
+      "started_at": "2026-10-23T12:00:00Z",
+      "finished_at": "2026-10-23T12:00:00Z",
+      "coverage": {
+        "required_count": 1,
+        "completed_count": 1,
+        "inspected": [
+          "src/demo.ts"
+        ],
+        "exclusions": [],
+        "rules_fingerprint": "development-fixture-rules",
+        "revision_or_observation": "development-corrected-revision",
+        "scope_complete": true
+      },
+      "error": null
+    },
+    {
+      "name": "semgrep",
+      "applicable": true,
+      "required": true,
+      "status": "complete",
+      "reason": null,
+      "version": "development-only",
+      "rules_fingerprint": "development-fixture-rules",
+      "started_at": "2026-10-23T12:00:00Z",
+      "finished_at": "2026-10-23T12:00:00Z",
+      "coverage": {
+        "required_count": 1,
+        "completed_count": 1,
+        "inspected": [
+          "src/demo.ts"
+        ],
+        "exclusions": [],
+        "rules_fingerprint": "development-fixture-rules",
+        "revision_or_observation": "development-corrected-revision",
+        "scope_complete": true
+      },
+      "error": null
+    },
+    {
+      "name": "zap",
+      "applicable": false,
+      "required": false,
+      "status": "skipped",
+      "reason": "not_applicable",
+      "version": null,
+      "rules_fingerprint": null,
+      "started_at": null,
+      "finished_at": null,
+      "coverage": {
+        "required_count": 0,
+        "completed_count": 0,
+        "inspected": [],
+        "exclusions": [],
+        "rules_fingerprint": null,
+        "revision_or_observation": "development-corrected-revision",
+        "scope_complete": false
+      },
+      "error": null
+    },
+    {
+      "name": "asset_secrets",
+      "applicable": false,
+      "required": false,
+      "status": "skipped",
+      "reason": "not_applicable",
+      "version": null,
+      "rules_fingerprint": null,
+      "started_at": null,
+      "finished_at": null,
+      "coverage": {
+        "required_count": 0,
+        "completed_count": 0,
+        "inspected": [],
+        "exclusions": [],
+        "rules_fingerprint": null,
+        "revision_or_observation": "development-corrected-revision",
+        "scope_complete": false
+      },
+      "error": null
+    }
+  ],
+  "coverage": {
+    "required_count": 2,
+    "completed_count": 2,
+    "inspected": [
+      "src/demo.ts"
+    ],
+    "exclusions": [],
+    "rules_fingerprint": "development-fixture-rules",
+    "revision_or_observation": "development-corrected-revision",
+    "scope_complete": true
+  },
+  "findings": [],
+  "repair": {
+    "mode": "template",
+    "status": "fallback",
+    "prompt_redacted": "Development fixture only. No actual scan ran. Review the actual evidence before changing code.",
+    "model_reason": "external_ai_disabled",
+    "human_actions": []
+  },
+  "warnings": [
+    "DEVELOPMENT FIXTURE \u2014 no real scan has run."
+  ],
+  "error": null
+} satisfies components["schemas"]["Scan"];
 const source_partial = {
   "contract_version": "v1",
-  "scan_id": "development-codebase-partial",
-  "baseline_id": null,
+  "scan_id": "development-repeat-partial",
+  "baseline_id": "development-baseline",
   "mode": "codebase",
   "status": "partial",
   "policy_id": "safety-v1",
@@ -475,11 +760,9 @@ const source_partial = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
+        "rules_fingerprint": null,
         "revision_or_observation": "development-revision",
         "scope_complete": false
       },
@@ -498,11 +781,9 @@ const source_partial = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
+        "rules_fingerprint": null,
         "revision_or_observation": "development-revision",
         "scope_complete": false
       },
@@ -611,11 +892,9 @@ const source_running = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
+        "rules_fingerprint": null,
         "revision_or_observation": "development-revision",
         "scope_complete": false
       },
@@ -634,11 +913,9 @@ const source_running = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
+        "rules_fingerprint": null,
         "revision_or_observation": "development-revision",
         "scope_complete": false
       },
@@ -695,12 +972,10 @@ const website = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
-        "revision_or_observation": "development-revision",
+        "rules_fingerprint": null,
+        "revision_or_observation": "development-observation",
         "scope_complete": false
       },
       "error": null
@@ -718,12 +993,10 @@ const website = {
       "coverage": {
         "required_count": 0,
         "completed_count": 0,
-        "inspected": [
-          "src/demo.ts"
-        ],
+        "inspected": [],
         "exclusions": [],
-        "rules_fingerprint": "development-fixture-rules",
-        "revision_or_observation": "development-revision",
+        "rules_fingerprint": null,
+        "revision_or_observation": "development-observation",
         "scope_complete": false
       },
       "error": null
@@ -742,11 +1015,11 @@ const website = {
         "required_count": 1,
         "completed_count": 1,
         "inspected": [
-          "src/demo.ts"
+          "development-root"
         ],
         "exclusions": [],
         "rules_fingerprint": "development-fixture-rules",
-        "revision_or_observation": "development-revision",
+        "revision_or_observation": "development-observation",
         "scope_complete": true
       },
       "error": null
@@ -765,11 +1038,11 @@ const website = {
         "required_count": 1,
         "completed_count": 1,
         "inspected": [
-          "src/demo.ts"
+          "development-asset"
         ],
         "exclusions": [],
         "rules_fingerprint": "development-fixture-rules",
-        "revision_or_observation": "development-revision",
+        "revision_or_observation": "development-observation",
         "scope_complete": true
       },
       "error": null
@@ -779,11 +1052,12 @@ const website = {
     "required_count": 2,
     "completed_count": 2,
     "inspected": [
+      "development-root",
       "development-asset"
     ],
     "exclusions": [],
     "rules_fingerprint": "development-fixture-rules",
-    "revision_or_observation": "development-revision",
+    "revision_or_observation": "development-observation",
     "scope_complete": true
   },
   "findings": [
@@ -821,7 +1095,9 @@ const website = {
     "status": "fallback",
     "prompt_redacted": "Development fixture only. No actual scan ran. Review the actual evidence before changing code.",
     "model_reason": "external_ai_disabled",
-    "human_actions": []
+    "human_actions": [
+      "Revoke or rotate an exposed private credential."
+    ]
   },
   "warnings": [
     "DEVELOPMENT FIXTURE \u2014 no real scan has run."
@@ -833,7 +1109,9 @@ export const fixtures = [
   {name: "comparison-unverified", kind: "comparison", data: comparison_unverified},
   {name: "comparison", kind: "comparison", data: comparison},
   {name: "deletion-failed", kind: "deletion", data: deletion_failed},
+  {name: "source-baseline", kind: "scan", data: source_baseline},
   {name: "source-clean", kind: "scan", data: source_clean},
+  {name: "source-corrected", kind: "scan", data: source_corrected},
   {name: "source-partial", kind: "scan", data: source_partial},
   {name: "source-running", kind: "scan", data: source_running},
   {name: "website", kind: "scan", data: website}

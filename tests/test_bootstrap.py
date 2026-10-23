@@ -21,7 +21,7 @@ def test_required_contract_fixtures_validate():
     fixtures = list(FIXTURES.glob('*.json'))
     assert {p.stem for p in fixtures} == {
         'source-running', 'source-partial', 'source-clean', 'website',
-        'ai-fallback', 'comparison', 'comparison-unverified', 'deletion-failed'}
+        'ai-fallback', 'comparison', 'comparison-unverified', 'deletion-failed', 'source-baseline', 'source-corrected'}
     models = {'scan': Scan, 'comparison': Comparison, 'deletion': Deletion}
     for path in fixtures:
         fixture = json.loads(path.read_text())

@@ -13,7 +13,7 @@
     },
     "new_input": {
       "display_name": "Development fixture only",
-      "revision": "development-revision",
+      "revision": "development-corrected-revision",
       "repository": null,
       "target_redacted": null,
       "observation_id": null
@@ -37,7 +37,7 @@
       ],
       "exclusions": [],
       "rules_fingerprint": "development-fixture-rules",
-      "revision_or_observation": "development-revision",
+      "revision_or_observation": "development-corrected-revision",
       "scope_complete": true
     },
     "items": [

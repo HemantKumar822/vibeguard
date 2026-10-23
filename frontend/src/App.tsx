@@ -5,15 +5,21 @@ export default function App() {
   const [health, setHealth] = useState<'checking' | 'ok' | 'unavailable'>('checking')
   useEffect(() => {
     const controller = new AbortController()
+    let active = true
+    const deadline = setTimeout(() => {
+      if (active) setHealth('unavailable')
+      controller.abort()
+    }, 10_000)
     fetch('/api/v1/health', { signal: controller.signal })
       .then(async response => {
         if (!response.ok) throw new Error('Health request failed')
         const data: components['schemas']['Health'] = await response.json()
         if (data.status !== 'ok' || data.contract_version !== 'v1') throw new Error('Unexpected health response')
-        setHealth('ok')
+        if (active && !controller.signal.aborted) setHealth('ok')
       })
-      .catch(() => { if (!controller.signal.aborted) setHealth('unavailable') })
-    return () => controller.abort()
+      .catch(() => { if (active && !controller.signal.aborted) setHealth('unavailable') })
+      .finally(() => clearTimeout(deadline))
+    return () => { active = false; clearTimeout(deadline); controller.abort() }
   }, [])
   return <main>
     <header><span className="wordmark">VibeGuard<span aria-hidden="true"> /</span></span><span className="eyebrow">CY-02 · Security reviewer</span></header>

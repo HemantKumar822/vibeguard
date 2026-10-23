@@ -1,7 +1,7 @@
 ---
 story_id: '1.1'
 epic: 1
-status: in-review
+status: done
 prepared: true
 approval: implementation-authorized
 assignee: HemantKumar822
@@ -76,22 +76,22 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Definition of done
 
-- [ ] All acceptance criteria satisfied, including relevant failure cases.
-- [ ] Required predecessors complete; one accountable assignee recorded.
-- [ ] Appropriate automated/manual checks run with observed results; limitations explicit.
-- [ ] Contract/types/fixtures/docs updated together when changed.
-- [ ] No secrets, runtime scan data or local agent installations in the diff.
-- [ ] Reviewed PR linked and story/sprint/issue status reconciled.
+- [x] All acceptance criteria satisfied, including relevant failure cases.
+- [x] Required predecessors complete; one accountable assignee recorded.
+- [x] Appropriate automated/manual checks run with observed results; limitations explicit.
+- [x] Contract/types/fixtures/docs updated together when changed.
+- [x] No secrets, runtime scan data or local agent installations in the diff.
+- [x] Reviewed PR linked and story/sprint/issue status reconciled.
 
 ## Implementation record
 
-Implemented on `feat/1-1-project-bootstrap`; [PR #22](https://github.com/HemantKumar822/vibeguard/pull/22) opened; all three scanner version probes pass; teammate review remains pending. No real submission or security scan is available yet.
+Implemented on `feat/1-1-project-bootstrap`; [PR #22](https://github.com/HemantKumar822/vibeguard/pull/22) opened; all three scanner version probes pass; user-requested independent agent review is complete and merge is authorized. No real submission or security scan is available yet.
 
 - Started with failing tests for the missing backend, readiness checker, error envelope and failure states; implemented the smallest bootstrap to make them pass.
 - `uv sync --frozen`: passed. `npm --prefix frontend ci`: passed after stopping the development server that held a native module open on Windows.
-- `uv run pytest -q`: 18 passed; one upstream Starlette warning recommends replacing its deprecated httpx compatibility dependency with httpx2 in a later dependency update.
+- `uv run pytest -q`: 40 passed; one upstream Starlette warning recommends replacing its deprecated httpx compatibility dependency with httpx2 in a later dependency update.
 - Backend OpenAPI export, generated TypeScript, typecheck, production build and lint: passed.
-- All eight synthetic fixtures validate in Python and compile against generated frontend types. Production assets exclude the fixture module and payloads.
+- All ten synthetic fixtures validate in Python and compile against generated frontend types. Production assets exclude the fixture module and payloads.
 - Docker Desktop 4.96.3 installed through winget; Linux engine 29.9.2 running. Gitleaks 8.30.1, Semgrep 1.182.1 and ZAP 2.17.0 each passed actual restricted, network-disabled version probes by immutable image digest. [Readiness evidence](../../contracts/scanner-readiness.json) now records `ready: true`, with `containment_verified: false`; version readiness does not establish scan containment or detection accuracy.
 - Browser visual inspection was not performed because the browser access request was declined. No accessibility or rendered-layout pass is claimed.
 
@@ -105,7 +105,7 @@ Implemented on `feat/1-1-project-bootstrap`; [PR #22](https://github.com/HemantK
 
 ## Review triage log
 
-Review was performed inline per the user's preference to avoid routine subagent usage; it is not an independent teammate review.
+Initial implementation review was inline. The subsequent user-requested independent BMAD review is documented in [the PR review record](reviews/pr-22-review-2026-10-24.md). No GitHub human approval is fabricated.
 
 | Finding | Evidence and disposition |
 | --- | --- |
@@ -123,3 +123,7 @@ Review was performed inline per the user's preference to avoid routine subagent 
 Scanner execution/containment, uploads, sessions, persistent state and rescan algorithms remain in their own stories. The bootstrap scanner-version gate is cleared. Actual scan containment and feature acceptance remain future implementation gates.
 
 [Parent epic](../github-issues/epics/epic-01-review-a-codebase-safely-and-act-on-real-findings.md) · [All stories](README.md)
+
+## Final review and merge
+
+User requested review and merge on 2026-10-24. All findings in the independent review were fixed, with 40 Python tests, five DOM tests and build/type/lint/generated/production checks passing. Merge completion is verified separately against GitHub; no later story is marked implemented.

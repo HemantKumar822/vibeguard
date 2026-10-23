@@ -1,6 +1,6 @@
 # Team story board
 
-**5 delivery milestones · 16 open story issues · Story 1.1 bootstrap in review; other stories not implemented.**
+**5 delivery milestones · 16 open story issues · Story 1.1 bootstrap complete and reviewed; other stories not implemented.**
 
 Planning epics are represented by milestones on GitHub. Duplicate epic issues were removed; local epic draft files are retained only as planning references.
 
