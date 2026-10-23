@@ -746,7 +746,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RepositoryIntake"];
+                "application/json": components["schemas"]["Intake"];
                 "multipart/form-data": {
                     /** @description JSON CodebaseMetadata; additional named binary parts map each part_id exactly once. */
                     metadata: string;

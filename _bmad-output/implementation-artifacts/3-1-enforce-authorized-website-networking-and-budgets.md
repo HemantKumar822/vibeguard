@@ -1,7 +1,7 @@
 ---
 story_id: '3.1'
 epic: 3
-status: ready-for-dev
+status: review
 prepared: true
 approval: pending-user-review
 assignee: unassigned
@@ -83,6 +83,6 @@ Record the actual commands, observed results and sanitized evidence in the PR an
 
 ## Implementation record
 
-Not started. Record PR, actual commands/results, sanitized evidence and remaining limitations here during implementation.
+Implemented in the Epic 3 batch. See [verification evidence](epic-3-verification.md) for the actual end-of-epic suite, focused corrections, network-disabled ZAP/asset checks and authorized live site result. Broader/rendered acceptance remains a Story 5.2 follow-up; no remote closure is claimed.
 
 [Parent epic](../github-issues/epics/epic-03-review-a-deployed-website-with-zap-and-visible-asset-evidence.md) · [All stories](README.md)

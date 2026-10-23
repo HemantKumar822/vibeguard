@@ -18,7 +18,9 @@ from backend.adapters.intake import receive
 from backend.adapters.repository import identity, retrieve, request_digest
 from backend.adapters.storage import Storage
 from backend.api.session import IntakeError, owner
-from backend.core.contracts import Health, PUBLIC_MODELS, Scan, SessionResponse, Capabilities, ErrorResponse, Deletion, RepositoryIntake
+from backend.core.contracts import Health, PUBLIC_MODELS, Scan, SessionResponse, Capabilities, ErrorResponse, Deletion, Intake
+from backend.adapters.web_capture import target as website_target, display as website_display, LIMITS as WEB_LIMITS, CaptureError
+from backend.core.website_readiness import ready as website_ready
 from pydantic import ValidationError
 from backend.core.policy import POLICY_ID, LIMITS, FINGERPRINT
 from backend.core.settings import Settings
@@ -26,17 +28,17 @@ from backend.core.lifecycle import Lifecycle
 from backend.core.cleanup import Cleanup
 
 
-def queued_scan(scan_id, accepted, exclusions):
+def queued_scan(scan_id, accepted, exclusions, mode='codebase'):
     coverage = dict(required_count=2, completed_count=0, inspected=[], exclusions=exclusions,
                     rules_fingerprint=None, revision_or_observation=scan_id, scope_complete=False)
     tools = []
     for name in ['gitleaks', 'semgrep', 'zap', 'asset_secrets']:
-        applicable = name in {'gitleaks', 'semgrep'}
+        applicable = name in ({'zap','asset_secrets'} if mode=='website' else {'gitleaks', 'semgrep'})
         tools.append(dict(name=name, applicable=applicable, required=applicable,
             status='queued' if applicable else 'skipped', reason=None if applicable else 'not_applicable',
             version=None, rules_fingerprint=None, started_at=None, finished_at=None, error=None,
             coverage={**coverage, 'required_count': 1 if applicable else 0}))
-    return Scan(contract_version='v1', scan_id=scan_id, baseline_id=None, mode='codebase', status='queued',
+    return Scan(contract_version='v1', scan_id=scan_id, baseline_id=None, mode=mode, status='queued',
         policy_id=POLICY_ID, policy_fingerprint=FINGERPRINT, created_at=datetime.now(timezone.utc),
         started_at=None, finished_at=None, input=dict(display_name='Submitted source tree', revision=None,
         repository=None, target_redacted=None, observation_id=None), tools=tools, coverage=coverage,
@@ -102,12 +104,13 @@ def create_app(settings=None):
     @api.get('/api/v1/capabilities', response_model=Capabilities, responses=errors)
     def capabilities(request: Request):
         owner(request, runtime(), settings)
-        return dict(policy_id=POLICY_ID, policy_fingerprint=FINGERPRINT, permitted_modes=['codebase', 'repository'],
-                    limits=LIMITS, ai_available=False, unavailable_modes=['website'])
+        enabled=website_ready()
+        return dict(policy_id=POLICY_ID, policy_fingerprint=FINGERPRINT, permitted_modes=['codebase', 'repository']+(['website'] if enabled else []),
+                    limits={**LIMITS,**{'website_'+key:value for key,value in WEB_LIMITS.items()}}, ai_available=False, unavailable_modes=[] if enabled else ['website'])
     @api.post('/api/v1/scans', status_code=202, response_model=Scan, responses=errors,
         openapi_extra={'parameters': [origin_header, *[{'name': name, 'in': 'header', 'required': True,
             'schema': {'type': 'string'}} for name in ['X-CSRF-Token', 'Idempotency-Key']]],
-            'requestBody': {'required': True, 'content': {'application/json': {'schema': {'$ref':'#/components/schemas/RepositoryIntake'}}, 'multipart/form-data': {'schema': {
+            'requestBody': {'required': True, 'content': {'application/json': {'schema': {'$ref':'#/components/schemas/Intake'}}, 'multipart/form-data': {'schema': {
             'type': 'object', 'required': ['metadata'], 'properties': {'metadata': {'type': 'string',
             'description': 'JSON CodebaseMetadata; additional named binary parts map each part_id exactly once.'}},
             'additionalProperties': {'type': 'string', 'format': 'binary'}}}}}})
@@ -125,6 +128,7 @@ def create_app(settings=None):
             directory = store.staging / secrets.token_hex(16)
             directory.mkdir(mode=0o700)
             repository=None
+            website=None
             if request.headers.get('content-type','').split(';')[0].strip()=='application/json':
                 body=bytearray()
                 async with asyncio.timeout(15):
@@ -132,23 +136,38 @@ def create_app(settings=None):
                         body.extend(chunk)
                         if len(body)>8192: raise IntakeError(413,'metadata_too_large')
                 try:
-                    metadata=RepositoryIntake.model_validate_json(body)
+                    metadata=Intake.model_validate_json(body).root
                 except (ValueError,ValidationError):
                     raise IntakeError(422,'invalid_repository_submission') from None
-                identity(metadata.repository_url,metadata.ref)
+                if metadata.mode=='repository':
+                    identity(metadata.repository_url,metadata.ref)
+                else:
+                    if not website_ready(): raise IntakeError(503,'website_safety_unverified')
+                    try: website=website_target(metadata.target_url)
+                    except CaptureError: raise IntakeError(422,'invalid_website_target','target_url') from None
                 digest=request_digest(metadata)
                 existing=Lifecycle(store).existing(session_id,key,digest)
                 if existing: return existing
-                retrieval=asyncio.create_task(asyncio.to_thread(retrieve,metadata,directory))
-                try:
-                    accepted,exclusions,repository,requested,commit=await asyncio.shield(retrieval)
-                except asyncio.CancelledError:
-                    # Do not remove private scratch while the bounded retrieval thread still writes it.
-                    with suppress(Exception): await retrieval
-                    raise
+                if website:
+                    accepted,exclusions=[],[]
+                    (directory/'website.json').write_text(json.dumps({'target_url':website}),encoding='utf-8')
+                else:
+                    retrieval=asyncio.create_task(asyncio.to_thread(retrieve,metadata,directory))
+                    try:
+                        accepted,exclusions,repository,requested,commit=await asyncio.shield(retrieval)
+                    except asyncio.CancelledError:
+                        # Do not remove private scratch while the bounded retrieval thread still writes it.
+                        with suppress(Exception): await retrieval
+                        raise
             else:
                 metadata, accepted, exclusions, digest = await receive(request, directory)
-            scan = queued_scan(directory.name, accepted, exclusions)
+            scan = queued_scan(directory.name, accepted, exclusions,'website' if website else 'codebase')
+            if website:
+                scan.input.display_name='Authorized website review'
+                scan.input.target_redacted=website_display(website)
+                scan.input.observation_id=scan.scan_id
+                scan.warnings=['Website accepted. No response has been fetched or check completed.',
+                               'Waiting for bounded passive capture; browser JavaScript and private backend source are outside scope.']
             if repository:
                 scan.mode='repository'
                 scan.input.repository=repository

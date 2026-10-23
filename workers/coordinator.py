@@ -36,7 +36,10 @@ def run_once(lifecycle, cleanup, token, launcher=None):
                 if launcher is None:
                     lifecycle.unavailable(scan.scan_id,token)
                 else:
-                    from workers.source import execute
+                    if scan.mode=='website':
+                        from workers.website import execute
+                    else:
+                        from workers.source import execute
                     execute(scan,lifecycle,launcher,token)
             except Exception:
                 lifecycle.unavailable(scan.scan_id,token)

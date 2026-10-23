@@ -3,7 +3,8 @@ import pytest
 from backend.api.main import create_app
 from backend.core.settings import Settings
 
-def test_sessions_origin_csrf_and_cookie(tmp_path):
+def test_sessions_origin_csrf_and_cookie(tmp_path,monkeypatch):
+    monkeypatch.setattr('backend.api.main.website_ready',lambda:False)
     client = TestClient(create_app(Settings(tmp_path / 'runtime', loopback_http=True)))
     assert client.post('/api/v1/session').status_code == 403
     response = client.post('/api/v1/session', headers={'Origin':'http://127.0.0.1:8000'})

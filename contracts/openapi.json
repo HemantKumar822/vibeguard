@@ -356,7 +356,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RepositoryIntake"
+                "$ref": "#/components/schemas/Intake"
               }
             },
             "multipart/form-data": {

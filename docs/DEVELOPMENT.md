@@ -1,6 +1,6 @@
 # Development setup
 
-Stories 1.1–2.2 provide the application foundation, shared contracts, sessions, bounded source/repository intake, owned jobs, isolated source checks and repair guidance. Website/AI/comparison workflows remain unavailable. Source/repository stories are implemented and awaiting review.
+Stories 1.1–3.4 provide the foundation, shared contracts, sessions, bounded source/repository/website intake, owned jobs, isolated source and passive web checks, and repair guidance. Website admission is readiness-gated. AI and comparison remain future work; Epic 3 is implemented and awaiting review.
 
 ## Install from a clean checkout
 
@@ -93,7 +93,7 @@ uv run uvicorn backend.api.main:app --host 127.0.0.1 --port 8000
 
 The Origin must match the browser address exactly. HTTPS deployments omit the loopback exception. Without configured runtime storage, health remains available and data endpoints return a safe 503. Session creation requires the configured Origin; submissions additionally require the session cookie, CSRF token and Idempotency-Key. Cookie loss makes owned scans unavailable.
 
-Directory selection preserves browser-provided relative paths. If unavailable or paths are lost, select files and explicitly map one original relative path per file. Permission is mandatory and external sharing defaults off. Public repository intake is supported; website intake and external AI remain unavailable. No uploaded code, hooks, dependencies, build or scanner configuration is executed. Accepted scans start queued, with `accepted_files` separate from inspected coverage; exclusions carry explicit reasons. The trusted coordinator then runs real checks.
+Directory selection preserves browser-provided relative paths. If unavailable or paths are lost, select files and explicitly map one original relative path per file. Permission is mandatory and external sharing defaults off. Public repository intake is supported; Website mode requires the measured safety proof described below. External AI remains unavailable. No uploaded code, hooks, dependencies, build or scanner configuration is executed. Accepted scans start queued, with `accepted_files` separate from inspected coverage; exclusions carry explicit reasons. The trusted coordinator then runs real checks.
 
 Verified commands: backend pytest, contract export/generation and parity, frontend tests/build/lint. Tests exercise real 25 MiB/5,000-file/2 MiB/depth-20/240-byte boundaries plus one, chunked bodies, interrupted uploads, unsafe paths, ownership, CSRF and failed-upload cleanup. Tests require OS access to private temporary directories outside the checkout; a restricted sandbox may require permission for that test run. The multipart parser is locked to python-multipart 0.0.22. Orchestration, deletion and lifecycle recovery belong to story 1.3.
 
@@ -140,3 +140,22 @@ The selected rules cover private-key/provider-token/credential-assignment candid
 Use severity/category/tool/search filters, select a finding and copy the deterministic repair prompt. If clipboard access fails, select the sanitized text manually. Keep revoke/rotate actions separate from code repairs. Switching input modes preserves the accepted report; after refresh use **Reconnect to an existing scan** with the same cookie and Scan ID. Nothing sensitive is stored in browser persistent storage.
 
 Batch verification and pending rendered accessibility review are recorded in [the implementation evidence](../_bmad-output/implementation-artifacts/source-repository-batch-verification.md). Tests are batched through Epic 2; fixes use focused reruns rather than repeating the entire suite.
+
+
+## Epic 3: Website URL review
+
+Use the same API, coordinator and frontend startup. Select **Website URL** and confirm permission. Only public HTTP80/HTTPS443, exact-origin unauthenticated GET requests are permitted. Private/reserved/metadata addresses, mapped-private IPv6, credential-bearing URLs, unsafe redirects and alternate ports are blocked. Shared caps: 50 pages, 50 linked text assets, 200 requests, 2 MiB/body, 20 MiB aggregate response data and a 60-second capture deadline. Every connection revalidates DNS and its connected public peer; no environment proxy or browser is used.
+
+The host coordinator captures bounded responses, imports them into pinned ZAP with networking disabled, and checks observed text using trusted Gitleaks. ZAP's control interface is private inside the container; no external ZAP traffic or active scan is enabled. Website findings use actual observed URLs and asset lines, not invented source locations. Source literals and unknown vendor text are omitted. Captures and raw reports are temporary private data removed by the existing cleanup lifecycle.
+
+Website mode is disabled when the measured proof is missing or stale. Revalidate only a site you own or are authorized to assess:
+
+```powershell
+uv run python scripts/verify_website_readiness.py --target https://your-authorized-site.example/ --authorization-confirmed
+```
+
+This writes a safe aggregate proof to `contracts/website-readiness.json`, bound to the implementation/policy/rules and pinned images. It first disables an old proof, measures real capture/isolated scanners, and only enables readiness on usable completed stages and verified cleanup. Missing engine/images fail before any target fetch. Re-run after deliberate scanner/capture changes; do not edit `ready` manually. API and coordinator must use the same checkout/profile.
+
+A partial result is expected when discovered resources cannot be assessed. Runtime-loaded/cross-origin resources and private backend code are never claimed as checked. Empty findings are not a security certification. Rotate/revoke exposed credentials separately from code changes. Existing reconnect, deletion, filters and prompt copy work for web reports.
+
+Actual tests, authorized live results and remaining review are recorded in [Epic 3 evidence](../_bmad-output/implementation-artifacts/epic-3-verification.md).

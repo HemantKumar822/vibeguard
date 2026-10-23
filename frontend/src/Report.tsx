@@ -24,12 +24,13 @@ export default function Report({ scan }: { scan: Scan }) {
     } catch { setCopy('Clipboard unavailable. Select and copy the sanitized text below manually.') }
   }
   return <section aria-label="Investigate and repair" className="report">
+    {scan.mode === 'website' && <div className="attribution"><h3>Website observation</h3><p>{scan.input.target_redacted}</p><p>Observation: <code>{scan.input.observation_id}</code></p><p>Passive review of captured responses and fetched text assets. No browser JavaScript, authenticated pages or private backend source was assessed.</p></div>}
     {scan.input?.repository && <div className="attribution"><h3>Repository snapshot</h3>
       <p>{scan.input.repository}</p><p>Requested ref: <code>{scan.input.requested_ref}</code></p>
       <p>Resolved commit: <code>{scan.input.revision ?? 'Not resolved'}</code></p>
       <p>One public source snapshot; private repositories and history are unsupported.</p></div>}
     <h3>Checks and coverage</h3>
-    <p>{scan.coverage.completed_count ?? 0}/{scan.coverage.required_count ?? 2} required checks completed.</p>
+    <p>{scan.coverage.completed_count ?? 0}/{scan.coverage.required_count ?? 2} required checks completed with intended coverage.</p>
     <ul className="tool-states">{scan.tools?.map(item => <li className="tool-state" data-state={item.status} key={item.name}>{item.name}: {item.status}{item.reason ? ` (${item.reason})` : ''}
       {item.version && <> · v{item.version}</>}
       {item.started_at && <> · started {new Date(item.started_at).toLocaleTimeString()}</>}
@@ -49,11 +50,11 @@ export default function Report({ scan }: { scan: Scan }) {
       {findings.length === 0 ? <p>{scan.status === 'complete' ? 'No findings detected within completed checks.' : 'No findings available. Review incomplete checks before drawing conclusions.'}</p>
         : visible.length === 0 ? <p role="status">No findings match these filters. The report still contains {findings.length} findings.</p>
           : <div className="investigation"><ul aria-label="Findings">{visible.map(item => <li key={item.id}><button type="button" aria-pressed={active?.id === item.id} onClick={() => setSelected(item.id)}>
-            <span className="severity-badge" data-severity={item.severity}>{item.severity}</span><strong>{item.title}</strong><span>{item.location.kind === 'source' ? `${item.location.path}:${item.location.line_start ?? 'unknown'}` : item.location.url_redacted}</span>
+            <span className="severity-badge" data-severity={item.severity}>{item.severity}</span><strong>{item.title}</strong><span>{item.location.kind === 'source' ? `${item.location.path}:${item.location.line_start ?? 'unknown'}` : `${item.location.url_redacted}${item.location.line_start ? ` · line ${item.location.line_start}` : ''}`}</span>
           </button></li>)}</ul>
             {active && <article aria-label="Selected finding"><h4>{active.title}</h4><p>{active.scanner} · {active.rule_id} · {active.severity}</p>
               <p>Confidence: {active.confidence}. {active.confidence_reason}</p>
-              <p>{active.location.kind === 'source' ? `${active.location.path}:${active.location.line_start ?? 'unknown'}` : active.location.url_redacted}</p>
+              <p>{active.location.kind === 'source' ? `${active.location.path}:${active.location.line_start ?? 'unknown'}` : `${active.location.url_redacted} · ${active.location.part}${active.location.line_start ? ` · line ${active.location.line_start}` : ''}`}</p>
               <pre>{active.evidence_redacted ?? 'No source excerpt is available.'}</pre><h4>Impact and context</h4><p>{active.explanation}</p>
               <h4>Recommended fix</h4><p>{active.fix_guidance}</p><h4>Verification</h4><ul>{active.verification_steps.map(step => <li key={step}>{step}</li>)}</ul>
               {active.human_actions.length > 0 && <><h4>Separate human actions</h4><ul>{active.human_actions.map(action => <li key={action}>{action}</li>)}</ul></>}

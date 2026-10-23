@@ -29,7 +29,7 @@ export default function App() {
       <p className="nav-caption">WORKSPACE</p>
       <nav><a className="nav-link is-active" href="#workspace" aria-current="page"><span aria-hidden="true">⊞</span> Source review <span className="nav-indicator" /></a>
         <a className="nav-link" href="#review-guide"><span aria-hidden="true">≡</span> How review works</a></nav>
-      <div className="sidebar-scope"><p className="nav-caption">AVAILABLE SOURCES</p><p><span className="availability-dot" />Codebase upload</p><p><span className="availability-dot" />Public GitHub repository</p><p className="muted"><span className="availability-dot upcoming" />Website URL <small>Coming next</small></p></div>
+      <div className="sidebar-scope"><p className="nav-caption">REVIEW INPUTS</p><p><span className="availability-dot" />Codebase upload</p><p><span className="availability-dot" />Public GitHub repository</p><p><span className="availability-dot" />Website URL <small>Readiness gated</small></p></div>
       <div className="sidebar-note"><span className="eyebrow">Built for a closer look.</span><p>Real checks. Masked evidence.<br />Repairs you can act on.</p><span className="version-tag">CY-02 / LOCAL WORKSPACE</span></div>
     </aside>
     <main id="workspace" tabIndex={-1}>
