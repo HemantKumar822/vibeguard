@@ -1,6 +1,6 @@
 # Contributing
 
-Start from the [story board](_bmad-output/github-issues/README.md). Every story has a readable handoff with scope, requirements, dependencies, acceptance criteria and verification. The [development guide](docs/DEVELOPMENT.md) contains the bootstrap's actual setup/build/test commands; scanning is not implemented yet.
+**Prototype is complete.** All five epics are implemented and accepted. For running the application, see [QUICKSTART.md](docs/QUICKSTART.md) (`./scripts/dev-start.ps1`) or the [development guide](docs/DEVELOPMENT.md). The story board and backlog remain as a reference; remaining work is accessibility review and release-gate items.
 
 ## Pick and claim work
 
