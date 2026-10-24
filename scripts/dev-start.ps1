@@ -1,4 +1,4 @@
-#requires -Version 7.0
+#requires -Version 5.1
 <#
 .SYNOPSIS
     VibeGuard one-command dev launcher — for local demo and hackathon testing.
