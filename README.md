@@ -45,14 +45,23 @@ VibeGuard is a **security review workspace** purpose-built for AI-generated code
 
 **Prerequisites:** [uv](https://docs.astral.sh/uv/), Node 18+ LTS, npm, Docker Desktop (Linux engine)
 
+**PowerShell 7** (open `pwsh` or "Windows PowerShell 7" from Start):
 ```powershell
-# In PowerShell 7 from the repository root:
 ./scripts/dev-start.ps1
+```
+
+**Git Bash / WSL / macOS / Linux:**
+```bash
+bash ./scripts/start.sh
 ```
 
 Open **http://127.0.0.1:5173** — done.
 
-> **No Docker?** Use `./scripts/dev-start.ps1 -NoDocker` to start the UI + API only. Scans stay queued but the entire UI is fully interactive.
+> **No Docker?**
+> PowerShell: `./scripts/dev-start.ps1 -NoDocker`
+> Bash: `bash ./scripts/start.sh --no-docker`
+>
+> The UI and API start fully. Scans stay "queued" until Docker is available.
 
 ### What the launcher does automatically
 
