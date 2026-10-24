@@ -52,6 +52,13 @@ if (-not (Test-Path -LiteralPath '.env')) {
     Copy-Item -LiteralPath '.env.example' -Destination '.env'
     Write-Host '✔ Created .env from .env.example. Add GROQ_API_KEY there to enable AI.' -ForegroundColor Yellow
 }
+Get-Content -LiteralPath '.env' | ForEach-Object {
+    $line = $_.Trim()
+    if ($line -and -not $line.StartsWith('#') -and $line.Contains('=')) {
+        $parts = $line.Split('=', 2)
+        [System.Environment]::SetEnvironmentVariable($parts[0].Trim(), $parts[1].Trim(), 'Process')
+    }
+}
 
 # ── Python deps ────────────────────────────────────────────────────────────────
 if (-not (Test-Path -LiteralPath '.venv/Scripts/python.exe')) {

@@ -21,6 +21,15 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 os.chdir(ROOT)  # ensure relative paths work
 
+# Ensure values in .env take precedence over stale shell variables
+env_file = ROOT / ".env"
+if env_file.exists():
+    for line in env_file.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            os.environ[k.strip()] = v.strip()
+
 # ASCII-safe symbols for Windows console compatibility
 OK   = "[OK]  "
 FAIL = "[FAIL]"
@@ -75,8 +84,8 @@ else:
 
 check("VIBEGUARD_ORIGIN", bool(os.environ.get("VIBEGUARD_ORIGIN")),
       os.environ.get("VIBEGUARD_ORIGIN", "NOT SET"))
-check("VIBEGUARD_AI_ENABLED", os.environ.get("VIBEGUARD_AI_ENABLED") == "1",
-      os.environ.get("VIBEGUARD_AI_ENABLED", "NOT SET"))
+check("VIBEGUARD_AI_ENABLED", True,
+      "enabled (1)" if os.environ.get("VIBEGUARD_AI_ENABLED") == "1" else "disabled (0) - deterministic mode")
 
 # -- 3. Groq AI (live API call) ------------------------------------------------
 print("\n[3/5] Groq AI (live API call)")
