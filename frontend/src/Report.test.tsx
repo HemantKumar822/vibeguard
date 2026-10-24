@@ -21,6 +21,18 @@ test('shows attributed escaped evidence and filter-empty state', async () => {
   const select = host.querySelector('select')!
   await act(async () => { select.value = 'info'; select.dispatchEvent(new Event('change', { bubbles: true })) })
   expect(host.textContent).toContain('No findings match these filters')
+  await act(async () => Array.from(host.querySelectorAll('button')).find(button => button.textContent === 'Clear filters')!.click())
+  expect(host.querySelector('select')?.value).toBe('all')
+  expect(host.querySelector('[aria-label="Findings"]')).not.toBeNull()
+})
+
+test('deliberate finding selection focuses detail and Back restores its trigger', async () => {
+  await act(async () => root.render(<Report scan={scan} />))
+  const trigger = host.querySelector<HTMLButtonElement>('[aria-label="Findings"] button')!
+  await act(async () => trigger.click())
+  expect(document.activeElement).toBe(host.querySelector('article'))
+  await act(async () => Array.from(host.querySelectorAll('button')).find(button => button.textContent === 'Back to findings')!.click())
+  expect(document.activeElement).toBe(trigger)
 })
 
 test('copies only the sanitized consolidated prompt', async () => {

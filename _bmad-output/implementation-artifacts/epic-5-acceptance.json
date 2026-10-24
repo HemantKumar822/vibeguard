@@ -1,0 +1,3228 @@
+{
+  "schema": 1,
+  "scanner_images": {
+    "gitleaks": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+    "semgrep": "semgrep/semgrep@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6",
+    "zap": "ghcr.io/zaproxy/zaproxy@sha256:5ccfff9a411743ab2615136a2edd7416bec9ce41572fa94e935df38c14adb2b6"
+  },
+  "scanner_versions": {
+    "gitleaks": "8.30.1",
+    "semgrep": "1.182.1",
+    "zap": "2.17.0"
+  },
+  "corpus_sha256": "0a3a6ba71e97484e39dae54d723a38843fc8b5266a8103294e0747f77519ce30",
+  "policy_sha256": "da703990d587fd7fd4683a6fdb236504ca3287e48b38f246d60a53dca571f09f",
+  "unsupported_website": [
+    "unsafe_input",
+    "access_check",
+    "private backend credentials"
+  ],
+  "runs": [
+    {
+      "transport": "controlled",
+      "mode": "codebase",
+      "variant": "vulnerable",
+      "elapsed_seconds": 11.813,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": null,
+        "display_name": "Submitted source tree",
+        "revision": null,
+        "repository": null,
+        "target_redacted": null,
+        "observation_id": null
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+        "revision_or_observation": "97817f376e338515acce0f4b49ccd86d",
+        "scope_complete": true,
+        "inspected_count": 1,
+        "exclusion_count": 0,
+        "exclusion_reasons": {}
+      },
+      "tools": [
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "gitleaks",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:49:27.951547Z",
+          "finished_at": "2026-10-23T23:49:30.826935Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "97817f376e338515acce0f4b49ccd86d",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "semgrep/semgrep@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6",
+          "name": "semgrep",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "1.182.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:49:30.838904Z",
+          "finished_at": "2026-10-23T23:49:36.786736Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "97817f376e338515acce0f4b49ccd86d",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "zap",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "97817f376e338515acce0f4b49ccd86d",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "asset_secrets",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "97817f376e338515acce0f4b49ccd86d",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [
+          {
+            "rule": "vg-secret-assignment",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": true
+          },
+          {
+            "rule": "vg-unsafe-eval",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "vg-tls-disabled",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "vg-access-candidate",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          }
+        ],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [
+        {
+          "rule": "vg-secret-assignment",
+          "location": {
+            "kind": "source",
+            "path": "app/src/main.ts",
+            "line_start": 1,
+            "line_end": 1
+          }
+        },
+        {
+          "rule": "vg-unsafe-eval",
+          "location": {
+            "kind": "source",
+            "path": "app/src/main.ts",
+            "line_start": 2,
+            "line_end": 2
+          }
+        },
+        {
+          "rule": "vg-tls-disabled",
+          "location": {
+            "kind": "source",
+            "path": "app/src/main.ts",
+            "line_start": 3,
+            "line_end": 3
+          }
+        },
+        {
+          "rule": "vg-access-candidate",
+          "location": {
+            "kind": "source",
+            "path": "app/src/main.ts",
+            "line_start": 4,
+            "line_end": 4
+          }
+        }
+      ],
+      "source_removed": true,
+      "metrics": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 0,
+        "expected_count": 4,
+        "observed_count": 4,
+        "precision": 1.0,
+        "recall": 1.0,
+        "missed": [],
+        "unexpected": []
+      }
+    },
+    {
+      "transport": "controlled",
+      "mode": "codebase",
+      "variant": "corrected",
+      "elapsed_seconds": 11.093,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": null,
+        "display_name": "Submitted source tree",
+        "revision": null,
+        "repository": null,
+        "target_redacted": null,
+        "observation_id": null
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+        "revision_or_observation": "76bbd5f7c587c3d4da610839785dc34d",
+        "scope_complete": true,
+        "inspected_count": 1,
+        "exclusion_count": 0,
+        "exclusion_reasons": {}
+      },
+      "tools": [
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "gitleaks",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:49:39.646097Z",
+          "finished_at": "2026-10-23T23:49:42.615025Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "76bbd5f7c587c3d4da610839785dc34d",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "semgrep/semgrep@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6",
+          "name": "semgrep",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "1.182.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:49:42.680401Z",
+          "finished_at": "2026-10-23T23:49:48.080460Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "76bbd5f7c587c3d4da610839785dc34d",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "zap",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "76bbd5f7c587c3d4da610839785dc34d",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "asset_secrets",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "76bbd5f7c587c3d4da610839785dc34d",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [],
+      "source_removed": true,
+      "metrics": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "expected_count": 0,
+        "observed_count": 0,
+        "precision": null,
+        "recall": null,
+        "missed": [],
+        "unexpected": []
+      }
+    },
+    {
+      "transport": "controlled",
+      "mode": "codebase",
+      "variant": "clean",
+      "elapsed_seconds": 11.079,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": null,
+        "display_name": "Submitted source tree",
+        "revision": null,
+        "repository": null,
+        "target_redacted": null,
+        "observation_id": null
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+        "revision_or_observation": "3479208a3ee4cdf134ec1990e3fe34d7",
+        "scope_complete": true,
+        "inspected_count": 1,
+        "exclusion_count": 0,
+        "exclusion_reasons": {}
+      },
+      "tools": [
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "gitleaks",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:49:53.199470Z",
+          "finished_at": "2026-10-23T23:49:55.931759Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "3479208a3ee4cdf134ec1990e3fe34d7",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "semgrep/semgrep@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6",
+          "name": "semgrep",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "1.182.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:49:55.944047Z",
+          "finished_at": "2026-10-23T23:50:01.820730Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "3479208a3ee4cdf134ec1990e3fe34d7",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "zap",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "3479208a3ee4cdf134ec1990e3fe34d7",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "asset_secrets",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "3479208a3ee4cdf134ec1990e3fe34d7",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [],
+      "source_removed": true,
+      "metrics": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "expected_count": 0,
+        "observed_count": 0,
+        "precision": null,
+        "recall": null,
+        "missed": [],
+        "unexpected": []
+      }
+    },
+    {
+      "transport": "controlled",
+      "mode": "repository",
+      "variant": "vulnerable",
+      "elapsed_seconds": 11.719,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": "main",
+        "display_name": "fixture/acceptance",
+        "revision": "b9efc7d88cc81958dd93a2ccbb8c557afe4fe3cc",
+        "repository": "https://github.com/fixture/acceptance",
+        "target_redacted": null,
+        "observation_id": null
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+        "revision_or_observation": "b9efc7d88cc81958dd93a2ccbb8c557afe4fe3cc",
+        "scope_complete": true,
+        "inspected_count": 1,
+        "exclusion_count": 0,
+        "exclusion_reasons": {}
+      },
+      "tools": [
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "gitleaks",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:50:09.335265Z",
+          "finished_at": "2026-10-23T23:50:12.260424Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "b9efc7d88cc81958dd93a2ccbb8c557afe4fe3cc",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "semgrep/semgrep@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6",
+          "name": "semgrep",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "1.182.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:50:12.283045Z",
+          "finished_at": "2026-10-23T23:50:18.278747Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "b9efc7d88cc81958dd93a2ccbb8c557afe4fe3cc",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "zap",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "b9efc7d88cc81958dd93a2ccbb8c557afe4fe3cc",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "asset_secrets",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "b9efc7d88cc81958dd93a2ccbb8c557afe4fe3cc",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [
+          {
+            "rule": "vg-secret-assignment",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": true
+          },
+          {
+            "rule": "vg-unsafe-eval",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "vg-tls-disabled",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "vg-access-candidate",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          }
+        ],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [
+        {
+          "rule": "vg-secret-assignment",
+          "location": {
+            "kind": "source",
+            "path": "app/src/main.ts",
+            "line_start": 1,
+            "line_end": 1
+          }
+        },
+        {
+          "rule": "vg-unsafe-eval",
+          "location": {
+            "kind": "source",
+            "path": "app/src/main.ts",
+            "line_start": 2,
+            "line_end": 2
+          }
+        },
+        {
+          "rule": "vg-tls-disabled",
+          "location": {
+            "kind": "source",
+            "path": "app/src/main.ts",
+            "line_start": 3,
+            "line_end": 3
+          }
+        },
+        {
+          "rule": "vg-access-candidate",
+          "location": {
+            "kind": "source",
+            "path": "app/src/main.ts",
+            "line_start": 4,
+            "line_end": 4
+          }
+        }
+      ],
+      "source_removed": true,
+      "metrics": {
+        "tp": 4,
+        "fp": 0,
+        "fn": 0,
+        "expected_count": 4,
+        "observed_count": 4,
+        "precision": 1.0,
+        "recall": 1.0,
+        "missed": [],
+        "unexpected": []
+      }
+    },
+    {
+      "transport": "controlled",
+      "mode": "repository",
+      "variant": "corrected",
+      "elapsed_seconds": 11.11,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": "main",
+        "display_name": "fixture/acceptance",
+        "revision": "185a081a6fa516e9f7d2ce9bae1f4302d8214787",
+        "repository": "https://github.com/fixture/acceptance",
+        "target_redacted": null,
+        "observation_id": null
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+        "revision_or_observation": "185a081a6fa516e9f7d2ce9bae1f4302d8214787",
+        "scope_complete": true,
+        "inspected_count": 1,
+        "exclusion_count": 0,
+        "exclusion_reasons": {}
+      },
+      "tools": [
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "gitleaks",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:50:21.061965Z",
+          "finished_at": "2026-10-23T23:50:23.771056Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "185a081a6fa516e9f7d2ce9bae1f4302d8214787",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "semgrep/semgrep@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6",
+          "name": "semgrep",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "1.182.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:50:23.834980Z",
+          "finished_at": "2026-10-23T23:50:29.705371Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "185a081a6fa516e9f7d2ce9bae1f4302d8214787",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "zap",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "185a081a6fa516e9f7d2ce9bae1f4302d8214787",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "asset_secrets",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "185a081a6fa516e9f7d2ce9bae1f4302d8214787",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [],
+      "source_removed": true,
+      "metrics": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "expected_count": 0,
+        "observed_count": 0,
+        "precision": null,
+        "recall": null,
+        "missed": [],
+        "unexpected": []
+      }
+    },
+    {
+      "transport": "controlled",
+      "mode": "repository",
+      "variant": "clean",
+      "elapsed_seconds": 11.562,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": "main",
+        "display_name": "fixture/acceptance",
+        "revision": "233a6c395faa9e5c693621aa2e4311a5b675ada2",
+        "repository": "https://github.com/fixture/acceptance",
+        "target_redacted": null,
+        "observation_id": null
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+        "revision_or_observation": "233a6c395faa9e5c693621aa2e4311a5b675ada2",
+        "scope_complete": true,
+        "inspected_count": 1,
+        "exclusion_count": 0,
+        "exclusion_reasons": {}
+      },
+      "tools": [
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "gitleaks",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:50:34.536155Z",
+          "finished_at": "2026-10-23T23:50:37.268464Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "233a6c395faa9e5c693621aa2e4311a5b675ada2",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "semgrep/semgrep@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6",
+          "name": "semgrep",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "1.182.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:50:37.321882Z",
+          "finished_at": "2026-10-23T23:50:43.467772Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "233a6c395faa9e5c693621aa2e4311a5b675ada2",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "zap",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "233a6c395faa9e5c693621aa2e4311a5b675ada2",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "asset_secrets",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "233a6c395faa9e5c693621aa2e4311a5b675ada2",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [],
+      "source_removed": true,
+      "metrics": {
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "expected_count": 0,
+        "observed_count": 0,
+        "precision": null,
+        "recall": null,
+        "missed": [],
+        "unexpected": []
+      }
+    },
+    {
+      "transport": "live",
+      "mode": "repository",
+      "variant": "observation",
+      "elapsed_seconds": 18.219,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": "main",
+        "display_name": "HemantKumar822/vibeguard",
+        "revision": "12182217d05b224704057eba9e7a7f5f25ac1ccf",
+        "repository": "https://github.com/HemantKumar822/vibeguard",
+        "target_redacted": null,
+        "observation_id": null
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+        "revision_or_observation": "12182217d05b224704057eba9e7a7f5f25ac1ccf",
+        "scope_complete": true,
+        "inspected_count": 61,
+        "exclusion_count": 156,
+        "exclusion_reasons": {
+          "unsupported_file_type": 156
+        }
+      },
+      "tools": [
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "gitleaks",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:51:12.792894Z",
+          "finished_at": "2026-10-23T23:51:15.966147Z",
+          "coverage": {
+            "required_count": 61,
+            "completed_count": 61,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "12182217d05b224704057eba9e7a7f5f25ac1ccf",
+            "scope_complete": true,
+            "inspected_count": 61,
+            "exclusion_count": 156,
+            "exclusion_reasons": {
+              "unsupported_file_type": 156
+            }
+          },
+          "error": null
+        },
+        {
+          "image_digest": "semgrep/semgrep@sha256:451b3d875c00dac7ed5db5293e584a07de11449a409c10b3c2d2652f429630b6",
+          "name": "semgrep",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "1.182.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:51:15.983118Z",
+          "finished_at": "2026-10-23T23:51:24.249418Z",
+          "coverage": {
+            "required_count": 16,
+            "completed_count": 16,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "12182217d05b224704057eba9e7a7f5f25ac1ccf",
+            "scope_complete": true,
+            "inspected_count": 16,
+            "exclusion_count": 156,
+            "exclusion_reasons": {
+              "unsupported_file_type": 156
+            }
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "zap",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "12182217d05b224704057eba9e7a7f5f25ac1ccf",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 156,
+            "exclusion_reasons": {
+              "unsupported_file_type": 156
+            }
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "asset_secrets",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "12182217d05b224704057eba9e7a7f5f25ac1ccf",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 156,
+            "exclusion_reasons": {
+              "unsupported_file_type": 156
+            }
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [],
+      "source_removed": true,
+      "metrics": null
+    },
+    {
+      "transport": "live",
+      "mode": "website",
+      "variant": "observation",
+      "elapsed_seconds": 36.296,
+      "status": "partial",
+      "completed": false,
+      "input": {
+        "requested_ref": null,
+        "display_name": "Authorized website review",
+        "revision": null,
+        "repository": null,
+        "target_redacted": "https://hemantkumar822.github.io/",
+        "observation_id": "8b2fdc15ec88bfe2d5e0126f9b20e3da"
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 0,
+        "rules_fingerprint": "bd11b3d38b67c021be3339d1c5a1620929b3cd91ba08dff59d2c5dd080d30c72",
+        "revision_or_observation": "8b2fdc15ec88bfe2d5e0126f9b20e3da",
+        "scope_complete": false,
+        "inspected_count": 6,
+        "exclusion_count": 39,
+        "exclusion_reasons": {
+          "cross_origin_not_fetched": 37,
+          "invalid_or_sensitive_target": 2
+        }
+      },
+      "tools": [
+        {
+          "image_digest": null,
+          "name": "gitleaks",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "8b2fdc15ec88bfe2d5e0126f9b20e3da",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "semgrep",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "8b2fdc15ec88bfe2d5e0126f9b20e3da",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "ghcr.io/zaproxy/zaproxy@sha256:5ccfff9a411743ab2615136a2edd7416bec9ce41572fa94e935df38c14adb2b6",
+          "name": "zap",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "2.17.0",
+          "rules_fingerprint": "265cc9cc49a838301653fcf0933a7f749b3bee4653171c691c86306c269121ed",
+          "started_at": "2026-10-23T23:51:38.859146Z",
+          "finished_at": "2026-10-23T23:52:03.081312Z",
+          "coverage": {
+            "required_count": 6,
+            "completed_count": 6,
+            "rules_fingerprint": "265cc9cc49a838301653fcf0933a7f749b3bee4653171c691c86306c269121ed",
+            "revision_or_observation": "8b2fdc15ec88bfe2d5e0126f9b20e3da",
+            "scope_complete": false,
+            "inspected_count": 6,
+            "exclusion_count": 39,
+            "exclusion_reasons": {
+              "cross_origin_not_fetched": 37,
+              "invalid_or_sensitive_target": 2
+            }
+          },
+          "error": null
+        },
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "asset_secrets",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:51:35.493647Z",
+          "finished_at": "2026-10-23T23:51:38.804204Z",
+          "coverage": {
+            "required_count": 6,
+            "completed_count": 6,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "8b2fdc15ec88bfe2d5e0126f9b20e3da",
+            "scope_complete": false,
+            "inspected_count": 6,
+            "exclusion_count": 39,
+            "exclusion_reasons": {
+              "cross_origin_not_fetched": 37,
+              "invalid_or_sensitive_target": 2
+            }
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [
+          {
+            "rule": "10098",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10050",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10020",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10021",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10015",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10038",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10098",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10017",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10020",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10027",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10109",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10015",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10038",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10098",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10017",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10050",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10021",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10050",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10021",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10098",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10050",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10021",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10020",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10015",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10038",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10098",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10017",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10027",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10109",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10050",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "90003",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10021",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10098",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10027",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10027",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10050",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10021",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          }
+        ],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [
+        {
+          "rule": "10098",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/neo-styles.css",
+            "resource_key": "https://hemantkumar822.github.io/neo-styles.css",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10050",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/neo-styles.css",
+            "resource_key": "https://hemantkumar822.github.io/neo-styles.css",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10020",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10021",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/neo-styles.css",
+            "resource_key": "https://hemantkumar822.github.io/neo-styles.css",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10015",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10038",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10098",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10017",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10020",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10027",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10109",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10015",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10038",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10098",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10017",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10050",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10021",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/terminal.html",
+            "resource_key": "https://hemantkumar822.github.io/terminal.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10050",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10021",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/",
+            "resource_key": "https://hemantkumar822.github.io/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10098",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/styles.css",
+            "resource_key": "https://hemantkumar822.github.io/styles.css",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10050",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/styles.css",
+            "resource_key": "https://hemantkumar822.github.io/styles.css",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10021",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/styles.css",
+            "resource_key": "https://hemantkumar822.github.io/styles.css",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10020",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10015",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10038",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10098",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10017",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10027",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10109",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10050",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "90003",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10021",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/index.html",
+            "resource_key": "https://hemantkumar822.github.io/index.html",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10098",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/script.js",
+            "resource_key": "https://hemantkumar822.github.io/script.js",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10027",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/script.js",
+            "resource_key": "https://hemantkumar822.github.io/script.js",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10027",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/script.js",
+            "resource_key": "https://hemantkumar822.github.io/script.js",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10050",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/script.js",
+            "resource_key": "https://hemantkumar822.github.io/script.js",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10021",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://hemantkumar822.github.io/script.js",
+            "resource_key": "https://hemantkumar822.github.io/script.js",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        }
+      ],
+      "source_removed": true,
+      "metrics": null
+    },
+    {
+      "transport": "controlled",
+      "mode": "website",
+      "variant": "vulnerable",
+      "elapsed_seconds": 22.203,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": null,
+        "display_name": "Authorized website review",
+        "revision": null,
+        "repository": null,
+        "target_redacted": "https://example.com/",
+        "observation_id": "47c36d0046bda7270095df8f58cfc0f1"
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "bd11b3d38b67c021be3339d1c5a1620929b3cd91ba08dff59d2c5dd080d30c72",
+        "revision_or_observation": "47c36d0046bda7270095df8f58cfc0f1",
+        "scope_complete": true,
+        "inspected_count": 1,
+        "exclusion_count": 0,
+        "exclusion_reasons": {}
+      },
+      "tools": [
+        {
+          "image_digest": null,
+          "name": "gitleaks",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "47c36d0046bda7270095df8f58cfc0f1",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "semgrep",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "47c36d0046bda7270095df8f58cfc0f1",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "ghcr.io/zaproxy/zaproxy@sha256:5ccfff9a411743ab2615136a2edd7416bec9ce41572fa94e935df38c14adb2b6",
+          "name": "zap",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "2.17.0",
+          "rules_fingerprint": "265cc9cc49a838301653fcf0933a7f749b3bee4653171c691c86306c269121ed",
+          "started_at": "2026-10-23T23:52:39.975583Z",
+          "finished_at": "2026-10-23T23:52:55.947855Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "265cc9cc49a838301653fcf0933a7f749b3bee4653171c691c86306c269121ed",
+            "revision_or_observation": "47c36d0046bda7270095df8f58cfc0f1",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "asset_secrets",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:52:36.974793Z",
+          "finished_at": "2026-10-23T23:52:39.924707Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "47c36d0046bda7270095df8f58cfc0f1",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [
+          {
+            "rule": "vg-secret-assignment",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": true
+          },
+          {
+            "rule": "10020",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10015",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10038",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10109",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10035",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10021",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          }
+        ],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [
+        {
+          "rule": "vg-secret-assignment",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "asset",
+            "parameter_redacted": null,
+            "line_start": 1
+          }
+        },
+        {
+          "rule": "10020",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10015",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10038",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10109",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10035",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10021",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        }
+      ],
+      "source_removed": true,
+      "metrics": {
+        "tp": 5,
+        "fp": 2,
+        "fn": 0,
+        "expected_count": 5,
+        "observed_count": 7,
+        "precision": 0.7142857142857143,
+        "recall": 1.0,
+        "missed": [],
+        "unexpected": [
+          [
+            "10015",
+            "https://example.com/",
+            null
+          ],
+          [
+            "10109",
+            "https://example.com/",
+            null
+          ]
+        ]
+      }
+    },
+    {
+      "transport": "controlled",
+      "mode": "website",
+      "variant": "corrected",
+      "elapsed_seconds": 22.907,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": null,
+        "display_name": "Authorized website review",
+        "revision": null,
+        "repository": null,
+        "target_redacted": "https://example.com/",
+        "observation_id": "9e345b21468de6edf6114e60f9df693a"
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "bd11b3d38b67c021be3339d1c5a1620929b3cd91ba08dff59d2c5dd080d30c72",
+        "revision_or_observation": "9e345b21468de6edf6114e60f9df693a",
+        "scope_complete": true,
+        "inspected_count": 1,
+        "exclusion_count": 0,
+        "exclusion_reasons": {}
+      },
+      "tools": [
+        {
+          "image_digest": null,
+          "name": "gitleaks",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "9e345b21468de6edf6114e60f9df693a",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "semgrep",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "9e345b21468de6edf6114e60f9df693a",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "ghcr.io/zaproxy/zaproxy@sha256:5ccfff9a411743ab2615136a2edd7416bec9ce41572fa94e935df38c14adb2b6",
+          "name": "zap",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "2.17.0",
+          "rules_fingerprint": "265cc9cc49a838301653fcf0933a7f749b3bee4653171c691c86306c269121ed",
+          "started_at": "2026-10-23T23:53:02.146742Z",
+          "finished_at": "2026-10-23T23:53:18.368009Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "265cc9cc49a838301653fcf0933a7f749b3bee4653171c691c86306c269121ed",
+            "revision_or_observation": "9e345b21468de6edf6114e60f9df693a",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "asset_secrets",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:52:59.203683Z",
+          "finished_at": "2026-10-23T23:53:02.086604Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "9e345b21468de6edf6114e60f9df693a",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [
+          {
+            "rule": "10015",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10055",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10109",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          }
+        ],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [
+        {
+          "rule": "10015",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10055",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10109",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        }
+      ],
+      "source_removed": true,
+      "metrics": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0,
+        "expected_count": 0,
+        "observed_count": 3,
+        "precision": 0.0,
+        "recall": null,
+        "missed": [],
+        "unexpected": [
+          [
+            "10015",
+            "https://example.com/",
+            null
+          ],
+          [
+            "10055",
+            "https://example.com/",
+            null
+          ],
+          [
+            "10109",
+            "https://example.com/",
+            null
+          ]
+        ]
+      }
+    },
+    {
+      "transport": "controlled",
+      "mode": "website",
+      "variant": "clean",
+      "elapsed_seconds": 21.641,
+      "status": "complete",
+      "completed": true,
+      "input": {
+        "requested_ref": null,
+        "display_name": "Authorized website review",
+        "revision": null,
+        "repository": null,
+        "target_redacted": "https://example.com/",
+        "observation_id": "6ac49ee8d7818707bb98a1ffd7fdbf3a"
+      },
+      "coverage": {
+        "required_count": 2,
+        "completed_count": 2,
+        "rules_fingerprint": "bd11b3d38b67c021be3339d1c5a1620929b3cd91ba08dff59d2c5dd080d30c72",
+        "revision_or_observation": "6ac49ee8d7818707bb98a1ffd7fdbf3a",
+        "scope_complete": true,
+        "inspected_count": 1,
+        "exclusion_count": 0,
+        "exclusion_reasons": {}
+      },
+      "tools": [
+        {
+          "image_digest": null,
+          "name": "gitleaks",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "6ac49ee8d7818707bb98a1ffd7fdbf3a",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": null,
+          "name": "semgrep",
+          "applicable": false,
+          "required": false,
+          "status": "skipped",
+          "reason": "not_applicable",
+          "version": null,
+          "rules_fingerprint": null,
+          "started_at": null,
+          "finished_at": null,
+          "coverage": {
+            "required_count": 0,
+            "completed_count": 0,
+            "rules_fingerprint": null,
+            "revision_or_observation": "6ac49ee8d7818707bb98a1ffd7fdbf3a",
+            "scope_complete": false,
+            "inspected_count": 0,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "ghcr.io/zaproxy/zaproxy@sha256:5ccfff9a411743ab2615136a2edd7416bec9ce41572fa94e935df38c14adb2b6",
+          "name": "zap",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "2.17.0",
+          "rules_fingerprint": "265cc9cc49a838301653fcf0933a7f749b3bee4653171c691c86306c269121ed",
+          "started_at": "2026-10-23T23:53:27.585175Z",
+          "finished_at": "2026-10-23T23:53:43.056857Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "265cc9cc49a838301653fcf0933a7f749b3bee4653171c691c86306c269121ed",
+            "revision_or_observation": "6ac49ee8d7818707bb98a1ffd7fdbf3a",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        },
+        {
+          "image_digest": "ghcr.io/gitleaks/gitleaks@sha256:c00b6bd0aeb3071cbcb79009cb16a60dd9e0a7c60e2be9ab65d25e6bc8abbb7f",
+          "name": "asset_secrets",
+          "applicable": true,
+          "required": true,
+          "status": "complete",
+          "reason": null,
+          "version": "8.30.1",
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "started_at": "2026-10-23T23:53:24.847787Z",
+          "finished_at": "2026-10-23T23:53:27.528744Z",
+          "coverage": {
+            "required_count": 1,
+            "completed_count": 1,
+            "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+            "revision_or_observation": "6ac49ee8d7818707bb98a1ffd7fdbf3a",
+            "scope_complete": true,
+            "inspected_count": 1,
+            "exclusion_count": 0,
+            "exclusion_reasons": {}
+          },
+          "error": null
+        }
+      ],
+      "guidance": {
+        "structural": [
+          {
+            "rule": "10015",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10055",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          },
+          {
+            "rule": "10109",
+            "location": true,
+            "impact": true,
+            "actionable_change": true,
+            "verification": true,
+            "rotation": null
+          }
+        ],
+        "teammate_judgment": "unassessed"
+      },
+      "observed": [
+        {
+          "rule": "10015",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10055",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        },
+        {
+          "rule": "10109",
+          "location": {
+            "kind": "web",
+            "url_redacted": "https://example.com/",
+            "resource_key": "https://example.com/",
+            "part": "response",
+            "parameter_redacted": null,
+            "line_start": null
+          }
+        }
+      ],
+      "source_removed": true,
+      "metrics": {
+        "tp": 0,
+        "fp": 3,
+        "fn": 0,
+        "expected_count": 0,
+        "observed_count": 3,
+        "precision": 0.0,
+        "recall": null,
+        "missed": [],
+        "unexpected": [
+          [
+            "10015",
+            "https://example.com/",
+            null
+          ],
+          [
+            "10055",
+            "https://example.com/",
+            null
+          ],
+          [
+            "10109",
+            "https://example.com/",
+            null
+          ]
+        ]
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "mode": "codebase",
+      "http_status": 200,
+      "result": {
+        "baseline_id": "97817f376e338515acce0f4b49ccd86d",
+        "new_id": "76bbd5f7c587c3d4da610839785dc34d",
+        "status": "partial",
+        "baseline_input": {
+          "requested_ref": null,
+          "display_name": "Submitted source tree",
+          "revision": null,
+          "repository": null,
+          "target_redacted": null,
+          "observation_id": null
+        },
+        "new_input": {
+          "requested_ref": null,
+          "display_name": "Submitted source tree",
+          "revision": null,
+          "repository": null,
+          "target_redacted": null,
+          "observation_id": null
+        },
+        "baseline_coverage": {
+          "required_count": 2,
+          "completed_count": 2,
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "revision_or_observation": "97817f376e338515acce0f4b49ccd86d",
+          "scope_complete": true,
+          "inspected_count": 1,
+          "exclusion_count": 0,
+          "exclusion_reasons": {}
+        },
+        "new_coverage": {
+          "required_count": 2,
+          "completed_count": 2,
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "revision_or_observation": "76bbd5f7c587c3d4da610839785dc34d",
+          "scope_complete": true,
+          "inspected_count": 1,
+          "exclusion_count": 0,
+          "exclusion_reasons": {}
+        },
+        "items": [
+          {
+            "baseline_finding_id": "4c8d4f5a05c8c7424690bb1308fe7583",
+            "new_finding_id": null,
+            "status": "unverified",
+            "reason_code": "uncertain_structural_context",
+            "baseline_evidence_ref": "97817f376e338515acce0f4b49ccd86d/findings/4c8d4f5a05c8c7424690bb1308fe7583",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "b0e6b474f76883c04e09311efb7691b6",
+            "new_finding_id": null,
+            "status": "not_detected",
+            "reason_code": "not_observed_in_comparable_scope",
+            "baseline_evidence_ref": "97817f376e338515acce0f4b49ccd86d/findings/b0e6b474f76883c04e09311efb7691b6",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "ec6fd6182c6990cabd3af43e64686fdb",
+            "new_finding_id": null,
+            "status": "unverified",
+            "reason_code": "uncertain_structural_context",
+            "baseline_evidence_ref": "97817f376e338515acce0f4b49ccd86d/findings/ec6fd6182c6990cabd3af43e64686fdb",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "3353069006aa5ffb889cb88db30ee424",
+            "new_finding_id": null,
+            "status": "not_detected",
+            "reason_code": "not_observed_in_comparable_scope",
+            "baseline_evidence_ref": "97817f376e338515acce0f4b49ccd86d/findings/3353069006aa5ffb889cb88db30ee424",
+            "new_evidence_ref": null
+          }
+        ],
+        "human_actions": [
+          "Revoke or rotate the exposed credential at its provider; source removal alone does not revoke it."
+        ]
+      }
+    },
+    {
+      "mode": "repository",
+      "http_status": 200,
+      "result": {
+        "baseline_id": "d69caa49ade6aa7a3e5da3e115b8548c",
+        "new_id": "0e7fb3776b188fd622314f1573f3b145",
+        "status": "partial",
+        "baseline_input": {
+          "requested_ref": "main",
+          "display_name": "fixture/acceptance",
+          "revision": "b9efc7d88cc81958dd93a2ccbb8c557afe4fe3cc",
+          "repository": "https://github.com/fixture/acceptance",
+          "target_redacted": null,
+          "observation_id": null
+        },
+        "new_input": {
+          "requested_ref": "main",
+          "display_name": "fixture/acceptance",
+          "revision": "185a081a6fa516e9f7d2ce9bae1f4302d8214787",
+          "repository": "https://github.com/fixture/acceptance",
+          "target_redacted": null,
+          "observation_id": null
+        },
+        "baseline_coverage": {
+          "required_count": 2,
+          "completed_count": 2,
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "revision_or_observation": "b9efc7d88cc81958dd93a2ccbb8c557afe4fe3cc",
+          "scope_complete": true,
+          "inspected_count": 1,
+          "exclusion_count": 0,
+          "exclusion_reasons": {}
+        },
+        "new_coverage": {
+          "required_count": 2,
+          "completed_count": 2,
+          "rules_fingerprint": "e5f2355c8fbd5ab57e16ee1b02a68c4af066b9333ce898a1c549acbc0fae893b",
+          "revision_or_observation": "185a081a6fa516e9f7d2ce9bae1f4302d8214787",
+          "scope_complete": true,
+          "inspected_count": 1,
+          "exclusion_count": 0,
+          "exclusion_reasons": {}
+        },
+        "items": [
+          {
+            "baseline_finding_id": "deeacc3c7f3d9d0a1a826987c67a3e27",
+            "new_finding_id": null,
+            "status": "unverified",
+            "reason_code": "uncertain_structural_context",
+            "baseline_evidence_ref": "d69caa49ade6aa7a3e5da3e115b8548c/findings/deeacc3c7f3d9d0a1a826987c67a3e27",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "bd5c368cc120017a161fe76604055ce2",
+            "new_finding_id": null,
+            "status": "not_detected",
+            "reason_code": "not_observed_in_comparable_scope",
+            "baseline_evidence_ref": "d69caa49ade6aa7a3e5da3e115b8548c/findings/bd5c368cc120017a161fe76604055ce2",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "7610c229c97deccf97a0c8f45cf0c21c",
+            "new_finding_id": null,
+            "status": "unverified",
+            "reason_code": "uncertain_structural_context",
+            "baseline_evidence_ref": "d69caa49ade6aa7a3e5da3e115b8548c/findings/7610c229c97deccf97a0c8f45cf0c21c",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "92bfed637a56ca22caae08db80c648ec",
+            "new_finding_id": null,
+            "status": "not_detected",
+            "reason_code": "not_observed_in_comparable_scope",
+            "baseline_evidence_ref": "d69caa49ade6aa7a3e5da3e115b8548c/findings/92bfed637a56ca22caae08db80c648ec",
+            "new_evidence_ref": null
+          }
+        ],
+        "human_actions": [
+          "Revoke or rotate the exposed credential at its provider; source removal alone does not revoke it."
+        ]
+      }
+    },
+    {
+      "mode": "website",
+      "http_status": 200,
+      "result": {
+        "baseline_id": "47c36d0046bda7270095df8f58cfc0f1",
+        "new_id": "9e345b21468de6edf6114e60f9df693a",
+        "status": "comparable",
+        "baseline_input": {
+          "requested_ref": null,
+          "display_name": "Authorized website review",
+          "revision": null,
+          "repository": null,
+          "target_redacted": "https://example.com/",
+          "observation_id": "47c36d0046bda7270095df8f58cfc0f1"
+        },
+        "new_input": {
+          "requested_ref": null,
+          "display_name": "Authorized website review",
+          "revision": null,
+          "repository": null,
+          "target_redacted": "https://example.com/",
+          "observation_id": "9e345b21468de6edf6114e60f9df693a"
+        },
+        "baseline_coverage": {
+          "required_count": 2,
+          "completed_count": 2,
+          "rules_fingerprint": "bd11b3d38b67c021be3339d1c5a1620929b3cd91ba08dff59d2c5dd080d30c72",
+          "revision_or_observation": "47c36d0046bda7270095df8f58cfc0f1",
+          "scope_complete": true,
+          "inspected_count": 1,
+          "exclusion_count": 0,
+          "exclusion_reasons": {}
+        },
+        "new_coverage": {
+          "required_count": 2,
+          "completed_count": 2,
+          "rules_fingerprint": "bd11b3d38b67c021be3339d1c5a1620929b3cd91ba08dff59d2c5dd080d30c72",
+          "revision_or_observation": "9e345b21468de6edf6114e60f9df693a",
+          "scope_complete": true,
+          "inspected_count": 1,
+          "exclusion_count": 0,
+          "exclusion_reasons": {}
+        },
+        "items": [
+          {
+            "baseline_finding_id": "095a50cb3d28a3abe1a148f841817a3e",
+            "new_finding_id": null,
+            "status": "not_detected",
+            "reason_code": "not_observed_in_comparable_scope",
+            "baseline_evidence_ref": "47c36d0046bda7270095df8f58cfc0f1/findings/095a50cb3d28a3abe1a148f841817a3e",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "064a46d0d6009b0d6358038cf99f7ee0",
+            "new_finding_id": null,
+            "status": "not_detected",
+            "reason_code": "not_observed_in_comparable_scope",
+            "baseline_evidence_ref": "47c36d0046bda7270095df8f58cfc0f1/findings/064a46d0d6009b0d6358038cf99f7ee0",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "9015b341e78626cf68d84a85b9ed3251",
+            "new_finding_id": "f3fb87bbdfd9c1015458f5c923cdcc9c",
+            "status": "still_detected",
+            "reason_code": "unique_rule_and_structural_location",
+            "baseline_evidence_ref": "47c36d0046bda7270095df8f58cfc0f1/findings/9015b341e78626cf68d84a85b9ed3251",
+            "new_evidence_ref": "9e345b21468de6edf6114e60f9df693a/findings/f3fb87bbdfd9c1015458f5c923cdcc9c"
+          },
+          {
+            "baseline_finding_id": "908e65287eff0022326325e286b5fef3",
+            "new_finding_id": null,
+            "status": "not_detected",
+            "reason_code": "not_observed_in_comparable_scope",
+            "baseline_evidence_ref": "47c36d0046bda7270095df8f58cfc0f1/findings/908e65287eff0022326325e286b5fef3",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "2b5764ad9d3dfb908d682c551e92f497",
+            "new_finding_id": "f375a24062cfab393f6856e47d92c3d2",
+            "status": "still_detected",
+            "reason_code": "unique_rule_and_structural_location",
+            "baseline_evidence_ref": "47c36d0046bda7270095df8f58cfc0f1/findings/2b5764ad9d3dfb908d682c551e92f497",
+            "new_evidence_ref": "9e345b21468de6edf6114e60f9df693a/findings/f375a24062cfab393f6856e47d92c3d2"
+          },
+          {
+            "baseline_finding_id": "ce24b117e982ec0c71cdfd14771835a8",
+            "new_finding_id": null,
+            "status": "not_detected",
+            "reason_code": "not_observed_in_comparable_scope",
+            "baseline_evidence_ref": "47c36d0046bda7270095df8f58cfc0f1/findings/ce24b117e982ec0c71cdfd14771835a8",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": "07c893cc530e224ae5ad01292ff6e3ba",
+            "new_finding_id": null,
+            "status": "not_detected",
+            "reason_code": "not_observed_in_comparable_scope",
+            "baseline_evidence_ref": "47c36d0046bda7270095df8f58cfc0f1/findings/07c893cc530e224ae5ad01292ff6e3ba",
+            "new_evidence_ref": null
+          },
+          {
+            "baseline_finding_id": null,
+            "new_finding_id": "0a911df5573dfc4b4998d41afc422a81",
+            "status": "newly_detected",
+            "reason_code": "new_observation_in_comparable_scope",
+            "baseline_evidence_ref": null,
+            "new_evidence_ref": "9e345b21468de6edf6114e60f9df693a/findings/0a911df5573dfc4b4998d41afc422a81"
+          }
+        ],
+        "human_actions": [
+          "Revoke or rotate the exposed credential at its provider; source removal alone does not revoke it."
+        ]
+      }
+    }
+  ],
+  "release_blockers": [
+    "Public labeled vulnerable/corrected deployments not available.",
+    "Teammate prompt usefulness judgment unassessed.",
+    "Live website capture remains partial due explicit exclusions.",
+    "Unlabelled extra passive alerts retained as FP relative to selected labels; human adjudication pending.",
+    "200% browser zoom, reduced-motion emulation and complete rendered recovery/state matrix remain unassessed."
+  ],
+  "remaining_source_directories": 0,
+  "attempts": [
+    "Initial harness stopped later admissions at cleanup_pending; corrected by sweeping trusted deletion before next admission.",
+    "Second batch: source/repository and live acquisition measured; controlled website capture rejected keyword active. Fixed local harness callback only; reran website cases only.",
+    "Latest website cases supersede the failed controlled-capture attempt; all original extra passive alerts retained."
+  ]
+}

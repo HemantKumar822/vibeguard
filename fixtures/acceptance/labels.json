@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "unit": "rule/location/line occurrence; overlapping scanner reports deduplicated",
+  "synthetic_only": true,
+  "source": {
+    "vulnerable": [
+      {
+        "rule": "vg-secret-assignment",
+        "resource": "app/src/main.ts",
+        "line": 1
+      },
+      {
+        "rule": "vg-unsafe-eval",
+        "resource": "app/src/main.ts",
+        "line": 2
+      },
+      {
+        "rule": "vg-tls-disabled",
+        "resource": "app/src/main.ts",
+        "line": 3
+      },
+      {
+        "rule": "vg-access-candidate",
+        "resource": "app/src/main.ts",
+        "line": 4
+      }
+    ],
+    "corrected": [],
+    "clean": []
+  },
+  "website": {
+    "vulnerable": [
+      {
+        "rule": "10020",
+        "resource": "https://example.com/",
+        "line": null
+      },
+      {
+        "rule": "10021",
+        "resource": "https://example.com/",
+        "line": null
+      },
+      {
+        "rule": "10035",
+        "resource": "https://example.com/",
+        "line": null
+      },
+      {
+        "rule": "10038",
+        "resource": "https://example.com/",
+        "line": null
+      },
+      {
+        "rule": "vg-secret-assignment",
+        "resource": "https://example.com/",
+        "line": 1
+      }
+    ],
+    "corrected": [],
+    "clean": []
+  },
+  "unsupported_website": [
+    "unsafe_input",
+    "access_check",
+    "private backend credentials"
+  ],
+  "public_key_control": "Public browser key assignments must not produce a credential occurrence."
+}

@@ -1,6 +1,6 @@
 # Development setup
 
-Stories 1.1–3.4 provide the foundation, shared contracts, sessions, bounded source/repository/website intake, owned jobs, isolated source and passive web checks, and repair guidance. Website admission is readiness-gated. AI and comparison remain future work; Epic 3 is implemented and awaiting review.
+Stories 1–4 provide shared contracts, sessions, bounded source/repository/website intake, owned jobs, isolated checks, repair guidance, bounded opt-in AI fallback and real rescan comparison. Website admission remains readiness-gated. For the current three-process startup, measured acceptance command and manual handoff, use [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md).
 
 ## Install from a clean checkout
 
