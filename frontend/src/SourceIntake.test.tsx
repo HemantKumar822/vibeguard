@@ -182,7 +182,9 @@ test('submits mapped tree and displays real queued inventory', async () => {
   await act(async () => host.querySelector<HTMLInputElement>('input[type=checkbox]')!.click())
   await act(async () => host.querySelector('form')!.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true})))
   expect(fetch).toHaveBeenCalledTimes(2)
-  expect(host.textContent).toContain('Accepted · queued')
+  expect(host.textContent).toContain('Review queued')
+  expect(document.activeElement).toBe(host.querySelector('.results-heading h3'))
+  expect(host.querySelector('.intake-panel')?.hasAttribute('open')).toBe(false)
   expect(host.textContent).toContain('src/main.ts')
   const body = fetch.mock.calls[1][1].body as FormData
   expect(JSON.parse(body.get('metadata') as string).allow_external_ai).toBe(false)

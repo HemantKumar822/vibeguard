@@ -1,10 +1,19 @@
 # Development setup
 
-Stories 1–4 provide shared contracts, sessions, bounded source/repository/website intake, owned jobs, isolated checks, repair guidance, bounded opt-in AI fallback and real rescan comparison. Website admission remains readiness-gated. For the current three-process startup, measured acceptance command and manual handoff, use [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md).
+**TL;DR — one command to start everything:**
+
+```powershell
+./scripts/dev-start.ps1           # dev server (hot-reload, no build required)
+./scripts/start-demo.ps1          # production build + all three processes
+```
+
+See [QUICKSTART.md](QUICKSTART.md) for the judge walkthrough, Groq configuration, and troubleshooting. The application no longer mounts the development fixture viewer; fixture data is used only by tests.
+
+All five epics are implemented and accepted. Source upload, repository snapshot, website review, optional Groq AI guidance, rescan comparison, scan activity panel, and report export are live. For the measured acceptance command and operator notes, use [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md).
 
 ## Install from a clean checkout
 
-Prerequisites: Node 24.19.x or newer Node 24 LTS, npm, uv and Python 3.12.13. uv can install the Python version from `.python-version`. The lockfiles are committed.
+Prerequisites: Node 18+ LTS (18, 20, 22, or 24), npm, uv and Python 3.12.x. uv installs the exact Python version from `.python-version` automatically. The lockfiles are committed.
 
 From the repository root:
 
@@ -160,14 +169,16 @@ A partial result is expected when discovered resources cannot be assessed. Runti
 
 Actual tests, authorized live results and remaining review are recorded in [Epic 3 evidence](../_bmad-output/implementation-artifacts/epic-3-verification.md).
 
-## Epic 4: explanations and same-mode repeats
+## Epic 4 & 5: AI guidance, rescans, activity panel, report export (complete)
 
-AI is optional and disabled by default. Set `VIBEGUARD_AI_ENABLED=1`, an HTTPS `VIBEGUARD_AI_ENDPOINT` without URL credentials/query, and optionally `VIBEGUARD_AI_TOKEN` on the server. This is a narrow JSON adapter protocol, not a vendor-specific chat API: a provider gateway accepts `{instruction, findings}` and returns exactly `{ "explanations": [{ "id": "existing finding id", "location": { ...exact submitted location... }, "text": "one supplied guidance_options entry verbatim" }] }`. The model selects grounded guidance from trusted explanations, remediation and verification steps; newly invented prose is rejected. Configure any vendor-specific translation at that gateway. Credentials remain server owned. No live paid provider call is needed for tests.
+**Groq AI integration** is complete and live. Configure in `.env` (see [QUICKSTART.md](QUICKSTART.md)). The adapter is a narrow bounded JSON protocol: Groq's llama-3.3-70b selects grounded guidance from trusted finding options — it cannot invent new findings, claim fixes succeeded, or override core repair instructions. Invented prose, new IDs/locations, credential-like text, and oversized responses all cause deterministic fallback to the template mode.
 
-The core includes at most 30 sanitized trusted finding descriptions/locations, caps requests at 24 KiB, accepts at most 8 KiB, and gives the single no-retry call at most 15 seconds within the remaining job budget. No redirect is followed. New IDs/locations, additional output fields, suspicious credential text and unsupported security/repair claims cause deterministic fallback. The master prompt, evidence, fix instructions and separate revoke/rotate actions stay core owned. Reports show sharing, composition mode and the fallback reason.
+Request bounds: at most 30 sanitized findings, 24 KiB cap, 8 KiB response limit, 15-second single no-retry call. Reports display the composition mode (`ai_assisted` / `template`) and fallback reason when applicable. No paid provider call is needed for unit tests — `tests/test_explanations.py` exercises the full adapter protocol with mock connections.
 
-`POST /api/v1/scans/{baseline_id}/rescans` accepts the ordinary JSON/multipart intake with a fresh permission/sharing choice and an idempotency key. It dispatches a fresh same-mode scan through existing admission, workers and physical website-readiness controls. Lineage is included in the retry digest and terminal baseline ownership/expiry/tombstones are rechecked in the admission transaction. `GET /api/v1/scans/{baseline_id}/comparisons/{new_id}` returns an owned terminal direct-lineage comparison.
+**Rescan + comparison** is implemented via `POST /api/v1/scans/{baseline_id}/rescans` (same intake contract, fresh permission and idempotency key). `GET /api/v1/scans/{baseline_id}/comparisons/{new_id}` returns an owned terminal direct-lineage comparison. Comparisons require compatible policy, tool version, immutable image and rule fingerprints. Not detected is an observation, never proof of repair or rotation.
 
-Comparisons require compatible policy, tool version, immutable image and rule fingerprints. Unique structural rule/location observations may remain detected through partial coverage. Absence/newness requires both complete tool scopes and the actual resource in both inspected manifests. Missing pages/files, changed origins/repositories, redacted query identity, duplicate candidates and incompatible fingerprints remain unverified. Not detected is an observation, never proof of repair or rotation. Baseline human actions are retained in comparisons and new published repair guidance.
+**ScanActivity component** (`frontend/src/ScanActivity.tsx`) displays real scanner states, coverage, and a timestamped activity log derived from the polled scan response. No client-side events are invented.
 
-After integration, run backend/frontend tests, contract parity, build and lint once. Real repeated worker smoke is opt-in: `VIBEGUARD_DOCKER_TESTS=1 python -m pytest tests/test_rescans.py -k actual_worker_repeat_smoke -q`. It runs real pinned Gitleaks/Semgrep/ZAP worker launches. Repository retrieval and website response capture use explicitly controlled fixtures; it does not establish public-network retrieval/capture acceptance. Website implementation changes invalidate measured readiness; rerun `python scripts/verify_website_readiness.py` before enabling live website admission. Do not hand edit readiness proof.
+**Report export** (`frontend/src/reportExport.ts`) generates a fenced Markdown file containing literal report text — no links, images, or HTML that a Markdown viewer could render as untrusted content.
+
+After any integration change, run backend/frontend tests, contract parity, build and lint once. Real repeated worker smoke is opt-in: `VIBEGUARD_DOCKER_TESTS=1 python -m pytest tests/test_rescans.py -k actual_worker_repeat_smoke -q`. Website implementation changes invalidate measured readiness; rerun `python scripts/verify_website_readiness.py` before enabling live website admission. Do not hand-edit the readiness proof.

@@ -16,6 +16,7 @@ export default function SourceIntake() {
   const [permission, setPermission] = useState(false)
   const [sharing, setSharing] = useState(false)
   const [pending, setPending] = useState(false)
+  const [inputOpen, setInputOpen] = useState(false)
   const [error, setError] = useState('')
   const [scan, setScan] = useState<Scan | null>(null)
   const [baseline, setBaseline] = useState<Scan | null>(null)
@@ -29,7 +30,9 @@ export default function SourceIntake() {
   const currentIdentity = useRef<string | null>(null)
   const pendingAdmission = useRef(false)
   const confirmation = useRef<HTMLDialogElement>(null)
+  const resultHeading = useRef<HTMLHeadingElement>(null)
   const scanId = scan?.scan_id
+  useEffect(() => { if (scanId) resultHeading.current?.focus() }, [scanId])
   useLayoutEffect(() => { currentIdentity.current = scanId ?? null }, [scanId])
   const scanStatus = scan?.status
   const deletionId = deletion?.operation_id
@@ -65,7 +68,7 @@ export default function SourceIntake() {
       } else setBaseline(null)
       if (requestGeneration !== generation.current) return
       currentIdentity.current = restored.scan_id
-      setScan(restored); setRepeat(false); setError(''); setDeletion(null)
+      setScan(restored); setRepeat(false); setInputOpen(false); setError(''); setDeletion(null)
     } catch (failure) { if (requestGeneration === generation.current) setError(failure instanceof Error ? failure.message : 'Reconnect failed. Retry the same Scan ID.') }
   }
   useEffect(() => {
@@ -111,7 +114,7 @@ export default function SourceIntake() {
     heading?.scrollIntoView?.({ behavior: 'instant' })
     heading?.focus()
   }
-  function newSubmission() { if (pendingAdmission.current) return; ++generation.current; setRepeat(false); setBaseline(null); setComparison(null); setComparisonError(''); setPermission(false); setSharing(false); changed() }
+  function newSubmission() { if (pendingAdmission.current) return; ++generation.current; setRepeat(false); setInputOpen(true); setBaseline(null); setComparison(null); setComparisonError(''); setPermission(false); setSharing(false); changed() }
   useEffect(() => {
     if (!deletionId || deletionStatus === 'complete') return
     const controller = new AbortController()
@@ -199,6 +202,7 @@ export default function SourceIntake() {
       if (requestGeneration !== generation.current) return
       currentIdentity.current = accepted.scan_id
       setScan(accepted)
+      setInputOpen(false)
       setRepeat(false); setPermission(false); setSharing(false); setComparison(null)
       if (!repeat) setBaseline(null)
       setDeletion(null)
@@ -208,9 +212,8 @@ export default function SourceIntake() {
     } finally { pendingAdmission.current = false; setPending(false) }
   }
   return <section className="workspace" aria-labelledby="source-title">
-    <ol className="workflow-track" aria-label="Review workflow"><li data-current={!scan}><span className="step-number">01</span><div><strong>Choose your source</strong><small>Authorized code only</small></div></li><li data-current={!!scan && ['queued', 'running'].includes(scan.status)}><span className="step-number">02</span><div><strong>Inspect the evidence</strong><small>Real checks, visible coverage</small></div></li><li data-current={!!scan?.repair}><span className="step-number">03</span><div><strong>Plan your repair</strong><small>Clear next steps</small></div></li></ol>
-    <div className="panel intake-panel">
-    <div className="section-heading"><div><p className="eyebrow">NEW REVIEW</p><h2 id="source-title" tabIndex={-1}>{repeat ? 'Recheck corrected input.' : 'Start with your source.'}</h2><p className="muted">Codebase, public GitHub snapshot, or an authorized website. Website review requires verified passive-scan safety controls.</p></div><span className="scope-tag">{mode === 'website' ? 'PASSIVE WEB REVIEW' : 'SOURCE ANALYSIS'}</span></div>
+    <details className="panel intake-panel" open={!scan || repeat || inputOpen} onToggle={event => { if (scan && !repeat) setInputOpen(event.currentTarget.open) }}>
+    <summary className="intake-summary"><div><p className="eyebrow">{scan && !repeat ? 'REVIEW INPUT' : 'NEW REVIEW'}</p><h2 id="source-title" tabIndex={-1}>{repeat ? 'Recheck corrected input.' : scan ? 'Start another review' : 'What would you like to review?'}</h2></div><span className="disclosure-hint">{scan && !repeat ? 'Expand to submit' : 'Choose your input'}</span></summary>
     {repeat && <p role="status">Same-mode repeat of {baseline?.scan_id}. Baseline evidence remains below. <button type="button" disabled={pending} onClick={newSubmission}>New submission</button></p>}
     <form onSubmit={submit} className="intake-form">
       <div className="source-controls"><label>Submission mode<select value={mode} disabled={pending || repeat} onChange={event => { changed(); setMode(event.target.value as 'codebase' | 'repository' | 'website') }}><option value="codebase">Codebase</option><option value="repository">Repository</option><option value="website">Website URL</option></select></label><span className="mode-description">{mode === 'codebase' ? 'Keep your original file structure.' : mode === 'repository' ? 'Review one exact repository snapshot.' : 'Inspect captured responses, never private backend source.'}</span></div>
@@ -228,23 +231,23 @@ export default function SourceIntake() {
       <p className="field-help">Public repositories only. One resolved commit; no private credentials, history, submodules, LFS downloads, hooks or builds.</p>
       </> : <>
       <div className="directory-picker"><span className="source-symbol" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 7V5a1 1 0 0 1 1-1h5l2 3h9a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" /><path d="M3 9h18M12 12v5m-2-2 2 2 2-2" /></svg></span><h3>A source tree, ready for a closer look.</h3><p>Select your project folder. We’ll preserve its paths<br className="desktop-break" /> and make the accepted review scope explicit.</p><label>Choose directory<input type="file" multiple {...{ webkitdirectory: '' }} onChange={event => select(event.currentTarget, true)} disabled={pending} /></label><span className="field-help">Your app is never installed, built or executed.</span></div>
-      <div className="mapped-picker"><label>Choose mapped files<input type="file" multiple onChange={event => select(event.currentTarget, false)} disabled={pending} /></label><p className="field-help">If directory selection is unavailable, choose mapped files and provide their original relative paths.</p></div>
+      <details className="mapped-picker"><summary>Choose individual files instead</summary><label>Choose mapped files<input type="file" multiple onChange={event => select(event.currentTarget, false)} disabled={pending} /></label><p className="field-help">If directory selection is unavailable, choose mapped files and provide their original relative paths.</p></details>
       {mapped && <label>Relative paths, one per selected file<textarea value={paths} onChange={event => { if (event.target.value !== paths) changed(); setPaths(event.target.value) }} disabled={pending} /></label>}
       {files.length > 0 && <details className="selected-files"><summary>{files.length} files selected · {(files.reduce((total, file) => total + file.size, 0) / 1024).toFixed(1)} KiB</summary><ol>{files.map((file, index) => <li key={index}>{mapped ? file.name : file.webkitRelativePath} · {file.size} bytes</li>)}</ol></details>}
       </>}
       </div><aside className="submission-context" aria-label="Review scope"><span className="context-icon" aria-hidden="true">{'{ }'}</span><h3>Know what you’re reviewing.</h3><p>{mode === 'website' ? 'Passive response and header checks, plus private-credential candidates in observed browser-visible text.' : 'Selected checks for credentials, unsafe input, insecure configuration and access-check candidates.'}</p><div className="scope-facts"><div><span>{mode === 'website' ? 'Total response budget' : 'Maximum source size'}</span><strong>{mode === 'website' ? '20 MiB' : '25 MiB'}</strong></div><div><span>{mode === 'website' ? 'Maximum GET requests' : 'Files per review'}</span><strong>{mode === 'website' ? '200' : '5,000'}</strong></div><div><span>{mode === 'website' ? 'Maximum response body' : 'Maximum file size'}</span><strong>2 MiB</strong></div></div><p className="field-help">{mode === 'website' ? '50 pages · 50 linked text assets · exact origin only' : 'Path depth 20 · 240 UTF-8 bytes per path'}</p><div className="privacy-note"><strong>Evidence without exposed values</strong><p>Reports omit source literals. Exposed credentials still need revocation or rotation.</p></div></aside></div>
       <div className="consent-area"><label className="checkbox-row"><input type="checkbox" checked={permission} onChange={event => { changed(); setPermission(event.target.checked) }} disabled={pending} required /><span>{mode === 'website' ? 'I have permission to review this website.' : 'I have permission to review this source.'}<small>{mode === 'website' ? 'Only assess sites you own or are authorized to review.' : 'Only submit code you own or are authorized to assess.'}</small></span></label>
-      <label className="checkbox-row secondary-consent"><input type="checkbox" checked={sharing} onChange={event => { changed(); setSharing(event.target.checked) }} disabled={pending} /><span>Allow external AI sharing for this submission when configured by the server.<small>Repair guidance works without AI. Sharing is off by default.</small></span></label></div>
+      <label className="checkbox-row secondary-consent"><input type="checkbox" checked={sharing} onChange={event => { changed(); setSharing(event.target.checked) }} disabled={pending} /><span>Use AI explanations (optional).<small>Shares sanitized findings with an external AI service when configured. Off by default; repair guidance works without it.</small></span></label></div>
       <div className="submit-row"><p>{pending ? 'Preparing your submission. Keep this page open.' : 'Select your input and confirm permission to begin.'}</p><button className="primary-button" type="submit" disabled={pending || !permission || (mode === 'codebase' ? files.length === 0 : mode === 'repository' ? !repository : !website)}>{pending ? 'Submitting…' : mode === 'repository' ? 'Review repository' : mode === 'website' ? 'Review website' : 'Submit source tree'}</button></div>
     </form>
     <details className="reconnect-panel"><summary>Reconnect to an existing scan</summary><p>Use the same browser session and Scan ID after refresh. Reconnecting does not submit new work. Lost cookies cannot be recovered.</p>
       <label>Scan ID<input value={reconnectId} maxLength={32} onChange={event => setReconnectId(event.target.value)} /></label><button type="button" disabled={pending} onClick={() => reconnect()}>Reconnect</button></details>
+    </details>
     {error && <p role="alert" className="error-banner">{error}</p>}
-    </div>
     {baseline && baseline.scan_id !== scan?.scan_id && <div className="panel results-panel"><h3>Before - preserved baseline</h3><Report scan={baseline} /></div>}
     {comparison && baseline && scan && comparison.baseline_id === baseline.scan_id && comparison.new_id === scan.scan_id && <div className="panel results-panel"><Comparison key={`${baseline.scan_id}:${scan.scan_id}`} baseline={baseline} current={scan} result={comparison} /></div>}
     {comparisonError && <p role="alert">{comparisonError} <button onClick={() => setComparisonRetry(value => value + 1)}>Retry comparison</button><button disabled={pending} onClick={newSubmission}>New submission</button></p>}
-    {scan && <div className="panel results-panel"><div className="results-heading"><div><p className="eyebrow">YOUR REVIEW</p><h3 role="status">Accepted · {scan.status}</h3></div><span className="scope-tag">{scan.mode === 'repository' ? 'REPOSITORY' : scan.mode === 'website' ? 'WEBSITE' : 'CODEBASE'}</span></div>
+    {scan && <div className="panel results-panel"><div className="results-heading"><div><p className="eyebrow">YOUR REVIEW</p><h3 ref={resultHeading} tabIndex={-1} role="status">{{ queued: 'Review queued', running: 'Review in progress', complete: 'Review complete', partial: 'Review complete with limitations', failed: 'Review could not complete' }[scan.status]}</h3></div><span className="scope-tag">{scan.mode === 'repository' ? 'REPOSITORY' : scan.mode === 'website' ? 'WEBSITE' : 'CODEBASE'}</span></div>
       <Report scan={scan} key={scan.scan_id} />
       {['complete', 'partial', 'failed'].includes(scan.status) && !repeat && <button className="primary-button" type="button" disabled={pending} onClick={startRepeat}>Rescan corrected input</button>}
       {error && <button type="button" disabled={pending} onClick={() => reconnect(scan.scan_id)}>Reconnect this scan</button>}

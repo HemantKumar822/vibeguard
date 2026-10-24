@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react'
+import ScanActivity from './ScanActivity'
+import { downloadReport } from './reportExport'
 import type { components } from './generated/api'
 
 type Scan = components['schemas']['Scan']
@@ -11,6 +13,8 @@ export default function Report({ scan }: { scan: Scan }) {
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<string | null>(null)
   const [copy, setCopy] = useState('')
+  const [exportError, setExportError] = useState('')
+  const promptPreview = useRef<HTMLDetailsElement>(null)
   const detail = useRef<HTMLElement>(null)
   const findingButtons = useRef(new Map<string, HTMLButtonElement>())
   function openFinding(id: string) {
@@ -28,7 +32,7 @@ export default function Report({ scan }: { scan: Scan }) {
     try {
       await navigator.clipboard.writeText(scan.repair!.prompt_redacted)
       setCopy('Repair prompt copied.')
-    } catch { setCopy('Clipboard unavailable. Select and copy the sanitized text below manually.') }
+    } catch { if (promptPreview.current) promptPreview.current.open = true; setCopy('Clipboard unavailable. Select and copy the sanitized text below manually.') }
   }
   return <section aria-label="Investigate and repair" className="report">
     {scan.mode === 'website' && <div className="attribution"><h3>Website observation</h3><p>{scan.input.target_redacted}</p><p>Observation: <code>{scan.input.observation_id}</code></p><p>Passive review of captured responses and fetched text assets. No browser JavaScript, authenticated pages or private backend source was assessed.</p></div>}
@@ -36,18 +40,13 @@ export default function Report({ scan }: { scan: Scan }) {
       <p>{scan.input.repository}</p><p>Requested ref: <code>{scan.input.requested_ref}</code></p>
       <p>Resolved commit: <code>{scan.input.revision ?? 'Not resolved'}</code></p>
       <p>One public source snapshot; private repositories and history are unsupported.</p></div>}
-    <h3>Checks and coverage</h3>
-    <p>{scan.coverage.completed_count ?? 0}/{scan.coverage.required_count ?? 2} required checks completed with intended coverage.</p>
-    <ul className="tool-states">{scan.tools?.map(item => <li className="tool-state" data-state={item.status} key={item.name}>{item.name}: {item.status}{item.reason ? ` (${item.reason})` : ''}
-      {item.version && <> · v{item.version}</>}
-      {item.started_at && <> · started {new Date(item.started_at).toLocaleTimeString()}</>}
-      {item.finished_at && <> · finished {new Date(item.finished_at).toLocaleTimeString()}</>}
-    </li>)}</ul>
-    <p className="muted">Static checks produce candidates for review. They do not prove the application is secure.</p>
+    <ScanActivity scan={scan} />
     {scan.warnings?.length > 0 && <details className="coverage-notes" open={scan.status === 'partial' || scan.status === 'failed'}><summary>Review limits and notes · {scan.warnings.length}</summary>{scan.warnings.map((warning, index) => <p key={index}>{warning}</p>)}</details>}
     {scan.error && <p role="alert">{scan.error.message}</p>}
     {['complete', 'partial', 'failed'].includes(scan.status) && <>
-      <h3>Findings · {findings.length}</h3>
+      <div className="findings-heading"><div><p className="eyebrow">EVIDENCE & REMEDIATION</p><h3>Findings · {findings.length}</h3></div><button type="button" onClick={() => { try { downloadReport(scan); setExportError('') } catch { setExportError('Download unavailable. You can still inspect findings and copy the repair prompt below.') } }}>Download report</button></div>
+      {exportError && <p role="alert">{exportError}</p>}
+      <div className="severity-summary" aria-label="Finding severity totals">{Object.keys(rank).map(level => <span key={level} data-severity={level}><strong>{findings.filter(item => item.severity === level).length}</strong>{level}</span>)}</div>
       <div className="filters">
         <label>Severity<select value={severity} onChange={event => setSeverity(event.target.value)}><option value="all">All severities</option>{Object.keys(rank).map(value => <option key={value}>{value}</option>)}</select></label>
         <label>Category<select value={category} onChange={event => setCategory(event.target.value)}><option value="all">All categories</option>{['credential', 'unsafe_input', 'insecure_configuration', 'access_check', 'other'].map(value => <option key={value}>{value}</option>)}</select></label>
@@ -69,7 +68,7 @@ export default function Report({ scan }: { scan: Scan }) {
     </>}
     {scan.repair && ['complete', 'partial', 'failed'].includes(scan.status) && <section aria-label="Repair prompt"><h3>Consolidated repair prompt</h3>
       <p>{scan.repair.mode === 'ai_assisted' ? 'AI-assisted explanations with deterministic guidance' : 'Deterministic guidance · no AI required.'} · {scan.repair.status}</p><p>Sharing: {scan.allow_external_ai ? 'allowed for this submission' : 'off'}. {scan.repair.model_reason}</p><button className="primary-button" type="button" onClick={copyPrompt}>Copy repair prompt</button><p role="status">{copy}</p>
-      <label>Sanitized repair prompt<textarea readOnly value={scan.repair.prompt_redacted} aria-label="Sanitized repair prompt" /></label>
+      <details ref={promptPreview} className="prompt-preview"><summary>Preview or manually copy the repair prompt</summary><label>Sanitized repair prompt<textarea readOnly value={scan.repair.prompt_redacted} aria-label="Sanitized repair prompt" /></label></details>
       {scan.repair.human_actions?.length > 0 && <><h4>Separate human actions</h4><ul>{scan.repair.human_actions.map(action => <li key={action}>{action}</li>)}</ul></>}
     </section>}
     <details><summary>Accepted inventory and exclusions</summary><h4>Accepted files</h4><ul>{scan.accepted_files?.map(path => <li key={path}>{path}</li>)}</ul>

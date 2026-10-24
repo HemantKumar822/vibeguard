@@ -123,3 +123,58 @@ def test_inherited_action_has_reserved_prompt_space(scan):
     retain_actions(repair,[action])
     assert action in repair.prompt_redacted and len(repair.prompt_redacted.encode())<=128*1024
     assert repair.status=='fallback' and repair.model_reason=='human_action_prompt_overflow'
+
+
+def test_groq_requires_key_and_uses_fixed_provider_host(monkeypatch):
+    from backend.adapters.explanations import configuration
+    monkeypatch.setenv('VIBEGUARD_AI_ENABLED','1')
+    monkeypatch.setenv('VIBEGUARD_AI_PROVIDER','groq')
+    monkeypatch.delenv('GROQ_API_KEY',raising=False)
+    assert configuration() is None
+    monkeypatch.setenv('GROQ_API_KEY','synthetic-test-key')
+    monkeypatch.setenv('VIBEGUARD_AI_ENDPOINT','https://untrusted.invalid')
+    assert configuration().hostname=='api.groq.com'
+    monkeypatch.setenv('VIBEGUARD_AI_ENABLED','0')
+    assert configuration() is None
+
+
+@pytest.mark.parametrize('scenario',['valid','truncated','bad_json','rate_limit','ungrounded'])
+def test_groq_wire_format_and_fallback(monkeypatch,scan,scenario):
+    from backend.adapters import explanations
+    monkeypatch.setenv('VIBEGUARD_AI_ENABLED','1')
+    monkeypatch.setenv('VIBEGUARD_AI_PROVIDER','groq')
+    monkeypatch.setenv('GROQ_API_KEY','synthetic-test-key')
+    monkeypatch.setenv('VIBEGUARD_AI_MODEL','llama-3.3-70b-versatile')
+    scan.allow_external_ai=True
+    calls=[]
+    class Socket:
+        def settimeout(self,_): pass
+        def shutdown(self,_): pass
+    class Response:
+        status=429 if scenario=='rate_limit' else 200
+        def __init__(self,body): self.body=body
+        def read1(self,size):
+            part=self.body[:size]; self.body=self.body[size:]; return part
+    class Connection:
+        sock=None
+        def __init__(self,host,port,timeout): assert host=='api.groq.com' and port==443
+        def connect(self): self.sock=Socket()
+        def request(self,method,path,body,headers):
+            assert method=='POST' and path=='/openai/v1/chat/completions'
+            assert headers['Authorization']=='Bearer synthetic-test-key'
+            payload=json.loads(body); calls.append(payload)
+            assert payload['model']=='llama-3.3-70b-versatile'
+            assert payload['response_format']=={'type':'json_object'}
+            assert 'synthetic-test-key' not in body.decode()
+            rows=json.loads(payload['messages'][1]['content'])['findings']
+            result={'explanations':[{'id':r['id'],'location':r['location'],'text':r['guidance_options'][0] if scenario!='ungrounded' else 'Invented advice'} for r in rows]}
+            self.body=json.dumps({'choices':[{'finish_reason':'length' if scenario=='truncated' else 'stop','message':{'content':json.dumps(result)}}]}).encode()
+        def getresponse(self): return Response(b'not JSON' if scenario=='bad_json' else self.body)
+        def close(self): pass
+    monkeypatch.setattr(explanations.http.client,'HTTPSConnection',Connection)
+    result=repair_for(scan)
+    assert len(calls)==1
+    assert result.mode==('ai_assisted' if scenario=='valid' else 'template')
+    if scenario!='valid': assert result.status=='fallback'
+    assert result.human_actions and scan.findings[0].fix_guidance in result.prompt_redacted
+    assert 'synthetic-test-key' not in result.model_dump_json()
