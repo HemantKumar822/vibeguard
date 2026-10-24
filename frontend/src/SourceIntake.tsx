@@ -233,14 +233,14 @@ export default function SourceIntake() {
       </> : <>
       <div className="directory-picker"><span className="source-symbol" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 7V5a1 1 0 0 1 1-1h5l2 3h9a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" /><path d="M3 9h18M12 12v5m-2-2 2 2 2-2" /></svg></span>
         <h3>Upload code for security review</h3>
-        <p>Choose an individual file (like <code>vulnerable.ts</code>) or an entire project directory.</p>
-        <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', margin: '20px auto 14px', maxWidth: '520px' }}>
-          <label style={{ flex: '1 1 220px', cursor: 'pointer', background: '#2563eb', color: '#ffffff', padding: '14px 18px', borderRadius: '8px', fontWeight: 600, fontSize: '15px', textAlign: 'center', boxShadow: '0 2px 10px rgba(37,99,235,0.4)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <span>📄 Choose Single File (vulnerable.ts)</span>
+        <p>Choose individual source files or an entire project directory to inspect.</p>
+        <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', margin: '20px auto 14px', maxWidth: '480px' }}>
+          <label style={{ flex: '1 1 200px', cursor: 'pointer', background: '#2563eb', color: '#ffffff', padding: '12px 18px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', textAlign: 'center', boxShadow: '0 2px 10px rgba(37,99,235,0.4)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span>📄 Choose Files</span>
             <input type="file" multiple onChange={event => select(event.currentTarget, false)} disabled={pending} style={{ display: 'none' }} />
           </label>
-          <label style={{ flex: '1 1 220px', cursor: 'pointer', background: '#1e293b', color: '#cbd5e1', padding: '14px 18px', borderRadius: '8px', fontWeight: 500, fontSize: '15px', textAlign: 'center', border: '1px solid #475569', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <span>📁 Choose Entire Folder</span>
+          <label style={{ flex: '1 1 200px', cursor: 'pointer', background: '#1e293b', color: '#cbd5e1', padding: '12px 18px', borderRadius: '8px', fontWeight: 500, fontSize: '14px', textAlign: 'center', border: '1px solid #475569', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span>📁 Choose Folder</span>
             <input type="file" multiple {...{ webkitdirectory: '' }} onChange={event => select(event.currentTarget, true)} disabled={pending} style={{ display: 'none' }} />
           </label>
         </div>
