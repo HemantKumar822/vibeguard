@@ -231,22 +231,8 @@ export default function SourceIntake() {
         <label>Branch, tag, or commit (optional)<input value={ref} maxLength={256} disabled={pending} onChange={event => { changed(); setRef(event.target.value) }} /></label>
       <p className="field-help">Public repositories only. One resolved commit; no private credentials, history, submodules, LFS downloads, hooks or builds.</p>
       </> : <>
-      <div className="directory-picker"><span className="source-symbol" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 7V5a1 1 0 0 1 1-1h5l2 3h9a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" /><path d="M3 9h18M12 12v5m-2-2 2 2 2-2" /></svg></span>
-        <h3>Upload code for security review</h3>
-        <p>Choose individual source files or an entire project directory to inspect.</p>
-        <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', margin: '20px auto 14px', maxWidth: '480px' }}>
-          <label style={{ flex: '1 1 200px', cursor: 'pointer', background: '#2563eb', color: '#ffffff', padding: '12px 18px', borderRadius: '8px', fontWeight: 600, fontSize: '14px', textAlign: 'center', boxShadow: '0 2px 10px rgba(37,99,235,0.4)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <span>📄 Choose Files</span>
-            <input type="file" multiple onChange={event => select(event.currentTarget, false)} disabled={pending} style={{ display: 'none' }} />
-          </label>
-          <label style={{ flex: '1 1 200px', cursor: 'pointer', background: '#1e293b', color: '#cbd5e1', padding: '12px 18px', borderRadius: '8px', fontWeight: 500, fontSize: '14px', textAlign: 'center', border: '1px solid #475569', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-            <span>📁 Choose Folder</span>
-            <input type="file" multiple {...{ webkitdirectory: '' }} onChange={event => select(event.currentTarget, true)} disabled={pending} style={{ display: 'none' }} />
-          </label>
-        </div>
-        <span className="field-help">Your code is inspected inside isolated Linux Docker containers (Semgrep + Gitleaks).</span>
-      </div>
-      <details className="mapped-picker"><summary>Choose individual files instead</summary><label>Choose mapped files<input type="file" multiple onChange={event => select(event.currentTarget, false)} disabled={pending} /></label><p className="field-help">If directory selection is unavailable, choose mapped files and provide their original relative paths.</p></details>
+      <div className="directory-picker"><span className="source-symbol" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 7V5a1 1 0 0 1 1-1h5l2 3h9a1 1 0 0 1 1 1v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z" /><path d="M3 9h18M12 12v5m-2-2 2 2 2-2" /></svg></span><h3>A source tree, ready for a closer look.</h3><p>Select your project folder. We’ll preserve its paths<br className="desktop-break" /> and make the accepted review scope explicit.</p><label>Choose directory<input type="file" multiple {...{ webkitdirectory: '' }} onChange={event => select(event.currentTarget, true)} disabled={pending} /></label><span className="field-help">Your app is never installed, built or executed.</span></div>
+      <details className="mapped-picker" open><summary>Choose individual files instead (shows all .ts, .js files)</summary><label>Choose files<input type="file" multiple onChange={event => select(event.currentTarget, false)} disabled={pending} /></label><p className="field-help">Pick one or more source files directly. File names are automatically mapped.</p></details>
       {mapped && <label>Relative paths, one per selected file<textarea value={paths} onChange={event => { if (event.target.value !== paths) changed(); setPaths(event.target.value) }} disabled={pending} /></label>}
       {files.length > 0 && <details className="selected-files"><summary>{files.length} files selected · {(files.reduce((total, file) => total + file.size, 0) / 1024).toFixed(1)} KiB</summary><ol>{files.map((file, index) => <li key={index}>{mapped ? file.name : file.webkitRelativePath} · {file.size} bytes</li>)}</ol></details>}
       </>}
