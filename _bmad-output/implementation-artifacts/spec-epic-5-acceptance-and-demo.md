@@ -83,4 +83,4 @@ After integration, run the corpus with real Docker workers, selected existing ad
 
 ## Delivery handoff
 
-Implementation delivered for merge at the user’s request. The remaining frontend manual task and release checks stay open in epic-5-verification.md; the user explicitly stopped browser testing and will test personally. GitHub publication/merge is authorized.
+Implementation delivered for merge at the user's request. The remaining frontend manual task and release checks stay open in epic-5-verification.md; the user explicitly stopped browser testing and will test personally. GitHub publication/merge is authorized.
