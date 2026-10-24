@@ -27,23 +27,16 @@ export default function App() {
     <aside className="sidebar" aria-label="Workspace navigation">
       <a className="brand" href="#workspace" aria-label="VibeGuard workspace"><span className="brand-mark" aria-hidden="true">V<span>/</span></span><span>VibeGuard<small>SECURITY WORKSPACE</small></span></a>
       <p className="nav-caption">WORKSPACE</p>
-      <nav><a className="nav-link is-active" href="#workspace" aria-current="page"><span aria-hidden="true">⊞</span> Source review <span className="nav-indicator" /></a>
+      <nav><a className="nav-link is-active" href="#workspace" aria-current="page"><span aria-hidden="true">⊞</span> Security review <span className="nav-indicator" /></a>
         <a className="nav-link" href="#review-guide"><span aria-hidden="true">≡</span> How review works</a></nav>
-      <div className="sidebar-scope"><p className="nav-caption">REVIEW INPUTS</p><p><span className="availability-dot" />Codebase upload</p><p><span className="availability-dot" />Public GitHub repository</p><p><span className="availability-dot" />Website URL <small>Readiness gated</small></p></div>
-      <div className="sidebar-note"><span className="eyebrow">Built for a closer look.</span><p>Real checks. Masked evidence.<br />Repairs you can act on.</p><span className="version-tag">CY-02 / LOCAL WORKSPACE</span></div>
+      <div className="sidebar-note"><span className="eyebrow">YOUR REVIEW WORKFLOW</span><p>Scan. Investigate. Repair.<br />Rescan to verify changes.</p></div>
     </aside>
     <main id="workspace" tabIndex={-1}>
-    <header className="workspace-header"><div className="breadcrumb">Workspace <span aria-hidden="true">/</span> <strong>Source review</strong></div>
+    <header className="workspace-header"><div className="breadcrumb">Workspace <span aria-hidden="true">/</span> <strong>Security review</strong></div>
       <span className={`connection connection-${health}`} role="status"><span className="connection-dot" />{health === 'checking' ? 'Checking the API connection…' : health === 'ok' ? 'API connected · contract v1' : 'API unavailable. Start the backend and retry this page.'}</span></header>
-    <section className="intro" aria-labelledby="title">
-      <div><p className="eyebrow intro-eyebrow"><span className="intro-line" /> FROM SOURCE TO A CLEAR NEXT STEP</p>
-      <h1 id="title">Evidence before confidence<span>.</span></h1>
-      <p className="lede">Find the risks hiding in your code. Understand the evidence.<br className="desktop-break" /> Leave with a concrete plan to fix them.</p></div>
-      <div className="intro-stamp"><span aria-hidden="true">⌘</span><div>Built for your next fix<small>JS / TS · Web configuration</small></div></div>
-    </section>
+    <section className="intro" aria-labelledby="title"><div><p className="eyebrow intro-eyebrow">SECURITY REVIEW</p><h1 id="title">A clear path to safer code.</h1><p className="lede">Review your code or website. Follow the checks. Fix what matters.</p></div></section>
     <SourceIntake />
-    <section id="review-guide" className="review-guide" aria-labelledby="guide-title"><div><p className="eyebrow">THE REVIEW PROCESS</p><h2 id="guide-title">A finding is the start.<br />Context makes it useful.</h2><p>Static checks highlight candidates for review. Confirm the impact in your application before making changes.</p></div>
-      <ol><li><strong>Submit authorized source</strong><span>Choose a source tree or an exact public repository revision.</span></li><li><strong>Inspect the evidence</strong><span>Review affected files, real locations, confidence and coverage.</span></li><li><strong>Take the next step</strong><span>Copy repair guidance. Rotate exposed credentials separately.</span></li></ol></section>
+    <details id="review-guide" className="review-guide"><summary>How review works</summary><ol><li><strong>Submit an authorized input</strong><span>Choose a codebase, public repository or website.</span></li><li><strong>Follow the checks and inspect findings</strong><span>Review real locations, masked evidence and coverage limits.</span></li><li><strong>Repair and rescan</strong><span>Copy the repair prompt, update your code and compare a new scan.</span></li></ol></details>
     <footer><span>VibeGuard <span className="muted">/ Evidence before confidence.</span></span><span>Review only code you are authorized to assess.</span></footer>
   </main>
   </div>

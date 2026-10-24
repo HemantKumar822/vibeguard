@@ -2,13 +2,21 @@
 
 Evidence-backed security review for AI-built websites: **submit → inspect → repair → rescan**.
 
-Built for the CY-02 hackathon challenge. The application will accept a full codebase, a repository, or an authorized deployed website URL; explain candidate security findings; produce one repair prompt for the developer's coding tool; and compare a real repeat scan.
+Built for the CY-02 hackathon challenge. The application accepts a full codebase, a public GitHub repository, or an authorized deployed website URL; runs real Gitleaks/Semgrep/ZAP scans in isolated Docker containers; explains candidate security findings with optional Groq AI guidance; produces one consolidated repair prompt; and compares a real before/after rescan.
 
-**Current status:** Source upload, owned jobs, isolated Gitleaks/Semgrep checks, masked findings and deterministic repair guidance are implemented. Public GitHub snapshots use the same pipeline and retain the requested ref and full resolved commit. Stories 1.2–2.2 and Epics 1–2 are accepted for completion through PR #23 after focused review. Broader/rendered accessibility review remains tracked in Story 5.2. Website URL review is implemented and readiness-gated, with actual offline-passive ZAP and browser-visible asset checks. Epic 3 is in review; AI and rescans remain future work. See the [batch verification record](_bmad-output/implementation-artifacts/source-repository-batch-verification.md) for observed checks and remaining UI review. The team repository is [HemantKumar822/vibeguard](https://github.com/HemantKumar822/vibeguard) (private).
+**Current status (prototype complete):** All five epics implemented and accepted. Source upload, repository snapshot, and website review modes are live. Real scanner checks run in isolated Docker containers. Masked findings, deterministic repair prompts, and optional AI-powered explanations (Groq opt-in) are working. Scan activity panel, live polling, rescan comparison, and report export are all in the UI. No mocks in the production UI — only real results.
 
-**Run locally:** follow [development setup](docs/DEVELOPMENT.md) for installation, two-terminal startup, type generation and verification.
+**Run locally (one command):** See [Quickstart](docs/QUICKSTART.md) or jump straight to:
 
-## What we are building
+```powershell
+# Quickest path — one command, no build step (uses Vite dev server):
+./scripts/dev-start.ps1
+
+# For a production-like demo with the built frontend:
+./scripts/start-demo.ps1
+```
+
+**Prerequisites:** `uv`, Node 18+ LTS, npm, Docker Desktop (Linux engine) for real scans. See [Quickstart](docs/QUICKSTART.md).
 
 | Input | Planned checks | Evidence |
 | --- | --- | --- |
@@ -20,12 +28,14 @@ The required journey is a graphical workspace, not a chatbot. Findings remain ca
 
 ## Start here as a teammate
 
+**Run the prototype:** In PowerShell 7, run `./scripts/start-demo.ps1` from the repository root. It starts the real API, worker and built frontend together. See [Quickstart and judge walkthrough](docs/QUICKSTART.md) for Groq configuration and the scan → report → repair → rescan demo.
+
 Use the [team delivery guide](docs/TEAM_DELIVERY.md) for the five milestones, their 16 stories and parallel-work guidance.
 
 1. Read the [team story board](_bmad-output/github-issues/README.md) and coordinate a story with the team.
 2. Read that story's description, dependencies, acceptance criteria and verification plan. Every story has its own file in [_bmad-output/implementation-artifacts/](_bmad-output/implementation-artifacts/README.md).
 3. Follow [CONTRIBUTING.md](CONTRIBUTING.md) and the [project rules](docs/PROJECT_RULES.md). Claim one story before changing shared files.
-4. Use [development setup](docs/DEVELOPMENT.md) for actual setup/build/test commands and locked dependencies. Start the API, trusted coordinator and frontend separately. Real source checks require the verified pinned Linux Docker images.
+4. Use [development setup](docs/DEVELOPMENT.md) for setup/build/test commands and locked dependencies, or the single-command launcher above for the demo. Real source checks require the verified pinned Linux Docker images.
 
 Python and Git can also run the preparation checks:
 

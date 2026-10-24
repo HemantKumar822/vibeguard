@@ -1,5 +1,7 @@
 # Development setup
 
+For one-command real prototype startup and Groq configuration, use [QUICKSTART.md](QUICKSTART.md). The application no longer mounts the development fixture viewer; fixture data is used only by tests.
+
 Stories 1–4 provide shared contracts, sessions, bounded source/repository/website intake, owned jobs, isolated checks, repair guidance, bounded opt-in AI fallback and real rescan comparison. Website admission remains readiness-gated. For the current three-process startup, measured acceptance command and manual handoff, use [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md).
 
 ## Install from a clean checkout

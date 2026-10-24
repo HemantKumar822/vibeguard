@@ -1,5 +1,7 @@
 # Local operator runbook
 
+**Current simple startup:** Run `./scripts/start-demo.ps1` in PowerShell 7 from the repository root. See [QUICKSTART.md](QUICKSTART.md) for Groq setup and the judge walkthrough. The manual commands below document the earlier measured rehearsal; they explicitly disable AI and are not the Groq startup instructions.
+
 Use three PowerShell terminals in `D:\TechFest`. The measured environment is Node 24.19.0, Python 3.12.13 and Docker Desktop Linux engine 29.9.2. Scanner digests and versions are recorded in `contracts/scanner-readiness.json`; the acceptance JSON records the images actually requested. Submitted source is never installed, built or executed. AI stays off.
 
 For a new checkout, install the locked dependencies once:
