@@ -1,184 +1,87 @@
-# Development setup
+# Development
 
-**TL;DR — one command to start everything:**
+## Setup and commands
+
+Use Python 3.12 via uv and Node 24 LTS. Run commands from the repository root unless specified.
 
 ```powershell
-./scripts/dev-start.ps1           # dev server (hot-reload, no build required)
-./scripts/start-demo.ps1          # production build + all three processes
-```
-
-See [QUICKSTART.md](QUICKSTART.md) for the judge walkthrough, Groq configuration, and troubleshooting. The application no longer mounts the development fixture viewer; fixture data is used only by tests.
-
-All five epics are implemented and accepted. Source upload, repository snapshot, website review, optional Groq AI guidance, rescan comparison, scan activity panel, and report export are live. For the measured acceptance command and operator notes, use [DEMO_RUNBOOK.md](DEMO_RUNBOOK.md).
-
-## Install from a clean checkout
-
-Prerequisites: Node 18+ LTS (18, 20, 22, or 24), npm, uv and Python 3.12.x. uv installs the exact Python version from `.python-version` automatically. The lockfiles are committed.
-
-From the repository root:
-
-```sh
 uv sync --frozen
 npm --prefix frontend ci
-uv run python scripts/export_contracts.py
-npm --prefix frontend run generate:types
+./scripts/dev/dev-start.ps1
 ```
 
-Two terminals, both starting in the repository root:
+For the built judge demo and configuration, use [QUICKSTART](QUICKSTART.md). Startup scripts live in `scripts/dev/`; operator checks in `scripts/checks/`; schema tooling in `scripts/contracts/`. `scripts/scanner_readiness.py` is also imported by the trusted launcher, so treat it as runtime support, not disposable setup tooling.
 
-```sh
-uv run uvicorn backend.api.main:app --host 127.0.0.1 --port 8000
-```
+Manual API/worker startup requires the same private `VIBEGUARD_RUNTIME_DIR`, origin and loopback settings in both terminals:
 
-```sh
+```powershell
+uv run --env-file .env uvicorn backend.api.main:app --host 127.0.0.1 --port 8000
+uv run --env-file .env python -m workers.coordinator
 npm --prefix frontend run dev
 ```
 
-Open `http://127.0.0.1:5173`. Vite proxies `/api` to loopback port 8000, keeping browser requests same-origin. The actual health endpoint is `GET /api/v1/health`. Its response proves API availability only. Session, capabilities, source admission and owned-read routes are implemented; see the runtime configuration below. Do not expose the development server or API to the public network.
+Keep the private runtime outside the repo and OneDrive. `.env`, keys, source uploads, scanner output, SQLite and local logs are never committed.
 
-The page displays actual coordinator/tool state and source coverage. Development fixtures are synthetic contract examples. Their dynamic import is eliminated in production; the built application contains no fixture payloads. This setup is the local team demo, not a deployed public service.
+## Code organization
 
-## Shared contract workflow
+- `backend/api` handles HTTP and sessions, `core` owns contracts/state/policy, `adapters` owns external boundaries, and `workers` owns execution. Avoid moving business rules into HTTP routes or giving the API Docker control.
+- Frontend code lives by feature under `frontend/src/features/{intake,scans,report,comparison}`. Keep feature tests beside their components. The application shell and styles live in `src/app`.
+- Generated public types live in `src/shared/api/generated.ts`. Synthetic generated data lives in `src/test/fixtures.generated.ts` and must not enter production screens.
+- Backend tests are grouped under `tests/{api,core,adapters,workers,contracts,evaluation,tooling}`. Synthetic inputs stay under `fixtures`; trusted scanner rules under `rules`.
 
-1. Change backend models in `backend/core/contracts.py` deliberately against the [API contract](../_bmad-output/planning-artifacts/architecture/architecture-TechFest-2026-10-23/API-CONTRACT.md).
-2. Update relevant `fixtures/contracts/*.json`. They are labeled examples with no real secrets or scanner results.
-3. Run `uv run python scripts/export_contracts.py`, then `npm --prefix frontend run generate:types`.
-4. Run all checks below and commit models, OpenAPI, generated TypeScript and fixtures together.
+## Contract changes
 
-`contracts/openapi.json` exports the live routes and shared component schemas. Owned polling and deletion-operation routes are included. `Intake` describes repository/website JSON; `CodebaseMetadata` describes multipart metadata. The bounded source adapter enforces multipart intake; scanner/network enforcement belongs to later stories. Typed fixture declarations are generated from the same JSON examples and checked against generated TypeScript.
+Change `backend/core/contracts.py`, then the corresponding JSON examples under `fixtures/contracts`. Regenerate both checked-in outputs:
 
-## Verification
-
-```sh
-uv run pytest -q
-uv run python scripts/export_contracts.py
+```powershell
+uv run python scripts/contracts/export.py
 npm --prefix frontend run generate:types
 npm --prefix frontend run check:contracts
+```
+
+Do not hand-edit generated files. Contract checking validates OpenAPI, public API types and typed synthetic fixtures against their sources.
+
+## Focused verification
+
+```powershell
 npm --prefix frontend test
-npm --prefix frontend run typecheck
 npm --prefix frontend run build
 npm --prefix frontend run lint
-uv run python scripts/validate_repo_preparation.py
+uv run pytest tests/contracts tests/tooling -q
+uv run pytest tests/adapters/test_explanations.py -q
+uv run pytest --collect-only -q
 ```
 
-The Python suite checks live HTTP health, authorized intake routes, all ten fixture states, invalid input/location/status cases, truthful completion and checked-in schema parity. Frontend compilation checks fixture payloads against generated types. No scanner acceptance or containment is established by these tests.
+Use checks for the changed boundary. A frontend/doc refactor does not require replaying the Docker acceptance corpus. Real scanner/isolation changes do:
 
-## Scanner feasibility gate
+```powershell
+$env:VIBEGUARD_DOCKER_TESTS='1'
+uv run pytest tests/workers/test_worker_isolation.py tests/workers/test_website.py -q
+```
 
-Use a Linux container runtime. On Windows this can be Docker Desktop with WSL2; install/first-launch and any Windows restart must finish before the engine can be tested.
+Full acceptance is an explicit operator run, not part of routine cleanup:
 
-```sh
+```powershell
+uv run python scripts/checks/run_acceptance.py --output "$env:LOCALAPPDATA/VibeGuard/acceptance.json"
+```
+
+The runner writes sanitized evidence, uses real scanners and labels controlled synthetic inputs. Add `--live` only for existing targets you are authorized to assess. Store evidence outside the checkout rather than regenerating old planning documents.
+
+For a startup-only check: `./scripts/dev/start-demo.ps1 -SmokeCheck`. For configuration diagnosis without a live model call: `uv run --env-file .env python scripts/checks/verify_demo.py --skip-groq`.
+
+## Scanner readiness
+
+The launcher never silently updates scanner digests or bypasses website readiness. Version probes do not establish worker containment:
+
+```powershell
 uv run python scripts/scanner_readiness.py --output contracts/scanner-readiness.json
+uv run python scripts/checks/verify_website_readiness.py --help
 ```
 
-Exit 1 means tools are unavailable or unverified. Do not relabel it as passing. With a working engine, the command inspects cached pinned images first, pulls exact candidate tags only for missing images, resolves immutable image digests, executes version checks by digest with restricted flags, and records observed versions. It never scans submitted content. Version probes do not establish the future workers' filesystem/network safety. Use verified digests, not candidate tags, when implementing real workers. If a pinned image is unavailable, record and validate a deliberate replacement rather than silently floating.
+Run the website measurement only with an authorized target and its required confirmation flag. A stale proof means URL admission stays unavailable until actual verification succeeds. Never edit a fingerprint to imply a measurement took place.
 
-Keep real source, reports and SQLite files outside the checkout and OneDrive, as required by the architecture. `.env.example` lists reserved future settings; the runtime settings above are required for intake. Never put real credentials in examples.
+## Team delivery
 
-## Compatible bootstrap versions
+Use GitHub issues/milestones as the live tracker. Claim a task, work on a branch, and keep shared contract/state changes coordinated. PRs explain the problem, resulting behavior, checks actually run and remaining limitations. Use `Closes #...` only when all issue requirements are delivered. Request teammate review before merge.
 
-Observed: Node 24.19.0, Python 3.12.13, FastAPI 0.161.0, Vite 8.3.5, React 19.3.1, TypeScript 5.9.3, openapi-typescript 7.13.0 and create-vite 9.3.1 (`react-ts`). Exact transitive versions are owned by `uv.lock` and `frontend/package-lock.json`.
-
-The planning candidates Node 24.22.1 / TypeScript 7.0.2 were not used unchanged. Node 24.19.0 is the installed compatible Node 24 runtime. TypeScript 7.0.2 exposes no `ts.factory` at its main entrypoint, while openapi-typescript 7.13.0 requires the TypeScript 5 compiler API. The observed failure was `Cannot read properties of undefined (reading 'createKeywordTypeNode')`; pinning its supported TypeScript 5.9.3 resolves generation and build. Do not upgrade the compiler independently of the generator.
-
-On Windows, stop Vite before running `npm ci`; otherwise a loaded native module can cause an EPERM unlink error. The readiness command accepts `--pull-timeout 30` for a shorter bounded retry (default 180 seconds per image). A timeout is a blocked result, not proof an image or version is invalid.
-
-Verified on 2026-10-24: Linux Docker engine 29.9.2 executes Gitleaks 8.30.1, Semgrep 1.182.1 and ZAP 2.17.0 by the digests recorded in `contracts/scanner-readiness.json`. Probes remain non-root, network-disabled and read-only, with a 256 MiB temporary filesystem. HOME and Java user.home point into that scratch; the probe hostname resolves only to loopback. Semgrep version-check and metrics activity are disabled. Startup resource errors prevent a passing probe even if version text appears. These probes do not establish application scanner containment.
-
-Pre-merge review added strict TypeScript null checking, generated-file drift checks, a production fixture-exclusion gate built into `npm run build`, and in-memory frontend health tests. Health requests have a 10-second deadline. Synthetic comparison examples link actual baseline/corrected/partial Scan fixtures. Probe containers are uniquely named and forcibly removed in a finally block, including timeout/error paths.
-
-## Story 1.2 authorized source intake
-
-Configure private runtime storage **outside this checkout and OneDrive** before starting the API. The API rejects relative paths, checkout paths, OneDrive paths, symlinks/junctions, and HTTP origins without an explicit loopback development profile. Windows creates an owner-only inheritable ACL; POSIX uses owner-only directory permissions. SQLite stores sessions, submission choices, idempotency identity and queued scans. Source bodies use private opaque part IDs plus a validated relative-path manifest.
-
-PowerShell example (choose your own external private directory):
-
-```powershell
-$env:VIBEGUARD_RUNTIME_DIR = Join-Path $env:LOCALAPPDATA 'VibeGuard\runtime'
-$env:VIBEGUARD_ORIGIN = 'http://127.0.0.1:5173'
-$env:VIBEGUARD_LOOPBACK_HTTP = '1'
-uv run uvicorn backend.api.main:app --host 127.0.0.1 --port 8000
-```
-
-The Origin must match the browser address exactly. HTTPS deployments omit the loopback exception. Without configured runtime storage, health remains available and data endpoints return a safe 503. Session creation requires the configured Origin; submissions additionally require the session cookie, CSRF token and Idempotency-Key. Cookie loss makes owned scans unavailable.
-
-Directory selection preserves browser-provided relative paths. If unavailable or paths are lost, select files and explicitly map one original relative path per file. Permission is mandatory and external sharing defaults off. Public repository intake is supported; Website mode requires the measured safety proof described below. External AI remains unavailable. No uploaded code, hooks, dependencies, build or scanner configuration is executed. Accepted scans start queued, with `accepted_files` separate from inspected coverage; exclusions carry explicit reasons. The trusted coordinator then runs real checks.
-
-Verified commands: backend pytest, contract export/generation and parity, frontend tests/build/lint. Tests exercise real 25 MiB/5,000-file/2 MiB/depth-20/240-byte boundaries plus one, chunked bodies, interrupted uploads, unsafe paths, ownership, CSRF and failed-upload cleanup. Tests require OS access to private temporary directories outside the checkout; a restricted sandbox may require permission for that test run. The multipart parser is locked to python-multipart 0.0.22. Orchestration, deletion and lifecycle recovery belong to story 1.3.
-
-
-## Story 1.3 private bounded lifecycle
-
-Run the coordinator in a **separate host terminal**, using the same private runtime settings as the API:
-
-```powershell
-uv run python -m workers.coordinator
-```
-
-Only this trusted host process controls Docker. API and worker containers must receive neither a Docker socket nor host credentials. Source workers use the verified immutable digests, fixed version-only diagnostic commands, read-only root/source, non-root identity, no network, dropped capabilities, no-new-privileges, 2 CPUs, 2 GiB memory, 128 processes, 256 MiB scratch, a 90-second tool deadline and 5 MiB output ceiling. Raw diagnostic output is discarded. Version checks are diagnostics, never completed scan coverage.
-
-The persisted SQLite WAL queue accepts three waiting jobs and one running job. Claims and session-scoped canonical idempotency are transactional. Queue/global deadlines are 600/300 seconds. A single coordinator renews a 15-second lease across cleanup and execution; takeover marks abandoned work failed and cleans it before claiming again. Jobs are never automatically rerun. The coordinator now runs trusted source adapters. Diagnostic dispatch without a launcher still fails explicitly as `trusted_adapters_unavailable`; a version probe never counts as scan coverage.
-
-Owned GET polling exposes actual Scan/tool states. DELETE returns a durable deletion operation: access is tombstoned immediately, late writes are refused, and `/api/v1/deletions/{operation_id}` reports pending/complete/failed cleanup. Cancellation and source removal must succeed before completion. Failures remain visible and block admission; coordinator sweeps retry them. Without a coordinator, deletion remains pending and becomes failed at the next sweep after 60 seconds. Retention is 24 hours from terminal completion and 24 hours of session inactivity. Reads refuse expired resources immediately; startup and minute sweeps enqueue expiry cleanup. Orphan upload directories receive a 600-second grace before purge. Runtime cleanup errors block admission.
-
-Physical verification (2026-10-24, Linux Docker 29.9.2):
-
-```powershell
-$env:VIBEGUARD_DOCKER_TESTS = '1'
-uv run pytest tests/test_worker_isolation.py -q
-```
-
-Four tests passed, including real read-only writes, denied external network/socket access, non-root/capability/no-new-privileges checks, observed cgroup and scratch limits, output overflow, timeout and daemon-side removal. These tests are opt-in when Docker is unavailable. This establishes the tested source-worker containment profile, not website egress safety. Story 1.4 adds the real source adapters described below.
-
-## Source and repository review batch (1.4–2.2)
-
-With the runtime settings above, start the coordinator in a second terminal:
-
-```powershell
-uv run python -m workers.coordinator
-```
-
-Start `npm --prefix frontend run dev -- --host 127.0.0.1` in a third terminal. Keep the API, coordinator and frontend on the same configured private runtime/origin. The API never controls Docker. Only the coordinator needs Docker CLI access. No additional application package is required by this batch.
-
-Select **Codebase** or **Repository** in the workspace. Repository accepts an HTTPS `github.com/owner/repository` URL and optional branch/tag/full commit. It uses unauthenticated fixed GitHub API/codeload endpoints, resolves a full commit, pins each connected public IP with normal TLS hostname checks, rejects redirects and enforces bounded download/extraction. Private repositories, credentials, history, submodules and LFS retrieval are unsupported. LFS pointers and unsupported source are excluded with explicit reasons. Rate limiting or retrieval failure produces a safe editable rejection, not an empty successful report.
-
-The coordinator materializes only validated accepted files in private scratch and runs pinned network-disabled Gitleaks/Semgrep with `rules/gitleaks.toml` and `rules/semgrep.json`. Project configuration/ignore files and inline suppressions cannot override mandatory rules. Semgrep's version-pinned `--x-ignore-semgrepignore-files` flag avoids built-in ignore behavior hiding accepted test files; changing scanner versions requires revalidating this compatibility. Raw vendor output stays in bounded memory and is never persisted or logged. Reports contain trusted rule/file/real-line evidence with source literals omitted. Image digests, versions and rule fingerprints are retained.
-
-The selected rules cover private-key/provider-token/credential-assignment candidates, eval, disabled TLS verification and simple Express-style routes without a local middleware argument. Access findings explicitly require review of global middleware and handler checks. This is narrow static coverage, not a general exploitability or authorization assessment. Failed tools, syntax/report errors, timeouts, omitted resources and report bounds produce explicit incomplete results. Complete clean reports say “No findings detected within completed checks.”
-
-Use severity/category/tool/search filters, select a finding and copy the deterministic repair prompt. If clipboard access fails, select the sanitized text manually. Keep revoke/rotate actions separate from code repairs. Switching input modes preserves the accepted report; after refresh use **Reconnect to an existing scan** with the same cookie and Scan ID. Nothing sensitive is stored in browser persistent storage.
-
-Batch verification and pending rendered accessibility review are recorded in [the implementation evidence](../_bmad-output/implementation-artifacts/source-repository-batch-verification.md). Tests are batched through Epic 2; fixes use focused reruns rather than repeating the entire suite.
-
-
-## Epic 3: Website URL review
-
-Use the same API, coordinator and frontend startup. Select **Website URL** and confirm permission. Only public HTTP80/HTTPS443, exact-origin unauthenticated GET requests are permitted. Private/reserved/metadata addresses, mapped-private IPv6, credential-bearing URLs, unsafe redirects and alternate ports are blocked. Shared caps: 50 pages, 50 linked text assets, 200 requests, 2 MiB/body, 20 MiB aggregate response data and a 60-second capture deadline. Every connection revalidates DNS and its connected public peer; no environment proxy or browser is used.
-
-The host coordinator captures bounded responses, imports them into pinned ZAP with networking disabled, and checks observed text using trusted Gitleaks. ZAP's control interface is private inside the container; no external ZAP traffic or active scan is enabled. Website findings use actual observed URLs and asset lines, not invented source locations. Source literals and unknown vendor text are omitted. Captures and raw reports are temporary private data removed by the existing cleanup lifecycle.
-
-Website mode is disabled when the measured proof is missing or stale. Revalidate only a site you own or are authorized to assess:
-
-```powershell
-uv run python scripts/verify_website_readiness.py --target https://your-authorized-site.example/ --authorization-confirmed
-```
-
-This writes a safe aggregate proof to `contracts/website-readiness.json`, bound to the implementation/policy/rules and pinned images. It first disables an old proof, measures real capture/isolated scanners, and only enables readiness on usable completed stages and verified cleanup. Missing engine/images fail before any target fetch. Re-run after deliberate scanner/capture changes; do not edit `ready` manually. API and coordinator must use the same checkout/profile.
-
-A partial result is expected when discovered resources cannot be assessed. Runtime-loaded/cross-origin resources and private backend code are never claimed as checked. Empty findings are not a security certification. Rotate/revoke exposed credentials separately from code changes. Existing reconnect, deletion, filters and prompt copy work for web reports.
-
-Actual tests, authorized live results and remaining review are recorded in [Epic 3 evidence](../_bmad-output/implementation-artifacts/epic-3-verification.md).
-
-## Epic 4 & 5: AI guidance, rescans, activity panel, report export (complete)
-
-**Groq AI integration** is complete and live. Configure in `.env` (see [QUICKSTART.md](QUICKSTART.md)). The adapter is a narrow bounded JSON protocol: Groq's llama-3.3-70b selects grounded guidance from trusted finding options — it cannot invent new findings, claim fixes succeeded, or override core repair instructions. Invented prose, new IDs/locations, credential-like text, and oversized responses all cause deterministic fallback to the template mode.
-
-Request bounds: at most 30 sanitized findings, 24 KiB cap, 8 KiB response limit, 15-second single no-retry call. Reports display the composition mode (`ai_assisted` / `template`) and fallback reason when applicable. No paid provider call is needed for unit tests — `tests/test_explanations.py` exercises the full adapter protocol with mock connections.
-
-**Rescan + comparison** is implemented via `POST /api/v1/scans/{baseline_id}/rescans` (same intake contract, fresh permission and idempotency key). `GET /api/v1/scans/{baseline_id}/comparisons/{new_id}` returns an owned terminal direct-lineage comparison. Comparisons require compatible policy, tool version, immutable image and rule fingerprints. Not detected is an observation, never proof of repair or rotation.
-
-**ScanActivity component** (`frontend/src/ScanActivity.tsx`) displays real scanner states, coverage, and a timestamped activity log derived from the polled scan response. No client-side events are invented.
-
-**Report export** (`frontend/src/reportExport.ts`) generates a fenced Markdown file containing literal report text — no links, images, or HTML that a Markdown viewer could render as untrusted content.
-
-After any integration change, run backend/frontend tests, contract parity, build and lint once. Real repeated worker smoke is opt-in: `VIBEGUARD_DOCKER_TESTS=1 python -m pytest tests/test_rescans.py -k actual_worker_repeat_smoke -q`. Website implementation changes invalidate measured readiness; rerun `python scripts/verify_website_readiness.py` before enabling live website admission. Do not hand-edit the readiness proof.
+Preserve observable behavior during structural cleanup. Keep safety rules in [SECURITY](../SECURITY.md), package boundaries in [ARCHITECTURE](ARCHITECTURE.md), and startup instructions in [QUICKSTART](QUICKSTART.md). New functionality belongs in a focused change, not a folder reorganization.

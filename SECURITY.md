@@ -1,20 +1,28 @@
-# Security reporting and safe development
+# Security
 
-This prototype reviews untrusted code and authorized websites. Its own input, worker, network, secret-handling and report-access boundaries are release-critical. Planning documents are not evidence those boundaries work.
+VibeGuard reviews untrusted source and authorized websites. Input, worker isolation, network destination checks, redaction and report ownership are release-critical boundaries.
+
+## Authorized scope
+
+Only submit code or sites you own or are authorized to assess. Website review is bounded passive analysis of public responses and observed text assets. It cannot inspect private backend source, run authenticated flows or execute browser JavaScript. Do not enable active attacks, live credential validation, private/history access or submitted scanner configurations as part of routine development.
+
+## Required engineering rules
+
+- Never install, build or execute submitted applications, package scripts or repository hooks.
+- Use trusted local scanner rules and pinned images. Submitted ignore files or instructions cannot disable mandatory checks.
+- Keep the API separate from the Docker-owning trusted coordinator. Scanner containers have no network, privileged capabilities or host Docker socket.
+- Enforce actual public destinations and shared request/redirect/size/time budgets for host-side website capture. Never expose ZAP's control API.
+- Persist only sanitized public observations. Mask credential evidence before reports, external AI, clipboard and exports. Keep raw processing material in bounded private scratch and clean it up.
+- Keep credentials and API keys server-side, outside source control. Exposed credentials require separate revocation or rotation; deleting the code reference is insufficient.
+- Enforce session ownership and CSRF on state-changing requests. Knowing a Scan ID is not proof of ownership.
+- Preserve failed, skipped, timed-out and partial coverage. A disappeared finding does not establish a verified fix or a secure application.
+- External AI is per-submission opt-in, bounded and grounded in existing findings. It cannot execute tools or replace the scanner's evidence.
+- Keep runtime source, SQLite and logs outside the checkout and OneDrive. Never include them in public screenshots, issues or PRs.
+
+Measured scanner identities and website-readiness evidence are in `contracts/`. Never rewrite those files to manufacture a passing result. See [ARCHITECTURE](docs/ARCHITECTURE.md) for the execution flow.
 
 ## Report privately
 
-Do not put live credentials, private source, sensitive URLs, exploit details against unrelated sites or raw scanner output into public issues/PRs. For this private team repository, contact the maintainer HemantKumar822 through the existing private team channel. Before a public launch, configure a real private reporting channel or GitHub private vulnerability reporting and update this file; no email address or response SLA is invented here.
+Do not put real credentials, private source, sensitive URLs, unrelated exploit targets or raw scanner output into public issues. Contact maintainer HemantKumar822 through the existing private team channel. Provide a sanitized description, affected component/version, authorized reproduction and impact using fake credentials or team-controlled targets.
 
-Share a sanitized description, affected component/version, authorized reproduction steps and impact. Use fake credentials and team-controlled targets. The generic bug template is for nonsensitive defects only.
-
-## Required boundaries
-
-- Do not execute submitted applications, install scripts, builds or repository hooks.
-- Apply trusted scanner rules, finite limits and worker isolation; permission confirmation is not containment.
-- Route website/asset traffic through tested actual-destination and budget controls. Never expose ZAP's control API publicly.
-- Sanitize evidence before persistence, logging, model calls, clipboard, screenshots and user output.
-- Keep private credentials server-side. If a real credential was exposed, revoke/rotate it separately from removing the code reference.
-- Do not label incomplete checks as clean or a disappeared finding as verified fixed.
-
-The [architecture safety profile](_bmad-output/planning-artifacts/architecture/architecture-TechFest-2026-10-23/SAFETY-PROFILE.md) and each story's acceptance criteria define the implementation gates. Only scan targets the team is authorized to assess.
+Before a public launch, configure a real private reporting channel or GitHub private vulnerability reporting and update this policy. No response SLA or security certification is claimed for this prototype.
