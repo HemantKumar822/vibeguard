@@ -1,8 +1,0 @@
-{
-  "result": "PASS",
-  "decision_ids": 12,
-  "required_decision_fields": "PASS",
-  "local_links": 2,
-  "source_and_companion_paths": "PASS",
-  "limitations": "Document integrity only; no compatibility, scanner, runtime or network enforcement tests."
-}

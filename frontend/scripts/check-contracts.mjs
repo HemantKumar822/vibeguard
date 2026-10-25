@@ -9,14 +9,14 @@ function run(command, args) {
   if (result.error) throw result.error
   if (result.status !== 0) throw new Error(result.stderr || result.stdout || 'Contract command failed')
 }
-run('uv', ['run', 'python', '../scripts/export_contracts.py', '--check'])
+run('uv', ['run', 'python', '../scripts/contracts/export.py', '--check'])
 const directory = mkdtempSync(join(tmpdir(), 'vibeguard-types-'))
 const generated = join(directory, 'api.ts')
 let failure
 try {
   run(process.execPath, ['node_modules/openapi-typescript/bin/cli.js', '../contracts/openapi.json', '-o', generated])
   const normalize = value => value.replaceAll('\r\n', '\n')
-  if (normalize(readFileSync(generated, 'utf8')) !== normalize(readFileSync(join(frontend, 'src/generated/api.ts'), 'utf8'))) {
+  if (normalize(readFileSync(generated, 'utf8')) !== normalize(readFileSync(join(frontend, 'src/shared/api/generated.ts'), 'utf8'))) {
     throw new Error('Generated API types are stale. Run generate:types and commit the result.')
   }
   console.log('PASS: OpenAPI, API types and typed fixtures match their sources.')

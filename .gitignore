@@ -1,9 +1,11 @@
-# Local AI tooling and installed BMAD source. Share generated plans instead.
+# Local AI tooling. Share project documents instead of installed agents/skills.
 /.agent/
 /.agents/
 /agents/
 /skills/
 /_bmad/
+# Retired BMAD output: only local cache remains after document relocation.
+/_bmad-output/
 /.claude/
 /.codex/
 /.cursor/
@@ -49,6 +51,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+/.cache/
 .mypy_cache/
 .ruff_cache/
 .tox/
@@ -80,9 +83,9 @@ htmlcov/
 playwright-report/
 test-results/
 
-# Local authoring caches, not the generated planning/story documents.
-/_bmad-output/**/.working/
-/_bmad-output/**/.runtime-cache/
+# Local planning/tool caches.
+**/.working/
+**/.runtime-cache/
 
 # Editor / operating-system artifacts.
 .idea/
@@ -93,6 +96,4 @@ Desktop.ini
 *.swp
 *.swo
 
-# _bmad-output/ is deliberately NOT ignored. Plans, stories, source references,
-# issue drafts, validation reports and sprint tracking are shared with the team.
 /.uv-cache/

@@ -60,7 +60,13 @@ def main():
     signal.signal(signal.SIGINT,shutdown); signal.signal(signal.SIGTERM,shutdown)
     try:
         while running:
-            run_once(lifecycle,cleanup,token,launcher)
+            try:
+                run_once(lifecycle,cleanup,token,launcher)
+            except RuntimeError as exc:
+                if 'Another coordinator holds the lease' in str(exc):
+                    time.sleep(2)
+                    continue
+                raise
             time.sleep(1)
     finally:
         with store.connect() as db:

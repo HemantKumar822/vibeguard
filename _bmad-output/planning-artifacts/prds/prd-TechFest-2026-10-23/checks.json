@@ -1,9 +1,0 @@
-{
-  "date": "2026-10-23",
-  "functional_requirements": 21,
-  "nonfunctional_requirements": 7,
-  "assumption_index_roundtrip": "PASS",
-  "local_links_checked": 7,
-  "result": "PASS",
-  "limitations": "Document checks only; no scanner or implementation tests run"
-}

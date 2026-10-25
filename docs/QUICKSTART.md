@@ -1,133 +1,54 @@
-# Quickstart — VibeGuard
+# Quickstart
 
-Everything you need to run the prototype and walk a judge through it.
+## Prerequisites and first run
 
----
-
-## Start in one command
+Use PowerShell 7, uv, Python 3.12 (managed by uv), Node 24.19 or later Node 24 LTS, npm, and Docker Desktop running Linux containers. From the repository root:
 
 ```powershell
-# PowerShell 7, from the repository root:
-./scripts/dev-start.ps1
+./scripts/dev/start-demo.ps1
 ```
 
-Open **http://127.0.0.1:5173**
+This installs locked dependencies if missing, checks pinned scanner images, builds the frontend and starts the API, coordinator and frontend. Missing images produce a specific pull command; scanners never silently pull floating images while executing a job. Open http://127.0.0.1:5173. Ctrl+C stops only this launcher's process trees.
 
-### Flags
-
-| Flag | Effect |
-|------|--------|
-| *(none)* | Full stack — API + coordinator + Vite dev server. Real scans need Docker Desktop. |
-| `-NoDocker` | API + Vite only. UI is fully interactive; scans stay "queued". Good for UI demos without Docker. |
-
-### Alternate: production build (more realistic demo)
+Private source and job state default to `%LOCALAPPDATA%/VibeGuard/demo-runtime`. Process logs are under `%LOCALAPPDATA%/VibeGuard/demo-logs`. Both stay outside the checkout and OneDrive. Do not run two coordinators against one runtime.
 
 ```powershell
-./scripts/start-demo.ps1            # builds frontend, then starts everything
-./scripts/start-demo.ps1 -SkipBuild # reuse existing build for a fast repeat start
+./scripts/dev/start-demo.ps1 -SkipBuild   # Reuse an unchanged frontend build
+./scripts/dev/start-demo.ps1 -SmokeCheck # Start, verify HTTP health, stop; no scans
+./scripts/dev/dev-start.ps1             # Development with frontend hot reload
 ```
 
----
+Git Bash: `bash ./scripts/dev/start.sh`. Docker-free development options start the interface/API only; they do not demonstrate successful real scans.
 
-## Prerequisites
+## Groq configuration
 
-| Tool | Install |
-|------|---------|
-| **uv** | `pip install uv` or [docs.astral.sh/uv](https://docs.astral.sh/uv/) |
-| **Node 18+ LTS** | [nodejs.org](https://nodejs.org) (any LTS — 18, 20, 22, 24) |
-| **Docker Desktop** | [docker.com](https://docker.com) — start with **Linux engine** |
-
-Python 3.12 is installed automatically by `uv` from `.python-version`.
-
----
-
-## Configure Groq AI (optional but impressive)
-
-1. Get a free key at [console.groq.com/keys](https://console.groq.com/keys)
-2. Edit `.env` (created automatically on first run):
+The launcher creates `.env` from `.env.example` if it is missing. Edit the local file:
 
 ```dotenv
 VIBEGUARD_AI_ENABLED=1
 VIBEGUARD_AI_PROVIDER=groq
 VIBEGUARD_AI_MODEL=llama-3.3-70b-versatile
-GROQ_API_KEY=gsk_your_key_here
+GROQ_API_KEY=your_valid_key
 ```
 
-3. Restart the launcher. On each new scan, check **"Use AI explanations (optional)"** to opt in.
+Restart after editing. API keys stay server-side. On a new submission, enable **Use AI explanations (optional)** to send bounded, sanitized finding metadata to Groq. The provider selects grounded guidance; it cannot run tools, invent findings or certify a repair. Reports and repair prompts still work when AI is off, times out or rejects the key. HTTP 401 means the provider rejected the credential; replace it locally, never paste it into an issue or chat.
 
-The key stays server-side — it never reaches the browser or reports.
+## Judge walkthrough
 
----
-
-## Five-minute judge walkthrough
-
-### Step 1 — Confirm connection
-
-Open **http://127.0.0.1:5173**. The header shows **"API connected · contract v1"** in green when the backend is healthy.
-
-### Step 2 — Submit a codebase scan
-
-1. Leave mode as **Codebase**
-2. Click **Choose individual files instead**
-3. Select `fixtures/acceptance/vulnerable.ts` from the repo
-4. Enter `app/src/main.ts` as its relative path (this is a deliberately vulnerable sample file)
-5. Check the permission box
-6. Optionally check "Use AI explanations"
-7. Click **Submit source tree**
-
-> For a repository scan: switch to **Repository**, enter `https://github.com/HemantKumar822/vibeguard`, leave ref blank.
-> For a website scan: switch to **Website URL**, enter `https://hemantkumar822.github.io/`.
-
-### Step 3 — Watch live scan activity
-
-The input panel collapses. The **Checks and coverage** section shows:
-- Each scanner's real state: Waiting → Running → Completed
-- Timestamped activity log
-- Coverage breakdown
-
-> Point out: this is real scanner output, not simulated. A very fast check may finish between 1-second polling intervals — its timestamps still appear in the log.
-
-### Step 4 — Explore findings
-
-Once the scan completes:
-- **Filter by severity** or search by rule/path
-- **Click a finding** to expand location (real file + line), masked evidence, fix guidance, and verification steps
-- **Copy repair prompt** — paste it directly into Cursor, GitHub Copilot Chat, or any AI coding tool
-- **Download report** — generates a Markdown file with the full scan results
-
-> Point out: the raw credential value is never shown — only masked evidence. Revocation remains a separate human action.
-
-### Step 5 — Rescan and compare
-
-1. Click **Rescan corrected input**
-2. Select `fixtures/acceptance/corrected.ts`, map to the same path `app/src/main.ts`
-3. Check permission and submit
-4. After the second scan completes, the **before/after comparison** appears showing:
-   - Which findings were resolved
-   - Which are new
-   - Which remain unverified (partial coverage or structural identity issues)
-
----
+1. Start the app and confirm API connected.
+2. Select your own codebase, an authorized public repository or website. For a repeatable demonstration, explicitly label `fixtures/acceptance/vulnerable.ts` as a deliberately vulnerable sample, select that file and map it to `app/src/main.ts`. It is scanned by real tools, not a mocked response.
+3. Confirm permission and optionally enable AI. Submit and show real waiting/running/completed check states and recorded event timestamps. Fast checks can finish between polls.
+4. Inspect a finding's path/URL, line, confidence, masked evidence, impact, fix and verification steps. Show incomplete coverage when present.
+5. Download the report and copy the consolidated repair prompt into the coding tool. Credential rotation remains a separate human action.
+6. Choose **Rescan corrected input**, submit the corrected source with the same paths, and inspect the actual before/after comparison. The sample `fixtures/acceptance/corrected.ts` can use the same mapped path. Not detected does not prove fixed; unverified means evidence is not comparable.
+7. For the authorized website demo, use `https://hemantkumar822.github.io/`. Website mode requires a valid recorded readiness proof. External or unsupported resources can legitimately leave partial coverage.
 
 ## Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| Port 8000 or 5173 busy | Stop previous processes, then rerun |
-| Docker not detected | Open Docker Desktop, wait for "Engine running", use Linux containers |
-| Scan stays "queued" | The coordinator needs Docker to dispatch scanners. Check logs in `%LOCALAPPDATA%\VibeGuard\dev-logs\` |
-| AI shows "fallback" | Verify `.env` has your `GROQ_API_KEY`, restart launcher, opt in on a **new** scan |
-| Website mode unavailable | The website readiness proof may be stale. See [DEVELOPMENT.md](DEVELOPMENT.md) — source/repository mode is always available |
-| First scan is slow | Docker is pulling the scanner images (~1.5 GB total). Subsequent scans use cached images. |
+- Port 8000 or 5173 occupied: stop the previous API/frontend before starting again.
+- Queued scan: inspect coordinator logs and Docker availability; API health alone does not establish scanning capability.
+- Missing images: pull the exact digests listed in `contracts/scanner-readiness.json` before the demo.
+- Website admission unavailable: use [DEVELOPMENT](DEVELOPMENT.md) to inspect and refresh the readiness proof. Never bypass the gate.
+- Reconnect: use the Scan ID in the same browser session. Lost ownership cookies cannot be restored by knowing the ID.
 
----
-
-## What the scanners find
-
-| Scanner | Finds |
-|---------|-------|
-| **Gitleaks 8.30.1** | Exposed credentials, API keys, private keys in source code |
-| **Semgrep 1.182.1** | Unsafe eval, disabled TLS verification, missing auth middleware, credential assignments |
-| **OWASP ZAP 2.17.0** | Passive response/header checks on captured website traffic |
-
-All scanners run in **network-disabled, non-root, read-only** Docker containers with hard resource limits. Your source is never installed, built, or executed.
+This launcher is a local prototype runner, not a public deployment configuration.

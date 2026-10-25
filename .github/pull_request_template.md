@@ -5,8 +5,8 @@ Explain the problem and resulting behavior in a few sentences.
 ## Story and scope
 
 - Story ID / issue:
-- Parent epic:
-- Dependencies completed:
+- Milestone (if applicable):
+- Dependencies and integration notes:
 - In scope / intentionally deferred:
 
 Use a real `Closes #...` only if the entire issue is delivered. Do not close a parent epic for a single story.
@@ -32,5 +32,5 @@ Include positive and relevant failure cases. For UI changes, attach sanitized de
 - [ ] Shared schema/generated types/fixtures and policy versions stay consistent.
 - [ ] Errors and incomplete coverage remain visible; no unsupported safety/fix claim.
 - [ ] No secrets, runtime scan data, agent installations or generated caches added.
-- [ ] Docs, story verification record and sprint/issue state updated accurately.
+- [ ] Relevant docs and GitHub issue/milestone state updated accurately.
 - [ ] Teammate review requested.
