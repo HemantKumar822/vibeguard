@@ -13,5 +13,6 @@ dependencies = [
 dev = ["httpx>=0.28,<0.29", "pytest>=8,<10"]
 
 [tool.pytest.ini_options]
+cache_dir = ".cache/pytest"
 testpaths = ["tests"]
 pythonpath = ["."]

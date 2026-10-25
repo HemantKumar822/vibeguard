@@ -51,6 +51,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
+/.cache/
 .mypy_cache/
 .ruff_cache/
 .tox/

@@ -52,6 +52,8 @@ uv run pytest tests/adapters/test_explanations.py -q
 uv run pytest --collect-only -q
 ```
 
+Pytest stores disposable state under the ignored `.cache/pytest/` folder. Build output and tool caches are generated locally; do not commit test result dumps or old reports.
+
 Use checks for the changed boundary. A frontend/doc refactor does not require replaying the Docker acceptance corpus. Real scanner/isolation changes do:
 
 ```powershell

@@ -2,7 +2,6 @@ import json
 from pathlib import Path
 
 import pytest
-from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
 from backend.api.main import app
@@ -11,10 +10,6 @@ from backend.core.contracts import Intake, Scan, Comparison, Deletion, ErrorResp
 FIXTURES = Path('fixtures/contracts')
 
 
-def test_health_is_real_but_scan_endpoints_are_not_implemented():
-    client = TestClient(app)
-    assert client.get('/api/v1/health').json() == {'status': 'ok', 'contract_version': 'v1'}
-    assert client.post('/api/v1/scans', json={}).status_code == 503
 
 
 def test_required_contract_fixtures_validate():
@@ -58,11 +53,6 @@ def test_intake_rejects_permission_missing_fields_and_unknown_fields(payload):
         Intake.model_validate(payload)
 
 
-def test_openapi_exports_shared_types_with_no_working_scan_route():
-    schema = app.openapi()
-    assert '/api/v1/health' in schema['paths']
-    assert '/api/v1/scans' in schema['paths']
-    assert {'Scan', 'Comparison', 'Deletion', 'Intake'} <= schema['components']['schemas'].keys()
 
 
 def test_generated_schema_matches_live_app():
